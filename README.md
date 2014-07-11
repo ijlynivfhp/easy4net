@@ -45,6 +45,12 @@ db.Remove<Student>(student.UserID);
 ------
 
 ```c#
+
+//分页查询
+int pageIndex = 1;
+int pageSize = 3;
+List<Student> list = DB.FindBySql<Student>("SELECT * FROM student", pageIndex, pageSize);
+
 //查询所有
 List<Student> list = DB.FindAll<Student>();
 
@@ -130,8 +136,3 @@ namespace Entiry
 　　
 </appSettings>
 ```
-
-
-
-
-
