@@ -107,7 +107,7 @@ db.Remove(student);
 db.Remove(student.UserID);
 ```
 
-**数据库与JAVA对象映射关系配置：**
+**数据库与C#对象映射关系配置：**
 
 ***
 
