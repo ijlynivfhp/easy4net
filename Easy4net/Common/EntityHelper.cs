@@ -11,20 +11,23 @@ namespace Easy4net.Common
 {
     public class EntityHelper
     {
-        public static string GetTableName(Type classType)
+        public static string GetTableName(Type classType, DbOperateType type)
         {
             string strTableName = string.Empty;
             string strEntityName = string.Empty;
 
             strEntityName = classType.FullName;
 
-            object classAttr = classType.GetCustomAttributes(false)[0];
+            object[] attr = classType.GetCustomAttributes(false);
+            if (attr.Length == 0) return strTableName;
+
+            object classAttr = attr[0];
             if (classAttr is TableAttribute)
             {
                 TableAttribute tableAttr = classAttr as TableAttribute;
                 strTableName = tableAttr.Name;
             }
-            if (string.IsNullOrEmpty(strTableName))
+            if (string.IsNullOrEmpty(strTableName) && (type == DbOperateType.INSERT || type == DbOperateType.UPDATE || type == DbOperateType.DELETE))
             {
                 throw new Exception("实体类:" + strEntityName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
             }
@@ -42,10 +45,8 @@ namespace Easy4net.Common
                 {
                     case GenerationType.INDENTITY:
                         break;
-                    case GenerationType.SEQUENCE:
+                    case GenerationType.GUID:
                         strPrimary = System.Guid.NewGuid().ToString();
-                        break;
-                    case GenerationType.TABLE:
                         break;
                 }
             }
@@ -73,20 +74,18 @@ namespace Easy4net.Common
             return columnName;
         }
 
-        public static TableInfo GetTableInfo(object entity, DbOperateType dbOpType)
+        public static TableInfo GetTableInfo(object entity, DbOperateType dbOpType, PropertyInfo[] properties)
         {
             bool breakForeach = false;
             string strPrimaryKey = string.Empty;
             TableInfo tableInfo = new TableInfo();
             Type type = entity.GetType();
 
-            tableInfo.TableName = GetTableName(type);
+            tableInfo.TableName = GetTableName(type, dbOpType);
             if (dbOpType == DbOperateType.COUNT)
             {
                 return tableInfo;
             }
-
-            PropertyInfo[] properties = ReflectionHelper.GetProperties(type);
             
             foreach (PropertyInfo property in properties)
             {
@@ -129,6 +128,7 @@ namespace Easy4net.Common
                         breakForeach = true;
                     }
                 }
+
                 if (breakForeach && dbOpType == DbOperateType.DELETE) break;
                 if (breakForeach) { breakForeach = false; continue; }
                 tableInfo.Columns.Put(columnName, propvalue);
@@ -138,13 +138,12 @@ namespace Easy4net.Common
             return tableInfo;
         }
 
-        public static PropertyInfo GetPrimaryKeyPropertyInfo(object entity)
+        public static PropertyInfo GetPrimaryKeyPropertyInfo(object entity, PropertyInfo[] properties)
         {
             bool breakForeach = false;
             Type type = entity.GetType();
             PropertyInfo properyInfo = null;
-        
-            PropertyInfo[] properties = ReflectionHelper.GetProperties(type);
+
             foreach (PropertyInfo property in properties)
             {
                 string columnName = string.Empty;
@@ -167,6 +166,53 @@ namespace Easy4net.Common
 
             return properyInfo;
         }
+
+        public static List<T> toList<T>(IDataReader sdr, TableInfo tableInfo, PropertyInfo[] properties) where T : new()
+        {
+            List<T> list = new List<T>();
+       
+            while (sdr.Read())
+            {
+                T entity = new T();
+                foreach (PropertyInfo property in properties)
+                {
+                    if (tableInfo.TableName == string.Empty)
+                    {
+                        if (EntityHelper.IsCaseColumn(property, DbOperateType.SELECT)) continue;
+
+                        String name = tableInfo.PropToColumn[property.Name].ToString();
+                        ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
+                        continue;
+                    }
+
+                    ReflectionHelper.SetPropertyValue(entity, property, sdr[property.Name]);
+                }
+                list.Add(entity);
+            }
+
+            return list;
+        }
+
+        public static List<T> toList<T>(IDataReader sdr) where T : new()
+        {
+            List<T> list = new List<T>();
+            PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
+
+            while (sdr.Read())
+            {
+                T entity = new T();
+                foreach (PropertyInfo property in properties)
+                {
+                    String name = property.Name;
+                    ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
+                }
+                list.Add(entity);
+            }
+
+            return list;
+        }
+
+
 
         public static string GetFindSql(TableInfo tableInfo, DbCondition condition)
         {
@@ -288,6 +334,11 @@ namespace Easy4net.Common
             if (AdoHelper.DbType == DatabaseType.SQLSERVER)
             {
                 autoSQL = " select scope_identity() as AutoId ";
+            }
+
+            if (AdoHelper.DbType == DatabaseType.MYSQL)
+            {
+                autoSQL = " ;select @@identity ";
             }
 
             return autoSQL;
