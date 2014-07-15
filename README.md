@@ -1,7 +1,7 @@
 easy4net
 ========
 
-easy4net 是一个轻量级的ORM框架，能够方便的提供增删查改和复杂的SQL语句查询，目前支持MSSQL、Oracle、MySQL。 easy4net技术QQ 群：162695864
+easy4net 是一个轻量级的ORM框架，能够方便的提供增删查改和复杂的SQL语句查询，目前支持MSSQL、Oracle、MySQL、Access数据库。 easy4net技术QQ 群：162695864
 
 新增
 -------
@@ -130,8 +130,3 @@ namespace Entiry
 　　
 </appSettings>
 ```
-
-
-
-
-
