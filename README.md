@@ -124,9 +124,15 @@ namespace Entiry
 
 ```xml
 <configuration>
-　　　　<appSettings>
-            <add key="DbType" value="sqlserver"/>
-　　　　　　<add key="connectionString" value="Data Source=.;Initial Catalog=OrmDB;User ID=test;Password=test;Trusted_Connection=no;Min Pool Size=10;Max Pool Size=100;"/>
-　　
-</appSettings>
+  <appSettings>
+    <add key="DbType" value="sqlserver"/>
+    <add key="connectionString" value="Data Source=127.0.0.1;Initial Catalog=test;User ID=test;Password=test123;Trusted_Connection=no;Min Pool Size=10;Max Pool Size=100;"/>
+
+    <!--<add key="DbType" value="mysql"/>
+    <add key="connectionString" value="Data Source=127.0.0.1;port=8001;User ID=test;Password=123456;DataBase=test;Min Pool Size=10;Max Pool Size=100;"/>-->
+
+    <!--<add key="DbType" value="access"/>
+    <add key="connectionString" value="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\tj.mdb"/>-->
+  </appSettings>
+</configuration>
 ```
