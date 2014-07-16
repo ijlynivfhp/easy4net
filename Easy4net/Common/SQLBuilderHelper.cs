@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Easy4net.DBUtility;
+using System.Data;
 
 namespace Easy4net.Common
 {
@@ -89,6 +90,32 @@ namespace Easy4net.Common
                 }
             }
             
+            return strSql;
+        }
+
+        public static string builderAccessSQL(object entity, string strSql, IDbDataParameter[] parameters)
+        {
+            if (AdoHelper.DbType != DatabaseType.ACCESS)
+            {
+                return strSql;
+            }
+
+            foreach (IDbDataParameter param in parameters)
+            {
+                if (param.Value == null) continue;
+
+                string paramName = param.ParameterName;
+                string paramValue = param.Value.ToString();
+                string type = ReflectionHelper.GetPropertyType(entity, paramName);
+                
+                if (type == "System.String" || type == "System.DateTime")
+                { 
+                    paramValue = "'" + paramValue + "'";
+                }
+                
+                strSql = strSql.Replace("@"+paramName, paramValue);
+            }
+
             return strSql;
         }
     }

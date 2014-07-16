@@ -10,9 +10,9 @@ namespace Easy4net.EntityManager
     {
         IDbTransaction Transaction{get;set;}
 
-        int Save<T>(T entity);
+        int Save<T>(T entity) where T : new();
 
-        int Update<T>(T entity);
+        int Update<T>(T entity) where T : new();
 
         int Remove<T>(T entity);
 

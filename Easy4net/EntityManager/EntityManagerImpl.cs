@@ -18,7 +18,7 @@ namespace Easy4net.EntityManager
         IDbTransaction transaction = null;
 
         #region 将实体数据保存到数据库
-        public int Save<T>(T entity) 
+        public int Save<T>(T entity) where T : new() 
         {
             object val = 0;
             try
@@ -30,13 +30,14 @@ namespace Easy4net.EntityManager
                 strSql += EntityHelper.GetAutoSql();
 
                 IDbDataParameter[] parms = tableInfo.GetParameters();
+                strSql = SQLBuilderHelper.builderAccessSQL(new T(), strSql, parms);
                 
                 if (transaction != null) 
                     val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, strSql, parms);
                 else
                     val = AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSql, parms);
 
-                if (Convert.ToInt32(val) > 0 && (AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.SQLSERVER))
+                if (Convert.ToInt32(val) > 0 && (AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.ACCESS))
                 {
                     PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
                     ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
@@ -52,7 +53,7 @@ namespace Easy4net.EntityManager
         #endregion
 
         #region 将实体数据修改到数据库
-        public int Update<T>(T entity)
+        public int Update<T>(T entity) where T : new() 
         {
             object val = 0;
             try
@@ -61,8 +62,9 @@ namespace Easy4net.EntityManager
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.UPDATE, properties);
 
                 String strSql = EntityHelper.GetUpdateSql(tableInfo);
-
                 IDbDataParameter[] parms = tableInfo.GetParameters();
+
+                strSql = SQLBuilderHelper.builderAccessSQL(new T(), strSql, parms);
 
                 if (transaction != null) 
                     val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSql, parms);

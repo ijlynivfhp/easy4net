@@ -23,13 +23,13 @@ namespace Easy4net.DBUtility
             return new DBHelper();
         }
 
-        public int Save<T>(T entity)
+        public int Save<T>(T entity) where T : new() 
         {
             if (trans != null) entityManager.Transaction = trans;
             return entityManager.Save<T>(entity);
         }
 
-        public int Update<T>(T entity)
+        public int Update<T>(T entity) where T : new() 
         {
             if (trans != null) entityManager.Transaction = trans;
             return entityManager.Update<T>(entity);

@@ -57,8 +57,9 @@ namespace WindowsDemo
             int count = DB.Save<Student>(stu);
             if (count > 0) {
                 MessageBox.Show("新增成功！");
-                refreshData();
             }
+
+            refreshData();
         }
         #endregion
 

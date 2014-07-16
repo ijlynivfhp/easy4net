@@ -195,6 +195,11 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value)
         {
+            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            {
+                paramName = "@" + paramName;
+            }
+
             IDbDataParameter param = DbFactory.CreateDbParameter();
             param.ParameterName = paramName;
             param.Value = value;
@@ -209,6 +214,11 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, DbType dbType)
         {
+            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            {
+                paramName = "@" + paramName;
+            }
+
             IDbDataParameter param = DbFactory.CreateDbParameter();
             param.DbType = dbType;
             param.ParameterName = paramName;
@@ -224,6 +234,11 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, ParameterDirection direction)
         {
+            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            {
+                paramName = "@" + paramName;
+            }
+
             IDbDataParameter param = DbFactory.CreateDbParameter();
             param.Direction = direction;
             param.ParameterName = paramName;
@@ -239,6 +254,11 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, int size, ParameterDirection direction)
         {
+            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            {
+                paramName = "@" + paramName;
+            }
+
             IDbDataParameter param = DbFactory.CreateDbParameter();
             param.Direction = direction;
             param.ParameterName = paramName;
@@ -255,6 +275,11 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbOutParameter(string paramName, int size)
         {
+            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            {
+                paramName = "@" + paramName;
+            }
+
             IDbDataParameter param = DbFactory.CreateDbParameter();
             param.Direction = ParameterDirection.Output;
             param.ParameterName = paramName;
@@ -270,6 +295,11 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, DbType dbType, ParameterDirection direction)
         {
+            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            {
+                paramName = "@" + paramName;
+            }
+
             IDbDataParameter param = DbFactory.CreateDbParameter();
             param.Direction = direction;
             param.DbType = dbType;

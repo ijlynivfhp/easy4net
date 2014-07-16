@@ -336,6 +336,11 @@ namespace Easy4net.Common
                 autoSQL = " select scope_identity() as AutoId ";
             }
 
+            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            {
+                //autoSQL = " select @@IDENTITY as AutoId; ";
+            }
+
             if (AdoHelper.DbType == DatabaseType.MYSQL)
             {
                 autoSQL = " ;select @@identity ";
@@ -354,9 +359,9 @@ namespace Easy4net.Common
             
             foreach (String key in tableInfo.Columns.Keys)
             {
-                if (!string.IsNullOrEmpty(key.Trim()))
+                Object value = tableInfo.Columns[key];
+                if (!string.IsNullOrEmpty(key.Trim()) && value != null)
                 {
-                    Object value = tableInfo.Columns[key];
                     sbColumns.Append(key).Append(",");
                     sbValues.Append(AdoHelper.DbParmChar).Append(key).Append(",");
                 }
@@ -378,11 +383,14 @@ namespace Easy4net.Common
         {
             StringBuilder sbBody = new StringBuilder();
 
+            
             foreach (String key in tableInfo.Columns.Keys)
             {
                 Object value = tableInfo.Columns[key];
-
-                sbBody.Append(key).Append("=").Append(AdoHelper.DbParmChar + key).Append(",");
+                if (!string.IsNullOrEmpty(key.Trim()) && value != null)
+                {
+                    sbBody.Append(key).Append("=").Append(AdoHelper.DbParmChar + key).Append(",");
+                }
             }
 
             if (sbBody.Length > 0) sbBody.Remove(sbBody.ToString().Length - 1, 1);

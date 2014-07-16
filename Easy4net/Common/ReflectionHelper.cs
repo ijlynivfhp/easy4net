@@ -129,6 +129,27 @@ namespace Easy4net.Common
 
             return null;
         }
+
+        /// <summary>
+        /// 获取属性类型
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        public static string GetPropertyType<T>(T entity, string propertyName)
+        {
+            PropertyInfo property = entity.GetType().GetProperty(propertyName);
+            if (property != null)
+            {
+                return property.PropertyType.FullName;
+            }
+
+            return null;
+        }
+
+
+
         #endregion
 
         /*public static void SetPropertyValue(Object obj, PropertyInfo property, Object value)
