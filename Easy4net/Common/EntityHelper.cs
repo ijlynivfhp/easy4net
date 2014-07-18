@@ -21,12 +21,15 @@ namespace Easy4net.Common
             object[] attr = classType.GetCustomAttributes(false);
             if (attr.Length == 0) return strTableName;
 
-            object classAttr = attr[0];
-            if (classAttr is TableAttribute)
+            foreach (object classAttr in attr)
             {
-                TableAttribute tableAttr = classAttr as TableAttribute;
-                strTableName = tableAttr.Name;
+                if (classAttr is TableAttribute)
+                {
+                    TableAttribute tableAttr = classAttr as TableAttribute;
+                    strTableName = tableAttr.Name;
+                }
             }
+
             if (string.IsNullOrEmpty(strTableName) && (type == DbOperateType.INSERT || type == DbOperateType.UPDATE || type == DbOperateType.DELETE))
             {
                 throw new Exception("实体类:" + strEntityName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
