@@ -1,7 +1,4 @@
-easy4net
-========
-
-easy4net是一个轻量级orm框架，灵活在于可以自己编写复杂的SQL语句查询，简单在于几分钟内便能上手使用，并支持mysql, mssql, oracle。 easy4net技术QQ 群：162695864
+easy4net是一个轻量级orm框架，灵活在于可以自己编写复杂的SQL语句查询，简单在于几分钟内便能上手使用，并支持mysql, mssql, oracle, access数据库. easy4net技术QQ 群：162695864
 
 **分页查询：**
 * 1. 命名参数， ParamMap传参方式：
@@ -44,7 +41,7 @@ List list = DB.FindAll();
 Student student = DB.FindById<Student>(5);
  
 //通过SQL语句查询
-List<Student> list1 = DB.FindBySql<Student><span></span>("SELECT * FROM U_Student WHERE U_Age < 28");
+List<Student> list1 = DB.FindBySql<Student>("SELECT * FROM U_Student WHERE U_Age < 28");
  
 //查询某个字段
 List<Student> list2 = DB.FindByProperty<Student>("U_Name", "Lily Mary");
@@ -168,6 +165,9 @@ namespace Entiry
 
     <!--<add key="DbType" value="mysql"/>
     <add key="connectionString" value="Data Source=127.0.0.1;port=8001;User ID=test;Password=123456;DataBase=test;Min Pool Size=10;Max Pool Size=100;"/>-->
+
+    <!--<add key="DbType" value="access"/>
+    <add key="connectionString" value="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\tj.mdb"/>-->
   </appSettings>
 </configuration>
 ```
