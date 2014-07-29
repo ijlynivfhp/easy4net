@@ -15,6 +15,8 @@ param.setParameter("age",24);
 param.setParameter("address", "上海市");
 param.setPageIndex(pageIndex);
 param.setPageSize(pageSize);
+// order by id ASC
+param.setOrderFields("id", false);
 List<Student> student = DB.FindBySql<Student>(sql, param);
 ```
 
@@ -25,7 +27,7 @@ List<Student> student = DB.FindBySql<Student>(sql, param);
 ```c#
 int pageIndex = 1;
 int pageSize = 3;
-string sql = "SELECT * FROM student WHERE age < 28";
+string sql = "SELECT * FROM student WHERE age < 28 order by id desc";
 List<Student> list1 = DB.FindBySql<Student>(sql , pageIndex, pageSize);
 ```
 
