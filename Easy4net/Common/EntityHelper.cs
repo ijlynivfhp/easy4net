@@ -179,16 +179,15 @@ namespace Easy4net.Common
                 T entity = new T();
                 foreach (PropertyInfo property in properties)
                 {
+                    String name = tableInfo.PropToColumn[property.Name].ToString();
                     if (tableInfo.TableName == string.Empty)
                     {
-                        if (EntityHelper.IsCaseColumn(property, DbOperateType.SELECT)) continue;
-
-                        String name = tableInfo.PropToColumn[property.Name].ToString();
+                        if (EntityHelper.IsCaseColumn(property, DbOperateType.SELECT)) continue;                     
                         ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
                         continue;
                     }
 
-                    ReflectionHelper.SetPropertyValue(entity, property, sdr[property.Name]);
+                    ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
                 }
                 list.Add(entity);
             }
