@@ -22,7 +22,7 @@ namespace WindowsDemo
 
         private DBHelper DB = new DBHelper();
         private Student updateStudent = new Student();
-        private List<Student> m_stuList = new List<Student>();
+        private List<StudentForQuery> m_stuList = new List<StudentForQuery>();
 
         #region "初始化datagridview数据"
         private void Form1_Load(object sender, EventArgs e)
@@ -37,7 +37,7 @@ namespace WindowsDemo
             int pageIndex = 1;
             int pageSize = 3;
             string strsql = "SELECT * FROM student where age < 500";
-            m_stuList = DB.FindBySql<Student>(strsql, pageIndex, pageSize, "id", true);
+            m_stuList = DB.FindBySql<StudentForQuery>(strsql, pageIndex, pageSize, "id", true);
             dataGridView1.DataSource = m_stuList;
         }
         #endregion
@@ -54,10 +54,9 @@ namespace WindowsDemo
             stu.Gender = txtGender.Text;
             stu.Address = txtAddress.Text;
 
-            int id = DB.Save<Student>(stu);
-            if (id > 0)
-            {
-                MessageBox.Show("新增成功！新增的数据ID="+id);
+            int count = DB.Save<Student>(stu);
+            if (count > 0) {
+                MessageBox.Show("新增成功！");
             }
 
             refreshData();
@@ -85,7 +84,7 @@ namespace WindowsDemo
                 object value = dataGridView1.Rows[i].Cells["selectedRow"].Value;
                 if (value != null && value.Equals(true))
                 {
-                    Student student = m_stuList[i];
+                    StudentForQuery student = m_stuList[i];
 
                     //删除 2中方式删除，可根据ID删除，DB.Remove<Student>(student.UserID);
                     DB.Remove<Student>(student.Id);
@@ -107,7 +106,7 @@ namespace WindowsDemo
 
                 if (ifcheck1 != ifcheck2)
                 {
-                    Student student = m_stuList[e.RowIndex];
+                    StudentForQuery student = m_stuList[e.RowIndex];
                     txtName.Text = student.Name;
                     txtAge.Text = student.Age.ToString();
                     txtGender.Text = student.Gender;
@@ -136,10 +135,8 @@ namespace WindowsDemo
             param.setParameter("address", "上海市");
             param.setPageIndex(pageIndex);
             param.setPageSize(pageSize);
-            // order by id ASC
-            param.setOrderFields("id", false);
 
-            m_stuList = DB.FindBySql<Student>(sql, param);
+            m_stuList = DB.FindBySql<StudentForQuery>(sql, param);
 
             dataGridView1.DataSource = m_stuList;
 
@@ -178,7 +175,7 @@ namespace WindowsDemo
                 //查询并排序
                 DbCondition condition = new DbCondition();
                 condition.Where("name", "张三").OrderByDESC("id");
-                m_stuList = DB.Find<Student>(condition);
+                m_stuList = DB.Find<StudentForQuery>(condition);
 
             //=================================================================================================================
         }

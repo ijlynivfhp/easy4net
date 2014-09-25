@@ -12,7 +12,6 @@ namespace Easy4net.Common
         private static string mssqlPageTemplate = "select {0} from (select ROW_NUMBER() OVER(order by {1}) AS RowNumber, {2}) as tmp_tbl where RowNumber BETWEEN @pageStart and @pageEnd ";
         private static string mysqlOrderPageTemplate = "{0} order by {1} limit ?offset,?limit";
         private static string mysqlPageTemplate = "{0} limit ?offset,?limit";
-        private static string accessPageTemplate = "select {0} from (select top @limit {1} from (select top @offset {2} order by id desc) order by id) order by {3}";
 
         public static string fetchColumns(string strSQL)
         {
@@ -39,10 +38,10 @@ namespace Easy4net.Common
         { 
             string strSql = strSQL.ToLower();
 
-            if (AdoHelper.DbType == DatabaseType.ACCESS && strSql.IndexOf("top") == -1)
+            /*if (AdoHelper.DbType == DatabaseType.SQLSERVER && strSql.IndexOf("from") != strSql.LastIndexOf("from"))
             {
-                return false;
-            }
+                return true;
+            }*/
 
             if (AdoHelper.DbType == DatabaseType.SQLSERVER && strSql.IndexOf("row_number()") == -1)
             {
@@ -77,18 +76,6 @@ namespace Easy4net.Common
 
                 string pageBody = fetchPageBody(strSql);
                 strSql = string.Format(mssqlPageTemplate, columns, orderBy, pageBody);
-            }
-
-            if (AdoHelper.DbType == DatabaseType.ACCESS && strSql.IndexOf("top") == -1)
-            {
-                if (string.IsNullOrEmpty(order))
-                {
-                    throw new Exception(" SqlException: order field is null, you must support the order field for sqlserver page. ");
-                }
-
-                //select {0} from (select top @pageSize {1} from (select top @pageSize*@pageIndex {2} from {3} order by {4}) order by id) order by {5}
-                string pageBody = fetchPageBody(strSql);
-                strSql = string.Format(accessPageTemplate, columns, columns, pageBody, orderBy);
             }
 
             if (AdoHelper.DbType == DatabaseType.MYSQL)
@@ -127,31 +114,6 @@ namespace Easy4net.Common
                 }
                 
                 strSql = strSql.Replace("@"+paramName, paramValue);
-            }
-
-            return strSql;
-        }
-
-        public static string builderAccessSQL(string strSql, IDbDataParameter[] parameters)
-        {
-            if (AdoHelper.DbType != DatabaseType.ACCESS)
-            {
-                return strSql;
-            }
-
-            foreach (IDbDataParameter param in parameters)
-            {
-                if (param.Value == null) continue;
-
-                string paramName = param.ParameterName;
-                string paramValue = param.Value.ToString();
-
-                /*if (type == "System.String" || type == "System.DateTime")
-                {
-                    paramValue = "'" + paramValue + "'";
-                }*/
-
-                strSql = strSql.Replace("@" + paramName, paramValue);
             }
 
             return strSql;

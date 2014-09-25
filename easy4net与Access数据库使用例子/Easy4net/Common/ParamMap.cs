@@ -139,9 +139,6 @@ namespace Easy4net.Common
                 {
                     this["offset"] = this.PageOffset;
                     this["limit"] = this.PageLimit;
-
-                    this.Remove("pageIndex");
-                    this.Remove("pageSize");
                 }
 
                  //int start = (pageIndex-1) * pageSize + 1;
@@ -156,22 +153,10 @@ namespace Easy4net.Common
 
                     this["pageStart"] = (pageIndex - 1) * pageSize + 1;
                     this["pageEnd"] = pageIndex * pageSize;
-
-                    this.Remove("pageIndex");
-                    this.Remove("pageSize");
                 }
 
-                if (AdoHelper.DbType == DatabaseType.ACCESS)
-                {
-                    int pageIndex = this.getInt("pageIndex");
-                    int pageSize = this.getInt("pageSize");
-
-                    this["offset"] = pageIndex * pageSize;
-                    this["limit"] = pageSize;
-
-                    this.Remove("pageIndex");
-                    this.Remove("pageSize");
-                }
+                this.Remove("pageIndex");
+                this.Remove("pageSize");
             }
         }
 

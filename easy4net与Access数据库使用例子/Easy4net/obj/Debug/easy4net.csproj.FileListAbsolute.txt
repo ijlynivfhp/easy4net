@@ -21,8 +21,3 @@ D:\workspace\easy4net_os\Easy4net\bin\Debug\mysql.data.dll
 D:\workspace\easy4net_os\Easy4net\obj\Debug\Easy4net.dll
 D:\workspace\easy4net_os\Easy4net\obj\Debug\Easy4net.pdb
 D:\workspace\easy4net_os\Easy4net\obj\Debug\Easy4net.csprojResolveAssemblyReference.cache
-D:\Easy4net\Easy4net\bin\Debug\Easy4net.dll
-D:\Easy4net\Easy4net\bin\Debug\Easy4net.pdb
-D:\Easy4net\Easy4net\bin\Debug\mysql.data.dll
-D:\Easy4net\Easy4net\obj\Debug\Easy4net.dll
-D:\Easy4net\Easy4net\obj\Debug\Easy4net.pdb

@@ -173,21 +173,22 @@ namespace Easy4net.Common
         public static List<T> toList<T>(IDataReader sdr, TableInfo tableInfo, PropertyInfo[] properties) where T : new()
         {
             List<T> list = new List<T>();
-
+       
             while (sdr.Read())
             {
                 T entity = new T();
                 foreach (PropertyInfo property in properties)
                 {
-                    String name = tableInfo.PropToColumn[property.Name].ToString();
                     if (tableInfo.TableName == string.Empty)
                     {
                         if (EntityHelper.IsCaseColumn(property, DbOperateType.SELECT)) continue;
+
+                        String name = tableInfo.PropToColumn[property.Name].ToString();
                         ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
                         continue;
                     }
 
-                    ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
+                    ReflectionHelper.SetPropertyValue(entity, property, sdr[property.Name]);
                 }
                 list.Add(entity);
             }
@@ -340,14 +341,12 @@ namespace Easy4net.Common
 
             if (AdoHelper.DbType == DatabaseType.ACCESS)
             {
-                //autoSQL = " ;select @@IDENTITY as AutoId; ";
-                autoSQL = " select @@IDENTITY as AutoId ";
+                //autoSQL = " select @@IDENTITY as AutoId; ";
             }
 
             if (AdoHelper.DbType == DatabaseType.MYSQL)
             {
-                //autoSQL = " ;select @@identity ";
-                autoSQL = " select @@identity ";
+                autoSQL = " ;select @@identity ";
             }
 
             return autoSQL;

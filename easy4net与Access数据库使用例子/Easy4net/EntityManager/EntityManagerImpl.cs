@@ -27,26 +27,18 @@ namespace Easy4net.EntityManager
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.INSERT, properties);
 
                 String strSql = EntityHelper.GetInsertSql(tableInfo);
-                String autoSql = EntityHelper.GetAutoSql();
+                strSql += EntityHelper.GetAutoSql();
 
                 IDbDataParameter[] parms = tableInfo.GetParameters();
                 strSql = SQLBuilderHelper.builderAccessSQL(new T(), strSql, parms);
-
-                IDbConnection connection = null;
-                if (transaction != null)
-                {
-                    connection = transaction.Connection;
-                }
+                
+                if (transaction != null) 
+                    val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, strSql, parms);
                 else
-                {
-                    connection = DbFactory.CreateDbConnection(AdoHelper.ConnectionString);
-                }
+                    val = AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSql, parms);
 
-                val = AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql, parms);
-
-                if ((AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.ACCESS))
+                if (Convert.ToInt32(val) > 0 && (AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.ACCESS))
                 {
-                    val = AdoHelper.ExecuteScalar(connection, CommandType.Text, autoSql);
                     PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
                     ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
                 }
@@ -296,12 +288,7 @@ namespace Easy4net.EntityManager
                 param.setPageIndex(pageIndex);
                 param.setPageSize(pageSize);
 
-                if (AdoHelper.DbType == DatabaseType.ACCESS)
-                {
-                    strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
-                }
-
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, null);
+                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, param.toDbParameters());
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
             }
             catch (Exception ex)
@@ -362,10 +349,6 @@ namespace Easy4net.EntityManager
                 if (param.IsPage && !SQLBuilderHelper.isPage(strSql))
                 {
                     strSql = SQLBuilderHelper.builderPageSQL(strSql, param.OrderFields, param.IsDesc);
-                }
-                if (AdoHelper.DbType == DatabaseType.ACCESS)
-                {
-                    strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
                 }
 
                 sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, param.toDbParameters());

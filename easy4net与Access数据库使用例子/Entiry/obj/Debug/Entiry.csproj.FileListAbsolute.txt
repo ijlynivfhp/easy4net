@@ -22,11 +22,3 @@ D:\workspace\easy4net_os\Entiry\bin\Debug\Easy4net.pdb
 D:\workspace\easy4net_os\Entiry\obj\Debug\Entiry.csprojResolveAssemblyReference.cache
 D:\workspace\easy4net_os\Entiry\obj\Debug\Entiry.dll
 D:\workspace\easy4net_os\Entiry\obj\Debug\Entiry.pdb
-D:\Easy4net\Entiry\bin\Debug\Entiry.dll
-D:\Easy4net\Entiry\bin\Debug\Entiry.pdb
-D:\Easy4net\Entiry\bin\Debug\Easy4net.dll
-D:\Easy4net\Entiry\bin\Debug\MySql.Data.dll
-D:\Easy4net\Entiry\bin\Debug\Easy4net.pdb
-D:\Easy4net\Entiry\obj\Debug\Entiry.csprojResolveAssemblyReference.cache
-D:\Easy4net\Entiry\obj\Debug\Entiry.dll
-D:\Easy4net\Entiry\obj\Debug\Entiry.pdb

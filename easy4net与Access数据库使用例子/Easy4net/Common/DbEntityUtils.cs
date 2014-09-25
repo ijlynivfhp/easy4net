@@ -1,36 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Easy4net.CustomAttributes;
-using Easy4net.DBUtility;
+using Orm.CustomAttributes;
+using Orm.DBUtility;
 using System.Collections;
 using System.Reflection;
 using System.Data;
 
-namespace Easy4net.Common
+namespace Orm.Common
 {
-    public class EntityHelper
+    public class DbEntityUtils
     {
-        public static string GetTableName(Type classType, DbOperateType type)
+        public static string GetTableName(Type classType)
         {
             string strTableName = string.Empty;
             string strEntityName = string.Empty;
 
             strEntityName = classType.FullName;
 
-            object[] attr = classType.GetCustomAttributes(false);
-            if (attr.Length == 0) return strTableName;
-
-            foreach (object classAttr in attr)
+            object classAttr = classType.GetCustomAttributes(false)[0];
+            if (classAttr is TableAttribute)
             {
-                if (classAttr is TableAttribute)
-                {
-                    TableAttribute tableAttr = classAttr as TableAttribute;
-                    strTableName = tableAttr.Name;
-                }
+                TableAttribute tableAttr = classAttr as TableAttribute;
+                strTableName = tableAttr.Name;
             }
-
-            if (string.IsNullOrEmpty(strTableName) && (type == DbOperateType.INSERT || type == DbOperateType.UPDATE || type == DbOperateType.DELETE))
+            if (string.IsNullOrEmpty(strTableName))
             {
                 throw new Exception("实体类:" + strEntityName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
             }
@@ -48,8 +42,10 @@ namespace Easy4net.Common
                 {
                     case GenerationType.INDENTITY:
                         break;
-                    case GenerationType.GUID:
+                    case GenerationType.SEQUENCE:
                         strPrimary = System.Guid.NewGuid().ToString();
+                        break;
+                    case GenerationType.TABLE:
                         break;
                 }
             }
@@ -77,32 +73,33 @@ namespace Easy4net.Common
             return columnName;
         }
 
-        public static TableInfo GetTableInfo(object entity, DbOperateType dbOpType, PropertyInfo[] properties)
+        public static TableInfo GetTableInfo(object entity, DbOperateType dbOpType)
         {
             bool breakForeach = false;
             string strPrimaryKey = string.Empty;
             TableInfo tableInfo = new TableInfo();
             Type type = entity.GetType();
 
-            tableInfo.TableName = GetTableName(type, dbOpType);
+            tableInfo.TableName = GetTableName(type);
             if (dbOpType == DbOperateType.COUNT)
             {
                 return tableInfo;
             }
-            
+
+            PropertyInfo[] properties = ReflectionUtils.GetProperties(type);
             foreach (PropertyInfo property in properties)
             {
                 object propvalue = null;
                 string columnName = string.Empty;
                 string propName = columnName = property.Name;
           
-                propvalue = ReflectionHelper.GetPropertyValue(entity, property);
+                propvalue = ReflectionUtils.GetPropertyValue(entity, property);
 
                 object[] propertyAttrs = property.GetCustomAttributes(false);
                 for (int i = 0; i < propertyAttrs.Length; i++)
                 {
                     object propertyAttr = propertyAttrs[i];
-                    if (EntityHelper.IsCaseColumn(propertyAttr, dbOpType))
+                    if (DbEntityUtils.IsCaseColumn(propertyAttr, dbOpType))
                     {
                         breakForeach = true;break;
                     }
@@ -119,7 +116,7 @@ namespace Easy4net.Common
 
                             if (CommonUtils.IsNullOrEmpty(propvalue))
                             {
-                                strPrimaryKey = EntityHelper.GetPrimaryKey(propertyAttr, dbOpType);
+                                strPrimaryKey = DbEntityUtils.GetPrimaryKey(propertyAttr, dbOpType);
                                 if (!string.IsNullOrEmpty(strPrimaryKey))
                                     propvalue = strPrimaryKey;
                             }
@@ -131,7 +128,6 @@ namespace Easy4net.Common
                         breakForeach = true;
                     }
                 }
-
                 if (breakForeach && dbOpType == DbOperateType.DELETE) break;
                 if (breakForeach) { breakForeach = false; continue; }
                 tableInfo.Columns.Put(columnName, propvalue);
@@ -141,12 +137,13 @@ namespace Easy4net.Common
             return tableInfo;
         }
 
-        public static PropertyInfo GetPrimaryKeyPropertyInfo(object entity, PropertyInfo[] properties)
+        public static PropertyInfo GetPrimaryKeyPropertyInfo(object entity)
         {
             bool breakForeach = false;
             Type type = entity.GetType();
             PropertyInfo properyInfo = null;
-
+        
+            PropertyInfo[] properties = ReflectionUtils.GetProperties(type);
             foreach (PropertyInfo property in properties)
             {
                 string columnName = string.Empty;
@@ -168,79 +165,6 @@ namespace Easy4net.Common
             }
 
             return properyInfo;
-        }
-
-        public static List<T> toList<T>(IDataReader sdr, TableInfo tableInfo, PropertyInfo[] properties) where T : new()
-        {
-            List<T> list = new List<T>();
-
-            while (sdr.Read())
-            {
-                T entity = new T();
-                foreach (PropertyInfo property in properties)
-                {
-                    String name = tableInfo.PropToColumn[property.Name].ToString();
-                    if (tableInfo.TableName == string.Empty)
-                    {
-                        if (EntityHelper.IsCaseColumn(property, DbOperateType.SELECT)) continue;
-                        ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
-                        continue;
-                    }
-
-                    ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
-                }
-                list.Add(entity);
-            }
-
-            return list;
-        }
-
-        public static List<T> toList<T>(IDataReader sdr) where T : new()
-        {
-            List<T> list = new List<T>();
-            PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-
-            while (sdr.Read())
-            {
-                T entity = new T();
-                foreach (PropertyInfo property in properties)
-                {
-                    String name = property.Name;
-                    ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
-                }
-                list.Add(entity);
-            }
-
-            return list;
-        }
-
-
-
-        public static string GetFindSql(TableInfo tableInfo, DbCondition condition)
-        {
-            StringBuilder sbColumns = new StringBuilder();
-
-            tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
-            foreach (String key in tableInfo.Columns.Keys)
-            {
-                sbColumns.Append(key).Append(",");
-            }
-
-            if (sbColumns.Length > 0) sbColumns.Remove(sbColumns.ToString().Length - 1, 1);
-
-            string strSql = String.Empty;
-            if (String.IsNullOrEmpty(condition.queryString)) {
-                strSql = "SELECT {0} FROM {1}";
-                strSql = string.Format(strSql, sbColumns.ToString(), tableInfo.TableName);
-                strSql += condition.ToString();
-            }
-            else {
-                strSql = condition.ToString();
-            }
-
-            strSql = strSql.ToUpper();
-
-            return strSql;
         }
 
         public static string GetFindAllSql(TableInfo tableInfo)
@@ -303,15 +227,6 @@ namespace Easy4net.Common
             return strSql;
         }
 
-        public static string GetFindCountSql(TableInfo tableInfo, DbCondition condition)
-        {
-            string strSql = "SELECT COUNT(0) FROM {0}";
-            strSql = string.Format(strSql, tableInfo.TableName);
-            strSql += condition.ToString();
-
-            return strSql;
-        }
-
         public static string GetFindByPropertySql(TableInfo tableInfo)
         {
             StringBuilder sbColumns = new StringBuilder();
@@ -338,18 +253,6 @@ namespace Easy4net.Common
                 autoSQL = " select scope_identity() as AutoId ";
             }
 
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
-            {
-                //autoSQL = " ;select @@IDENTITY as AutoId; ";
-                autoSQL = " select @@IDENTITY as AutoId ";
-            }
-
-            if (AdoHelper.DbType == DatabaseType.MYSQL)
-            {
-                //autoSQL = " ;select @@identity ";
-                autoSQL = " select @@identity ";
-            }
-
             return autoSQL;
         }
 
@@ -363,9 +266,9 @@ namespace Easy4net.Common
             
             foreach (String key in tableInfo.Columns.Keys)
             {
-                Object value = tableInfo.Columns[key];
-                if (!string.IsNullOrEmpty(key.Trim()) && value != null)
+                if (!string.IsNullOrEmpty(key.Trim()))
                 {
+                    Object value = tableInfo.Columns[key];
                     sbColumns.Append(key).Append(",");
                     sbValues.Append(AdoHelper.DbParmChar).Append(key).Append(",");
                 }
@@ -387,14 +290,11 @@ namespace Easy4net.Common
         {
             StringBuilder sbBody = new StringBuilder();
 
-            
             foreach (String key in tableInfo.Columns.Keys)
             {
                 Object value = tableInfo.Columns[key];
-                if (!string.IsNullOrEmpty(key.Trim()) && value != null)
-                {
-                    sbBody.Append(key).Append("=").Append(AdoHelper.DbParmChar + key).Append(",");
-                }
+
+                sbBody.Append(key).Append("=").Append(AdoHelper.DbParmChar + key).Append(",");
             }
 
             if (sbBody.Length > 0) sbBody.Remove(sbBody.ToString().Length - 1, 1);
@@ -451,21 +351,6 @@ namespace Easy4net.Common
             }
 
             return false;
-        }
-
-        public static bool IsCaseColumn(PropertyInfo property, DbOperateType dbOperateType)
-        {
-            bool isBreak = false;
-            object[] propertyAttrs = property.GetCustomAttributes(false);
-            foreach (object propertyAttr in propertyAttrs)
-            {
-                if (EntityHelper.IsCaseColumn(propertyAttr, DbOperateType.SELECT))
-                {
-                    isBreak = true; break;
-                }
-            }
-
-            return isBreak;
         }
     }
 }
