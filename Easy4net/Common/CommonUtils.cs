@@ -33,14 +33,7 @@ namespace Easy4net.Common
         /// <returns></returns>
         public static string GetConfigValueByKey(string Key)
         {
-            try
-            {
-                return ConfigurationManager.AppSettings[Key].ToString();
-            }
-            catch
-            {
-                throw new Exception("web.config中 Key=\"" + Key + "\"未配置或配置错误！");
-            }
+            return ConfigurationManager.AppSettings[Key];
         }
 
         public static Boolean IsNullOrEmpty(Object value)

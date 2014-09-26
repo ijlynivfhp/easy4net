@@ -17,14 +17,22 @@ namespace Easy4net.DBUtility
         private static string strDbType = CommonUtils.GetConfigValueByKey("dbType").ToUpper();
 
         //将数据库类型转换成枚举类型
-        public static DatabaseType DbType = DatabaseTypeEnumParse<DatabaseType>(strDbType);       
+        public static DatabaseType DbType = DatabaseTypeEnumParse<DatabaseType>(strDbType);
+
+        public static string DbHost = CommonUtils.GetConfigValueByKey("DbHost");
+        public static string DbPort = CommonUtils.GetConfigValueByKey("DbPort");
+        public static string DbName = CommonUtils.GetConfigValueByKey("DbName");
+        public static string DbUser = CommonUtils.GetConfigValueByKey("DbUser");
+        public static string DbPassword = CommonUtils.GetConfigValueByKey("DbPassword");
+        public static string DbMinPoolSize = CommonUtils.GetConfigValueByKey("DbMinPoolSize");
+        public static string DbMaxPoolSize = CommonUtils.GetConfigValueByKey("DbMaxPoolSize");
 
         //获取数据库连接字符串
         public static string ConnectionString = GetConnectionString("connectionString");
 
         //获取数据库命名参数符号，比如@(SQLSERVER)、:(ORACLE)
         public static string DbParmChar = DbFactory.CreateDbParmCharacter();
-        
+
         private static Hashtable parmCache = Hashtable.Synchronized(new Hashtable());
 
         /// <summary>
@@ -227,7 +235,7 @@ namespace Easy4net.DBUtility
                 cmd.Parameters.Clear();
                 return rdr;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 conn.Close();
                 cmd.Dispose();
@@ -509,13 +517,48 @@ namespace Easy4net.DBUtility
         {
             try
             {
-                return CommonUtils.GetConfigValueByKey(Key);
+                string connectionString = CommonUtils.GetConfigValueByKey(Key);
+                if (!String.IsNullOrEmpty(connectionString)) return connectionString;
+
+                string DbHost = CommonUtils.GetConfigValueByKey("DbHost");
+                string DbPort = CommonUtils.GetConfigValueByKey("DbPort");
+                string DbName = CommonUtils.GetConfigValueByKey("DbName");
+                string DbUser = CommonUtils.GetConfigValueByKey("DbUser");
+                string DbPassword = CommonUtils.GetConfigValueByKey("DbPassword");
+                string DbMinPoolSize = CommonUtils.GetConfigValueByKey("DbMinPoolSize");
+                string DbMaxPoolSize = CommonUtils.GetConfigValueByKey("DbMaxPoolSize");
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Data Source=").Append(DbHost).Append(";");
+
+                if (!String.IsNullOrEmpty(DbPort))
+                {
+                    sb.Append("port=").Append(DbPort).Append(";");
+                }
+
+                sb.Append("User ID=").Append(DbUser).Append(";");
+                sb.Append("Password=").Append(DbPassword).Append(";");
+                sb.Append("DataBase=").Append(DbName).Append(";");
+
+                if (!String.IsNullOrEmpty(DbMinPoolSize))
+                {
+                    sb.Append("Min Pool Size=").Append(DbMinPoolSize).Append(";");
+                }
+
+                if (!String.IsNullOrEmpty(DbMinPoolSize))
+                {
+                    sb.Append("Max Pool Size=").Append(DbMaxPoolSize).Append(";");
+                }
+
+                return sb.ToString();
             }
             catch
             {
                 throw new Exception("web.config文件appSettings中数据库连接字符串未配置或配置错误，必须为Key=\"connectionString\"");
             }
-        }      
+        }
+
+
 
         /// <summary>
         /// 用于数据库类型的字符串枚举转换
@@ -533,6 +576,6 @@ namespace Easy4net.DBUtility
             {
                 throw new Exception("数据库类型\"" + value + "\"错误，请检查！");
             }
-        }         
+        }
     }
 }

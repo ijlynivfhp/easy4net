@@ -59,3 +59,6 @@ D:\Easy4net\WindowsDemo\bin\Debug\Entiry.pdb
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.csprojResolveAssemblyReference.cache
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.exe
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.pdb
+C:\Users\wangwei\Desktop\Silverlight\Easy4net\WindowsDemo\bin\Debug\WindowsDemo.exe.config
+C:\Users\wangwei\Desktop\Silverlight\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.exe
+C:\Users\wangwei\Desktop\Silverlight\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.pdb
