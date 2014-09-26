@@ -301,7 +301,7 @@ namespace Easy4net.EntityManager
                     strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
                 }
 
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, null);
+                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, param.toDbParameters());
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
             }
             catch (Exception ex)
