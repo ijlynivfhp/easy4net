@@ -26,6 +26,7 @@ namespace Easy4net.DBUtility
         public static string DbPassword = CommonUtils.GetConfigValueByKey("DbPassword");
         public static string DbMinPoolSize = CommonUtils.GetConfigValueByKey("DbMinPoolSize");
         public static string DbMaxPoolSize = CommonUtils.GetConfigValueByKey("DbMaxPoolSize");
+        public static string DbCharset = CommonUtils.GetConfigValueByKey("DbCharset");
 
         //获取数据库连接字符串
         public static string ConnectionString = GetConnectionString("connectionString");
@@ -548,6 +549,11 @@ namespace Easy4net.DBUtility
                 if (!String.IsNullOrEmpty(DbMinPoolSize))
                 {
                     sb.Append("Max Pool Size=").Append(DbMaxPoolSize).Append(";");
+                }
+
+                if (!String.IsNullOrEmpty(DbCharset))
+                {
+                    sb.Append("charset=").Append(DbCharset).Append(";");
                 }
 
                 return sb.ToString();

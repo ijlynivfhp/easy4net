@@ -69,7 +69,7 @@ namespace Easy4net.Common
                     break;
                 case "System.Single":
                     if (!isNullOrEmpty(value))
-                        value = Convert.ToDouble(value);
+                        value = Convert.ToSingle(value);
                     break;
                 case "System.Decimal":
                     if (!isNullOrEmpty(value))

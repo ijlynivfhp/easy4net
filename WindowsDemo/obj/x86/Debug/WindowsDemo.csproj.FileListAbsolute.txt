@@ -62,3 +62,8 @@ D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.pdb
 C:\Users\wangwei\Desktop\Silverlight\Easy4net\WindowsDemo\bin\Debug\WindowsDemo.exe.config
 C:\Users\wangwei\Desktop\Silverlight\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.exe
 C:\Users\wangwei\Desktop\Silverlight\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.pdb
+D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.MainForm.resources
+D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.AddCompanyForm.resources
+D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.AddEmployeeForm.resources
+D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.QueryCompanyForm.resources
+D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.QueryEmployeeForm.resources

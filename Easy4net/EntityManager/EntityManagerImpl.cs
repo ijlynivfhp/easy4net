@@ -26,12 +26,16 @@ namespace Easy4net.EntityManager
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.INSERT, properties);
 
+                //获取SQL语句
                 String strSql = EntityHelper.GetInsertSql(tableInfo);
-                String autoSql = EntityHelper.GetAutoSql();
 
+                //获取参数
                 IDbDataParameter[] parms = tableInfo.GetParameters();
+
+                //如果是Access数据库，直接根据参数拼接最终的SQL语句
                 strSql = SQLBuilderHelper.builderAccessSQL(new T(), strSql, parms);
 
+                //获取数据库连接，如果开启了事务，从事务中获取
                 IDbConnection connection = null;
                 if (transaction != null)
                 {
@@ -42,11 +46,19 @@ namespace Easy4net.EntityManager
                     connection = DbFactory.CreateDbConnection(AdoHelper.ConnectionString);
                 }
 
+                //执行Insert命令
                 val = AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql, parms);
 
-                if ((AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.ACCESS))
+                //如果是Access数据库，另外执行获取自动生成的ID
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
+                    String autoSql = EntityHelper.GetAutoSql();
                     val = AdoHelper.ExecuteScalar(connection, CommandType.Text, autoSql);
+                }
+
+                //把自动生成的主键ID赋值给返回的对象
+                if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.ACCESS)
+                {
                     PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
                     ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
                 }
@@ -275,6 +287,31 @@ namespace Easy4net.EntityManager
             }
 
             return list;
+        }
+        #endregion
+
+        #region 通过自定义SQL语句查询记录数
+        public int FindCountBySql(string strSql, ParamMap param)
+        {
+            int count = 0;
+            try
+            {
+                strSql = strSql.ToLower();
+                String columns = SQLBuilderHelper.fetchColumns(strSql);
+                
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                {
+                    strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
+                }
+
+                count = Convert.ToInt32(AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSql, param.toDbParameters()));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return count;
         }
         #endregion
 

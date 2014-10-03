@@ -117,20 +117,39 @@ namespace Easy4net.Common
         }
 
         
-
+        /// <summary>
+        /// 此方法已过时，请使用 setPageParamters方法分页
+        /// </summary>
+        /// <param name="pageIndex"></param>
         public void setPageIndex(int pageIndex) 
         {
             this["pageIndex"] = pageIndex;
             setPages();
         }
 
+        /// <summary>
+        /// 此方法已过时，请使用 setPageParamters方法分页
+        /// </summary>
+        /// <param name="pageSize"></param>
         public void setPageSize(int pageSize)
         {
             this["pageSize"] = pageSize;
             setPages();
         }
 
-       public void setPages() 
+        /// <summary>
+        /// 分页参数设置
+        /// </summary>
+        /// <param name="page">第几页，从0开始</param>
+        /// <param name="limit">每页最多显示几条数据</param>
+        public void setPageParamters(int page, int limit)
+        {
+            this["pageIndex"] = page;
+            this["pageSize"] = limit;
+            setPages();
+        }
+
+       private void setPages() 
         {
             if (this.ContainsKey("pageIndex") && this.ContainsKey("pageSize"))
             {

@@ -340,14 +340,12 @@ namespace Easy4net.Common
 
             if (AdoHelper.DbType == DatabaseType.ACCESS)
             {
-                //autoSQL = " ;select @@IDENTITY as AutoId; ";
                 autoSQL = " select @@IDENTITY as AutoId ";
             }
 
             if (AdoHelper.DbType == DatabaseType.MYSQL)
             {
-                //autoSQL = " ;select @@identity ";
-                autoSQL = " select @@identity ";
+                autoSQL = " ;select @@identity ";
             }
 
             return autoSQL;
@@ -379,6 +377,12 @@ namespace Easy4net.Common
 
             string strSql = "INSERT INTO {0}({1}) VALUES({2})";
             strSql = string.Format(strSql, tableInfo.TableName, sbColumns.ToString(), sbValues.ToString());
+
+            if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL)
+            {
+                string autoSql = EntityHelper.GetAutoSql();
+                strSql = strSql + autoSql;
+            }
 
             return strSql;
         }

@@ -9,10 +9,10 @@ namespace Easy4net.Common
 {
     public class SQLBuilderHelper
     {
-        private static string mssqlPageTemplate = "select {0} from (select ROW_NUMBER() OVER(order by {1}) AS RowNumber, {2}) as tmp_tbl where RowNumber BETWEEN @pageStart and @pageEnd ";
+        private static string mssqlPageTemplate = "select * from (select ROW_NUMBER() OVER(order by {0}) AS RowNumber, {1}) as tmp_tbl where RowNumber BETWEEN @pageStart and @pageEnd ";
         private static string mysqlOrderPageTemplate = "{0} order by {1} limit ?offset,?limit";
         private static string mysqlPageTemplate = "{0} limit ?offset,?limit";
-        private static string accessPageTemplate = "select {0} from (select top @limit {1} from (select top @offset {2} order by id desc) order by id) order by {3}";
+        private static string accessPageTemplate = "select * from (select top @limit * from (select top @offset {0} order by id desc) order by id) order by {1}";
 
         public static string fetchColumns(string strSQL)
         {
@@ -76,7 +76,7 @@ namespace Easy4net.Common
                 }
 
                 string pageBody = fetchPageBody(strSql);
-                strSql = string.Format(mssqlPageTemplate, columns, orderBy, pageBody);
+                strSql = string.Format(mssqlPageTemplate, orderBy, pageBody);
             }
 
             if (AdoHelper.DbType == DatabaseType.ACCESS && strSql.IndexOf("top") == -1)
@@ -88,7 +88,7 @@ namespace Easy4net.Common
 
                 //select {0} from (select top @pageSize {1} from (select top @pageSize*@pageIndex {2} from {3} order by {4}) order by id) order by {5}
                 string pageBody = fetchPageBody(strSql);
-                strSql = string.Format(accessPageTemplate, columns, columns, pageBody, orderBy);
+                strSql = string.Format(accessPageTemplate, pageBody, orderBy);
             }
 
             if (AdoHelper.DbType == DatabaseType.MYSQL)
