@@ -57,7 +57,7 @@ namespace WindowsDemo
             string strSql = "SELECT * FROM company";
 
             ParamMap param = ParamMap.newMap();
-            param.setPageParamters(0, 20);
+            param.setPageParamters(1, 20);
             param.setOrderFields("id", true);
 
             m_CompanyList = dbHelper.FindBySql<Company>(strSql, param);
