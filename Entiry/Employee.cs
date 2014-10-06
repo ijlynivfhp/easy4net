@@ -22,7 +22,7 @@ namespace Easy4net.Entity
 		public String Address{ get; set; } 
 
 		[Column(Name = "created")]
-		public DateTime Created{ get; set; } 
+		public DateTime? Created{ get; set; } 
 
 		[Column(Name = "company_id")]
 		public int? CompanyId{ get; set; }

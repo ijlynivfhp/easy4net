@@ -41,7 +41,9 @@ namespace WindowsDemo
             //param.setPageSize(limit);
 
             param.setPageParamters(page, limit);
-            param.setOrderFields("id", true);
+            
+            //分页时使用的排序字段，必填，请带上SQL表名的别名，如employee的为: e
+            param.setOrderFields("e.id", true);
 
             m_EmployeeList = dbHelper.FindBySql<Employee>(strSql, param);
             dgEmployee.DataSource = m_EmployeeList;
