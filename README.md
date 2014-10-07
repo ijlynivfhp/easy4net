@@ -7,64 +7,43 @@ easy4net是一个轻量级orm框架，灵活在于可以自己编写复杂的SQL
 ***
 
 ```c#
+
 int pageIndex = 1;
 int pageSize = 3;
-string sql = "SELECT * FROM (select * from student where age < @age or address= @address) as v";
+string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id WHERE e.name = @name";
+
 ParamMap param = ParamMap.newMap();
-param.setParameter("age",24);
-param.setParameter("address", "上海市");
-param.setPageIndex(pageIndex);
-param.setPageSize(pageSize);
-// order by id ASC
-param.setOrderFields("id", false);
-List<Student> student = DB.FindBySql<Student>(sql, param);
+param.setPageParamters(page, limit);
+//分页时使用的排序字段，必填，请带上SQL表名的别名，如employee的为: e
+param.setOrderFields("e.id", true);
+param.setParameter("name", "LiYang");
+
+DBHelper dbHelper = DBHelper.getInstance();
+List<Employee> emList = dbHelper.Find<Employee>(strSql, param);
+
 ```
 
-**分页查询：**
-
+**查询单条记录：**
 ***
 
 ```c#
-int pageIndex = 1;
-int pageSize = 3;
-string sql = "SELECT * FROM student WHERE age < 28 order by id desc";
-List<Student> list1 = DB.FindBySql<Student>(sql , pageIndex, pageSize);
+
+string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id WHERE e.name = @name";
+ParamMap param = ParamMap.newMap();
+param.setParameter("name", "LiYang");
+
+Employee em = dbHelper.FindOne<Employee>(strSql, param);
+
 ```
-
-**更多查询方式：**
-
-***
 
 ```c#
-//查询所有
-List list = DB.FindAll();
- 
-//通过ID主键查询
-Student student = DB.FindById<Student>(5);
- 
-//通过SQL语句查询
-List<Student> list1 = DB.FindBySql<Student>("SELECT * FROM U_Student WHERE U_Age < 28");
- 
-//查询某个字段
-List<Student> list2 = DB.FindByProperty<Student>("U_Name", "Lily Mary");
- 
-// 通过自定义条件查询
-// SELECT xxx FROM U_Student WHERE U_Name LIKE '%Lily%' OR U_Age < 28
-DbCondition cond1 = new DbCondition().Where().Like("U_Name", "Lily").OrLessThan(
- "U_Age", 28);
-List<Student> list3 = DB.Find<Student>(cond1);
 
-// 多表关联查询
-DbCondition cond2 = new DbCondition("SELECT s.*,c.teacher,c.className FROM U_Student s "
- "INNER JOIN U_Class c ON s.classID = c.ID").Where().RightLike("U_Name","Lil");
-List<Student> list4 = DB.Find<Student>(cond2);
+string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id";
 
-//通过条件查询数量
-//SELECT count(0) FROM U_Student WHERE U_Name = 'Lily Mary' AND U_Age = 28
-DbCondition cond3 = new DbCondition().Where("U_Name", "Andy").And("U_Age", 28);
-int count = DB.FindCount<Student>(cond3);
+List<Employee> emList = dbHelper.Find<Employee>(strSql);
 
 ```
+
 
 
 **新增：**
@@ -74,14 +53,28 @@ int count = DB.FindCount<Student>(cond3);
 ***
 
 ```c#
-DBHelper db = DBHelper.getInstance();
+
 Student entity = new Student();
 entity.Name = "Lily";
 entity.Gender = "女";
 entity.Age = 23;
 entity.Address = "上海市徐汇区中山南二路918弄";
-int id = db.Save(entity);
+int id = dbHelper.Insert(entity);
 ```
+
+
+**批量新增：**
+* 1. 主键id值已经自动填充到新增的对象entity中
+* 2. 批量新增方法比手动循环多个对象然后调用新增性能高。
+
+***
+
+```c#
+
+List<Student> studentList = ...;
+dbHelper.Insert(studentList);
+```
+
 
 **修改：**
 
@@ -92,8 +85,21 @@ Student entity = new Student();
 entity.UserID = 1;
 entity.Name = "Andy";
 entity.Age = 22;
-db.Update(entity);
+dbHelper.Update(entity);
 ```
+
+
+**批量修改：**
+* 1. 批量修改方法比手动循环多个对象然后调用修改性能高。
+
+***
+
+```c#
+DBHelper db = DBHelper.getInstance();
+List<Student> studentList = ...;
+dbHelper.Update(studentList);
+```
+
 
 **删除：**
 * 1. 按对象方式删除数据
@@ -104,10 +110,40 @@ db.Update(entity);
 ```c#
 Student student = m_stuList[i];
 //remove a object
-db.Remove(student);
+dbHelper.Delete(student);
+
 //remove by id
-db.Remove(student.UserID);
+dbHelper.Delete(student.UserID);
 ```
+
+**批量删除：**
+* 1. 按对象方式删除数据
+* 2. 按主键id方式删除数据
+* 3. 批量删除比手动循环调用删除性能要高
+
+***
+
+```c#
+
+//remove by object
+List<Student> studentList = ...;
+dbHelper.Delete(studentList);
+
+//remove by id
+object[] ids = new object[]{1,2,3,4,5};
+dbHelper.Delete(ids);
+```
+
+
+
+
+
+
+
+
+
+
+
 
 **数据库与C#对象映射关系配置：**
 
