@@ -22,6 +22,8 @@ namespace WindowsDemo
         private AddCompanyForm m_AddCompanyForm;
         private AddEmployeeForm m_AddEmployeeForm;
 
+        private AddCompanyListForm m_AddCompanyListForm;
+
 
 
 
@@ -69,6 +71,17 @@ namespace WindowsDemo
             m_AddEmployeeForm.Show();//显示子窗体，此句很重要，否则子窗体不会显示
         }
 
+        private void btnAddCompanyList_Click(object sender, EventArgs e)
+        {
+            CloseForm();
+            this.IsMdiContainer = true;
+            m_AddCompanyListForm = new AddCompanyListForm();//实例化子窗体
+            m_AddCompanyListForm.MdiParent = this;//设置窗体的父子关系
+            m_AddCompanyListForm.Parent = plContainer;//设置子窗体的容器为父窗体中的Panel
+            m_AddCompanyListForm.Dock = DockStyle.Fill;
+            m_AddCompanyListForm.Show();//显示子窗体，此句很重要，否则子窗体不会显示
+        }
+
         private void CloseForm()
         {
             if (m_QueryCompanyForm != null)
@@ -95,6 +108,14 @@ namespace WindowsDemo
                 m_AddEmployeeForm = null;
             }
 
+            if (m_AddCompanyListForm != null)
+            {
+                m_AddCompanyListForm.Close();
+                m_AddCompanyListForm = null;
+            }
+
         }
+
+       
     }
 }

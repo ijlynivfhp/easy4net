@@ -67,3 +67,4 @@ D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.AddCompanyForm.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.AddEmployeeForm.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.QueryCompanyForm.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.QueryEmployeeForm.resources
+D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.AddCompanyListForm.resources

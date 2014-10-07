@@ -68,6 +68,12 @@
     <Compile Include="AddCompanyForm.Designer.cs">
       <DependentUpon>AddCompanyForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddCompanyListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddCompanyListForm.Designer.cs">
+      <DependentUpon>AddCompanyListForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddEmployeeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +108,9 @@
     </Compile>
     <EmbeddedResource Include="AddCompanyForm.resx">
       <DependentUpon>AddCompanyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddCompanyListForm.resx">
+      <DependentUpon>AddCompanyListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddEmployeeForm.resx">
       <DependentUpon>AddEmployeeForm.cs</DependentUpon>

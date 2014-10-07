@@ -140,8 +140,6 @@ namespace WindowsDemo
             ParamMap param = ParamMap.newMap();
             param.setParameter("age",500);
             param.setParameter("address", "上海市");
-            param.setPageIndex(pageIndex);
-            param.setPageSize(pageSize);
             // order by id ASC
             param.setOrderFields("id", false);
 

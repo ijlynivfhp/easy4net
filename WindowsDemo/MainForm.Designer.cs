@@ -34,6 +34,7 @@
             this.btnAddCompany = new System.Windows.Forms.Button();
             this.btnEmployeeSearch = new System.Windows.Forms.Button();
             this.btnCompanySearch = new System.Windows.Forms.Button();
+            this.btnAddCompanyList = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,6 +49,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.panel1.Controls.Add(this.btnAddCompanyList);
             this.panel1.Controls.Add(this.btnAddEmployee);
             this.panel1.Controls.Add(this.btnAddCompany);
             this.panel1.Controls.Add(this.btnEmployeeSearch);
@@ -60,9 +62,9 @@
             // 
             // btnAddEmployee
             // 
-            this.btnAddEmployee.Location = new System.Drawing.Point(0, 489);
+            this.btnAddEmployee.Location = new System.Drawing.Point(0, 253);
             this.btnAddEmployee.Name = "btnAddEmployee";
-            this.btnAddEmployee.Size = new System.Drawing.Size(118, 166);
+            this.btnAddEmployee.Size = new System.Drawing.Size(118, 100);
             this.btnAddEmployee.TabIndex = 3;
             this.btnAddEmployee.Text = "新增员工";
             this.btnAddEmployee.UseVisualStyleBackColor = true;
@@ -70,9 +72,9 @@
             // 
             // btnAddCompany
             // 
-            this.btnAddCompany.Location = new System.Drawing.Point(0, 327);
+            this.btnAddCompany.Location = new System.Drawing.Point(0, 172);
             this.btnAddCompany.Name = "btnAddCompany";
-            this.btnAddCompany.Size = new System.Drawing.Size(118, 165);
+            this.btnAddCompany.Size = new System.Drawing.Size(118, 86);
             this.btnAddCompany.TabIndex = 2;
             this.btnAddCompany.Text = "新增公司";
             this.btnAddCompany.UseVisualStyleBackColor = true;
@@ -80,9 +82,9 @@
             // 
             // btnEmployeeSearch
             // 
-            this.btnEmployeeSearch.Location = new System.Drawing.Point(0, 162);
+            this.btnEmployeeSearch.Location = new System.Drawing.Point(0, 92);
             this.btnEmployeeSearch.Name = "btnEmployeeSearch";
-            this.btnEmployeeSearch.Size = new System.Drawing.Size(118, 168);
+            this.btnEmployeeSearch.Size = new System.Drawing.Size(118, 84);
             this.btnEmployeeSearch.TabIndex = 1;
             this.btnEmployeeSearch.Text = "员工查询";
             this.btnEmployeeSearch.UseVisualStyleBackColor = true;
@@ -92,11 +94,21 @@
             // 
             this.btnCompanySearch.Location = new System.Drawing.Point(0, 0);
             this.btnCompanySearch.Name = "btnCompanySearch";
-            this.btnCompanySearch.Size = new System.Drawing.Size(118, 167);
+            this.btnCompanySearch.Size = new System.Drawing.Size(118, 95);
             this.btnCompanySearch.TabIndex = 0;
             this.btnCompanySearch.Text = "公司查询";
             this.btnCompanySearch.UseVisualStyleBackColor = true;
             this.btnCompanySearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // btnAddCompanyList
+            // 
+            this.btnAddCompanyList.Location = new System.Drawing.Point(0, 348);
+            this.btnAddCompanyList.Name = "btnAddCompanyList";
+            this.btnAddCompanyList.Size = new System.Drawing.Size(118, 100);
+            this.btnAddCompanyList.TabIndex = 4;
+            this.btnAddCompanyList.Text = "批量新增公司";
+            this.btnAddCompanyList.UseVisualStyleBackColor = true;
+            this.btnAddCompanyList.Click += new System.EventHandler(this.btnAddCompanyList_Click);
             // 
             // MainForm
             // 
@@ -121,5 +133,6 @@
         private System.Windows.Forms.Button btnAddCompany;
         private System.Windows.Forms.Button btnEmployeeSearch;
         private System.Windows.Forms.Button btnCompanySearch;
+        private System.Windows.Forms.Button btnAddCompanyList;
     }
 }
