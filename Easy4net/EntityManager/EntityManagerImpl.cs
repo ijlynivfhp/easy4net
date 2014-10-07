@@ -18,11 +18,15 @@ namespace Easy4net.EntityManager
         IDbTransaction transaction = null;
 
         #region 将实体数据保存到数据库
-        public int Save<T>(T entity) where T : new() 
+        public int Insert<T>(T entity)
         {
             object val = 0;
             try
             {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
+
+                //从实体对象的属性配置上获取对应的表信息
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.INSERT, properties);
 
@@ -33,27 +37,22 @@ namespace Easy4net.EntityManager
                 IDbDataParameter[] parms = tableInfo.GetParameters();
 
                 //如果是Access数据库，直接根据参数拼接最终的SQL语句
-                strSql = SQLBuilderHelper.builderAccessSQL(new T(), strSql, parms);
+                strSql = SQLBuilderHelper.builderAccessSQL(entity, strSql, parms);
 
-                //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = null;
-                if (transaction != null)
+                //Access数据库执行不需要命名参数
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    connection = transaction.Connection;
+                    //执行Insert命令
+                    val = AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql);
+
+                    //如果是Access数据库，另外执行获取自动生成的ID
+                    String autoSql = EntityHelper.GetAutoSql();
+                    val = AdoHelper.ExecuteScalar(connection, CommandType.Text, autoSql);
                 }
                 else
                 {
-                    connection = DbFactory.CreateDbConnection(AdoHelper.ConnectionString);
-                }
-
-                //执行Insert命令
-                val = AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql, parms);
-
-                //如果是Access数据库，另外执行获取自动生成的ID
-                if (AdoHelper.DbType == DatabaseType.ACCESS)
-                {
-                    String autoSql = EntityHelper.GetAutoSql();
-                    val = AdoHelper.ExecuteScalar(connection, CommandType.Text, autoSql);
+                    //执行Insert命令
+                    val = AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql, parms);
                 }
 
                 //把自动生成的主键ID赋值给返回的对象
@@ -72,24 +71,162 @@ namespace Easy4net.EntityManager
         }
         #endregion
 
-        #region 将实体数据修改到数据库
-        public int Update<T>(T entity) where T : new() 
+        #region 批量保存
+        public int Insert<T>(List<T> entityList)
         {
             object val = 0;
             try
             {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
+
+                //从实体对象的属性配置上获取对应的表信息
+                T firstEntity = entityList[0];
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(firstEntity, DbOperateType.INSERT, properties);
+
+                //获取SQL语句
+                String strSQL = EntityHelper.GetInsertSql(tableInfo);
+                foreach (T entity in entityList)
+                {
+                    //从实体对象的属性配置上获取对应的表信息
+                    tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.INSERT, properties);
+
+                    //获取参数
+                    IDbDataParameter[] parms = tableInfo.GetParameters();
+
+                    //如果是Access数据库，直接根据参数拼接最终的SQL语句
+                    strSQL = SQLBuilderHelper.builderAccessSQL(entity, strSQL, parms);
+
+                    //Access数据库执行不需要命名参数
+                    if (AdoHelper.DbType == DatabaseType.ACCESS)
+                    {
+                        //执行Insert命令
+                        val = AdoHelper.ExecuteScalar(connection, CommandType.Text, strSQL);
+
+                        //如果是Access数据库，另外执行获取自动生成的ID
+                        String autoSql = EntityHelper.GetAutoSql();
+                        val = AdoHelper.ExecuteScalar(connection, CommandType.Text, autoSql);
+                    }
+                    else
+                    {
+                        //执行Insert命令
+                        val = AdoHelper.ExecuteScalar(connection, CommandType.Text, strSQL, parms);
+                    }
+
+                    //把自动生成的主键ID赋值给返回的对象
+                    if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.ACCESS)
+                    {
+                        PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
+                        ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return Convert.ToInt32(val);
+        }
+        #endregion
+
+        #region 将实体数据修改到数据库
+        public int Update<T>(T entity)
+        {
+            object val = 0;
+            try
+            {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
+
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.UPDATE, properties);
 
                 String strSql = EntityHelper.GetUpdateSql(tableInfo);
                 IDbDataParameter[] parms = tableInfo.GetParameters();
 
-                strSql = SQLBuilderHelper.builderAccessSQL(new T(), strSql, parms);
+                strSql = SQLBuilderHelper.builderAccessSQL(entity, strSql, parms);
 
-                if (transaction != null) 
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSql, parms);
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSql);
+                }
                 else
-                    val = AdoHelper.ExecuteNonQuery(AdoHelper.ConnectionString, CommandType.Text, strSql, parms);
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSql, parms);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return Convert.ToInt32(val);
+        }
+        #endregion
+
+        #region 批量更新
+        public int Update<T>(List<T> entityList)
+        {
+            object val = 0;
+            try
+            {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
+
+                T firstEntity = entityList[0];
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(firstEntity, DbOperateType.UPDATE, properties);
+                String strSQL = EntityHelper.GetUpdateSql(tableInfo);
+
+                foreach (T entity in entityList)
+                {
+                    TableInfo table = EntityHelper.GetTableInfo(entity, DbOperateType.UPDATE, properties);
+                    IDbDataParameter[] parms = table.GetParameters();
+
+                    strSQL = SQLBuilderHelper.builderAccessSQL(entity, strSQL, parms);
+
+                    if (AdoHelper.DbType == DatabaseType.ACCESS)
+                    {
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
+                    }
+                    else
+                    {
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return Convert.ToInt32(val);
+        }
+        #endregion
+
+        #region 将实体数据修改到数据库
+        public int ExcuteSQL(string strSQL, ParamMap param)
+        {
+            object val = 0;
+            try
+            {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
+
+                IDbDataParameter[] parms = param.toDbParameters();
+                strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, parms);
+
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
+                }
+                else
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
+                }
             }
             catch (Exception e)
             {
@@ -101,24 +238,73 @@ namespace Easy4net.EntityManager
         #endregion
 
         #region 删除实体对应数据库中的数据
-        public int Remove<T>(T entity)
+        public int Delete<T>(T entity)
         {
             object val = 0;
             try
             {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
+
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
 
-                String strSql = EntityHelper.GetDeleteByIdSql(tableInfo);
+                String strSQL = EntityHelper.GetDeleteByIdSql(tableInfo);
 
                 IDbDataParameter[] parms = DbFactory.CreateDbParameters(1);
                 parms[0].ParameterName = tableInfo.Id.Key;
                 parms[0].Value = tableInfo.Id.Value;
 
-                if (transaction != null)
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSql, parms);
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
+                }
                 else
-                    val = AdoHelper.ExecuteNonQuery(AdoHelper.ConnectionString, CommandType.Text, strSql, parms);
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return Convert.ToInt32(val);
+        }
+        #endregion
+
+        #region 批量删除
+        public int Delete<T>(List<T> entityList)
+        {
+            object val = 0;
+            try
+            {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
+
+                T firstEntity = entityList[0];
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(firstEntity, DbOperateType.DELETE, properties);
+
+                String strSQL = EntityHelper.GetDeleteByIdSql(tableInfo);
+
+                foreach (T entity in entityList)
+                {
+                    tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
+
+                    IDbDataParameter[] parms = DbFactory.CreateDbParameters(1);
+                    parms[0].ParameterName = tableInfo.Id.Key;
+                    parms[0].Value = tableInfo.Id.Value;
+
+                    if (AdoHelper.DbType == DatabaseType.ACCESS)
+                    {
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
+                    }
+                    else
+                    {
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -130,24 +316,32 @@ namespace Easy4net.EntityManager
         #endregion
 
         #region 根据主键id删除实体对应数据库中的数据
-        public int Remove<T>(object id) where T : new()
+        public int Delete<T>(object id) where T : new()
         {
             object val = 0;
             try
             {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.DELETE, properties);
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
 
-                String strSql = EntityHelper.GetDeleteByIdSql(tableInfo);
+                T entity = new T();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
+
+                String strSQL = EntityHelper.GetDeleteByIdSql(tableInfo);
 
                 IDbDataParameter[] parms = DbFactory.CreateDbParameters(1);
                 parms[0].ParameterName = tableInfo.Id.Key;
                 parms[0].Value = id;
 
-                if (transaction != null)
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSql, parms);
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
+                }
                 else
-                    val = AdoHelper.ExecuteNonQuery(AdoHelper.ConnectionString, CommandType.Text, strSql, parms);
+                {
+                    val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
+                }
             }
             catch (Exception e)
             {
@@ -158,140 +352,67 @@ namespace Easy4net.EntityManager
         }
         #endregion
 
-        #region 查询实体类对应的表中所有的记录数
-        public int FindCount<T>() where T : new()
+        #region 批量根据主键id删除数据
+        public int Delete<T>(object[] ids) where T : new()
         {
-            int count = 0;
+            object val = 0;
             try
             {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.COUNT, properties);
-                string strSql = EntityHelper.GetFindCountSql(tableInfo);
+                //获取数据库连接，如果开启了事务，从事务中获取
+                IDbConnection connection = GetConnection();
 
-                count = Convert.ToInt32(AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSql));
+                T entity = new T();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
+
+                String strSQL = EntityHelper.GetDeleteByIdSql(tableInfo);
+
+                foreach (object id in ids)
+                {
+                    tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
+
+                    IDbDataParameter[] parms = DbFactory.CreateDbParameters(1);
+                    parms[0].ParameterName = tableInfo.Id.Key;
+                    parms[0].Value = id;
+
+                    if (AdoHelper.DbType == DatabaseType.ACCESS)
+                    {
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
+                    }
+                    else
+                    {
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw ex;
+                throw e;
             }
 
-            return count;
-        }
-        #endregion
-
-        #region 根据查询条件查询实体类对应的表中的记录数
-        public int FindCount<T>(DbCondition condition) where T : new()
-        {
-            int count = 0;
-            try
-            {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.COUNT, properties);
-                tableInfo.Columns = condition.Columns;
-
-                string strSql = EntityHelper.GetFindCountSql(tableInfo, condition);
-
-                count = Convert.ToInt32(AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSql, tableInfo.GetParameters()));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return count;
-        }
-        #endregion 
-
-        #region 根据一个查询条件查询实体类对应的表中所有的记录数
-        public int FindCount<T>(string propertyName, object propertyValue) where T : new()
-        {
-            int count = 0;
-            try
-            {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.COUNT, properties);
-
-                string strSql = EntityHelper.GetFindCountSql(tableInfo);
-                strSql += string.Format(" WHERE {0} = @{1}", propertyName, propertyName);
-
-                ColumnInfo columnInfo = new ColumnInfo();
-                columnInfo.Add(propertyName, propertyValue);
-                IDbDataParameter[] parameters = DbFactory.CreateDbParameters(1);
-                EntityHelper.SetParameters(columnInfo, parameters);
-
-                count = Convert.ToInt32(AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSql, parameters));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return count;
-        }
-        #endregion
-
-        #region 查询实体对应表的所有数据
-        public List<T> FindAll<T>() where T : new()
-        {
-            IDataReader sdr = null;
-            List<T> list = new List<T>();
-            try
-            {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.SELECT, properties);
-                String strSql = EntityHelper.GetFindAllSql(tableInfo).ToUpper();
-
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql);
-                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (sdr != null) sdr.Close();
-            }
-
-            return list;
-        }
-        #endregion
-
-        #region 通过自定义条件查询数据
-        public List<T> Find<T>(DbCondition condition) where T : new()
-        {
-            List<T> list = new List<T>();
-            IDataReader sdr = null;
-            try
-            {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.SELECT, properties);
-
-                String strSql = EntityHelper.GetFindSql(tableInfo, condition);
-
-                tableInfo.Columns = condition.Columns;
-
-                IDbDataParameter[] parameters = tableInfo.GetParameters();
-
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, parameters);
-                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (sdr != null) sdr.Close();
-            }
-
-            return list;
+            return Convert.ToInt32(val);
         }
         #endregion
 
         #region 通过自定义SQL语句查询记录数
-        public int FindCountBySql(string strSql, ParamMap param)
+        public int Count(string strSQL)
+        {
+            int count = 0;
+            try
+            {
+                count = Convert.ToInt32(AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSQL));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return count;
+        }
+        #endregion
+
+        #region 通过自定义SQL语句查询记录数
+        public int Count(string strSql, ParamMap param)
         {
             int count = 0;
             try
@@ -316,7 +437,7 @@ namespace Easy4net.EntityManager
         #endregion
 
         #region 通过自定义SQL语句查询数据
-        public List<T> FindBySql<T>(string strSql, int pageIndex, int pageSize, string order, bool desc) where T : new()
+        public List<T> Find<T>(string strSql) where T : new()
         {
             List<T> list = new List<T>();
             IDataReader sdr = null;
@@ -325,47 +446,9 @@ namespace Easy4net.EntityManager
                 strSql = strSql.ToLower();
                 String columns = SQLBuilderHelper.fetchColumns(strSql);
 
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.SELECT, properties);
-
-                strSql = SQLBuilderHelper.builderPageSQL(strSql, order, desc);
-                ParamMap param = ParamMap.newMap();
-                param.setPageIndex(pageIndex);
-                param.setPageSize(pageSize);
-
-                if (AdoHelper.DbType == DatabaseType.ACCESS)
-                {
-                    strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
-                }
-
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, param.toDbParameters());
-                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (sdr != null) sdr.Close();
-            }
-
-            return list;
-        }
-        #endregion
-
-        #region 通过自定义SQL语句查询数据
-        public List<T> FindBySql<T>(string strSql) where T : new()
-        {
-            List<T> list = new List<T>();
-            IDataReader sdr = null;
-            try
-            {
-                strSql = strSql.ToLower();
-                String columns = SQLBuilderHelper.fetchColumns(strSql);
-
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.SELECT, properties);
+                T entity = new T();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
 
                 sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, null);
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
@@ -385,64 +468,33 @@ namespace Easy4net.EntityManager
 
 
         #region 通过自定义SQL语句查询数据
-        public List<T> FindBySql<T>(string strSql, ParamMap param) where T : new()
+        public List<T> Find<T>(string strSQL, ParamMap param) where T : new()
         {
             List<T> list = new List<T>();
             IDataReader sdr = null;
             try
             {
-                strSql = strSql.ToLower();
-                String columns = SQLBuilderHelper.fetchColumns(strSql);
+                strSQL = strSQL.ToLower();
+                String columns = SQLBuilderHelper.fetchColumns(strSQL);
 
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.SELECT, properties);
-                if (param.IsPage && !SQLBuilderHelper.isPage(strSql))
+                T entity = new T();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
+                if (param.IsPage && !SQLBuilderHelper.isPage(strSQL))
                 {
-                    strSql = SQLBuilderHelper.builderPageSQL(strSql, param.OrderFields, param.IsDesc);
+                    strSQL = SQLBuilderHelper.builderPageSQL(strSQL, param.OrderFields, param.IsDesc);
                 }
+
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
+                    strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, param.toDbParameters());
+                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL);
                 }
-
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, param.toDbParameters());
-                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (sdr != null) sdr.Close();
-            }
-
-            return list;
-        }
-        #endregion
-
-        #region 根据一个查询条件查询数据
-        public List<T> FindByProperty<T>(string propertyName, object propertyValue) where T : new()
-        {
-            List<T> list = new List<T>();
-            IDataReader sdr = null;
-            try
-            {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.SELECT, properties);
-
-                String strSql = EntityHelper.GetFindAllSql(tableInfo);
-                strSql += string.Format(" WHERE {0} = @{1}", propertyName, propertyName);
-                strSql = strSql.ToLower();
-
-                String columns = SQLBuilderHelper.fetchColumns(strSql);// strSql.Substring(0, strSql.IndexOf("FROM"));
-
-                ColumnInfo columnInfo = new ColumnInfo();
-                columnInfo.Add(propertyName, propertyValue);
-                IDbDataParameter[] parameters = DbFactory.CreateDbParameters(1);
-                EntityHelper.SetParameters(columnInfo, parameters);
-
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, parameters);
+                else
+                {
+                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL, param.toDbParameters());
+                }
+                
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
             }
             catch (Exception ex)
@@ -459,24 +511,32 @@ namespace Easy4net.EntityManager
         #endregion
 
         #region 通过主键ID查询数据
-        public T FindById<T>(object id) where T : new()
+        public T Get<T>(object id) where T : new()
         {
             List<T> list = new List<T>();
            
             IDataReader sdr = null;
             try
             {
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(new T().GetType());
+                T entity = new T();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
 
-                TableInfo tableInfo = EntityHelper.GetTableInfo(new T(), DbOperateType.SELECT, properties);
-
-                String strSql = EntityHelper.GetFindByIdSql(tableInfo);
-
+                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
                 IDbDataParameter[] parms = DbFactory.CreateDbParameters(1);
                 parms[0].ParameterName = tableInfo.Id.Key;
                 parms[0].Value = id;
 
-                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSql, parms);
+                String strSQL = EntityHelper.GetFindByIdSql(tableInfo);
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                {
+                    strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, parms);
+                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL);
+                }
+                else
+                {
+                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL, parms);
+                }
+
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
             }
             catch (Exception ex)
@@ -490,7 +550,23 @@ namespace Easy4net.EntityManager
 
             return list.FirstOrDefault();
         }
-        #endregion        
+        #endregion    
+    
+        private IDbConnection GetConnection()
+        {
+            //获取数据库连接，如果开启了事务，从事务中获取
+            IDbConnection connection = null;
+            if (transaction != null)
+            {
+                connection = transaction.Connection;
+            }
+            else
+            {
+                connection = DbFactory.CreateDbConnection(AdoHelper.ConnectionString);
+            }
+
+            return connection;
+        }
 
         #region Transaction 注入事物对象属性
         public IDbTransaction Transaction

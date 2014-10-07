@@ -10,32 +10,31 @@ namespace Easy4net.EntityManager
     {
         IDbTransaction Transaction{get;set;}
 
-        int Save<T>(T entity) where T : new();
+        int Insert<T>(T entity);
 
-        int Update<T>(T entity) where T : new();
+        int Insert<T>(List<T> entityList);
 
-        int Remove<T>(T entity);
+        int Update<T>(T entity);
 
-        int Remove<T>(object id) where T : new();
+        int Update<T>(List<T> entityList);
 
-        List<T> FindAll<T>() where T : new();
+        int ExcuteSQL(string strSQL, ParamMap param);
 
-        List<T> FindBySql<T>(string strSql) where T : new();
+        int Delete<T>(T entity);
 
-        List<T> FindBySql<T>(string strSql, int pageIndex, int pageSize, string order, bool desc) where T : new();
+        int Delete<T>(List<T> entityList);
 
-        List<T> FindBySql<T>(string strSql, ParamMap param) where T : new();
+        int Delete<T>(object id) where T : new();
 
-        List<T> FindByProperty<T>(string propertyName, object propertyValue) where T : new();
+        int Delete<T>(object[] ids) where T : new();
 
-        T FindById<T>(object id) where T : new();        
+        int Count(string strSQL);
+        int Count(string strSql, ParamMap param);
 
-        int FindCount<T>() where T : new();
+        List<T> Find<T>(string strSql) where T : new();
 
-        int FindCount<T>(DbCondition condition) where T : new();
+        List<T> Find<T>(string strSql, ParamMap param) where T : new();
 
-        int FindCount<T>(string propertyName, object propertyValue) where T : new();
-
-        List<T> Find<T>(DbCondition condition) where T : new();
+        T Get<T>(object id) where T : new();        
     }
 }

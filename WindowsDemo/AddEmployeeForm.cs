@@ -43,7 +43,7 @@ namespace WindowsDemo
             employee.CompanyId = company.Id;
 
             DBHelper dbHelper = DBHelper.getInstance();
-            dbHelper.Save<Employee>(employee);
+            dbHelper.Insert<Employee>(employee);
             if (employee.Id > 0)
             {
                 MessageBox.Show("新增员工成功！");
@@ -60,7 +60,7 @@ namespace WindowsDemo
             param.setPageParamters(1, 20);
             param.setOrderFields("id", true);
 
-            m_CompanyList = dbHelper.FindBySql<Company>(strSql, param);
+            m_CompanyList = dbHelper.Find<Company>(strSql, param);
             cbCompany.DataSource = m_CompanyList;
             cbCompany.ValueMember = "Id";
             cbCompany.DisplayMember = "CompanyName";

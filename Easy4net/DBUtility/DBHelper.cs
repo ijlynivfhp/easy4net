@@ -23,90 +23,173 @@ namespace Easy4net.DBUtility
             return new DBHelper();
         }
 
-        public int Save<T>(T entity) where T : new() 
+        /// <summary>
+        /// 根据主键ID获取对象
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="id">主键ID</param>
+        /// <returns></returns>
+        public T Get<T>(object id) where T : new()
         {
-            if (trans != null) entityManager.Transaction = trans;
-            return entityManager.Save<T>(entity);
+            return entityManager.Get<T>(id);
         }
 
-        public int Update<T>(T entity) where T : new() 
+        /// <summary>
+        /// 插入对象数据
+        /// </summary>
+        /// <typeparam name="T">数据对象类型</typeparam>
+        /// <param name="entity">需要插入的数据对象</param>
+        /// <returns></returns>
+        public int Insert<T>(T entity) 
         {
-            if (trans != null) entityManager.Transaction = trans;
+            return entityManager.Insert<T>(entity);
+        }
+
+        /// <summary>
+        /// 批量插入对象数据
+        /// </summary>
+        /// <typeparam name="T">数据对象类型</typeparam>
+        /// <param name="entityList">需要插入的数据对象集合</param>
+        /// <returns></returns>
+        public int Insert<T>(List<T> entityList) 
+        {
+            return entityManager.Insert<T>(entityList);
+        }
+
+        /// <summary>
+        /// 更新对象数据
+        /// </summary>
+        /// <typeparam name="T">数据对象类型</typeparam>
+        /// <param name="entity">需要更新的数据对象集合</param>
+        /// <returns></returns>
+        public int Update<T>(T entity) 
+        {
             return entityManager.Update<T>(entity);
         }
 
-        public int Remove<T>(T entity)
+        /// <summary>
+        /// 批量更新对象数据
+        /// </summary>
+        /// <typeparam name="T">数据对象类型</typeparam>
+        /// <param name="entityList">需要更新的数据对象集合</param>
+        /// <returns></returns>
+        public int Update<T>(List<T> entityList) 
         {
-            if (trans != null) entityManager.Transaction = trans;
-            return entityManager.Remove<T>(entity);
+            return entityManager.Update<T>(entityList);
         }
 
-        public int Remove<T>(object id) where T : new()
+        /// <summary>
+        /// 删除对象数据
+        /// </summary>
+        /// <typeparam name="T">数据对象类型</typeparam>
+        /// <param name="entity">需要删除的数据对象</param>
+        /// <returns></returns>
+        public int Delete<T>(T entity)
         {
-            if (trans != null) entityManager.Transaction = trans;
-            return entityManager.Remove<T>(id);
+            return entityManager.Delete<T>(entity);
         }
 
-        public List<T> FindAll<T>() where T : new()
+        /// <summary>
+        /// 批量删除对象数据
+        /// </summary>
+        /// <typeparam name="T">数据对象类型</typeparam>
+        /// <param name="entityList">需要删除的数据对象集合</param>
+        /// <returns></returns>
+        public int Delete<T>(List<T> entityList)
         {
-            return entityManager.FindAll<T>();
-        }
-        
-        public List<T> FindBySql<T>(string strSql) where T : new()
-        {
-            return entityManager.FindBySql<T>(strSql);
-        }
-
-        public List<T> FindBySql<T>(string strSql, int pageIndex, int pageSize, string order, bool desc) where T : new()
-        {
-            return entityManager.FindBySql<T>(strSql, pageIndex, pageSize, order, desc);
+            return entityManager.Delete<T>(entityList);
         }
 
-        public List<T> FindBySql<T>(string strSql, ParamMap param) where T : new()
+        /// <summary>
+        /// 根据主键ID删除数据
+        /// </summary>
+        /// <typeparam name="T">数据对象类型</typeparam>
+        /// <param name="id">主键ID</param>
+        /// <returns></returns>
+        public int Delete<T>(object id) where T : new()
         {
-            return entityManager.FindBySql<T>(strSql, param);
+            return entityManager.Delete<T>(id);
         }
 
-        public T FindById<T>(object id) where T : new()
+        /// <summary>
+        /// 根据SQL查询数量
+        /// </summary>
+        /// <param name="strSQL">SQL命令</param>
+        /// <returns></returns>
+        public int Count(string strSQL)
         {
-            return entityManager.FindById<T>(id);
+            return entityManager.Count(strSQL);
         }
 
-        public List<T> FindByProperty<T>(string propertyName, object propertyValue) where T : new()
+        /// <summary>
+        /// 根据SQL查询记录数
+        /// </summary>
+        /// <param name="strSQL">SQL命令</param>
+        /// <param name="param">参数</param>
+        /// <returns></returns>
+        public int Count(string strSQL, ParamMap param)
         {
-            return entityManager.FindByProperty<T>(propertyName, propertyValue);
+            return entityManager.Count(strSQL, param);
         }
 
-        public int FindCount<T>() where T : new()
+        /// <summary>
+        /// 根据SQL查询数据
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="strSQL">SQL命令</param>
+        /// <returns></returns>
+        public List<T> Find<T>(string strSQL) where T : new()
         {
-            return entityManager.FindCount<T>();
+            return entityManager.Find<T>(strSQL);
         }
 
-        public int FindCount<T>(string propertyName, object propertyValue) where T : new()
+        /// <summary>
+        /// 根据SQL查询数据
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="strSQL">SQL命令</param>
+        /// <param name="param">参数</param>
+        /// <returns></returns>
+        public List<T> Find<T>(string strSQL, ParamMap param) where T : new()
         {
-            return entityManager.FindCount<T>(propertyName, propertyValue);
+            return entityManager.Find<T>(strSQL, param);
         }
 
-        public int FindCount<T>(DbCondition condition) where T : new()
+        /// <summary>
+        /// 查询一条数据
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="strSQL">SQL命令</param>
+        /// <returns></returns>
+        public T FindOne<T>(string strSQL) where T : new()
         {
-            return entityManager.FindCount<T>(condition);
+            return entityManager.Find<T>(strSQL).FirstOrDefault();
         }
 
-        public List<T> Find<T>(DbCondition condition) where T : new()
+        /// <summary>
+        /// 查询一条数据
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="strSQL">SQL命令</param>
+        /// <param name="param">参数</param>
+        /// <returns></returns>
+        public T FindOne<T>(string strSQL, ParamMap param) where T : new()
         {
-            return entityManager.Find<T>(condition);
+            return entityManager.Find<T>(strSQL, param).FirstOrDefault();
         }
 
-        /*public List<T> Find<T>(WhereExpression where) where T : new()
-        {
-            return null;
-        }*/
-
+        /// <summary>
+        /// 开启事务
+        /// </summary>
         public void BeginTransaction()
         {
             trans = DbFactory.CreateDbTransaction();
+            entityManager.Transaction = trans;
         }
 
+        /// <summary>
+        /// 提交事务
+        /// </summary>
         public void CommitTransaction()
         {
             if (trans != null)
@@ -114,9 +197,13 @@ namespace Easy4net.DBUtility
                 trans.Commit();
                 trans.Dispose();
                 trans = null;
+                entityManager.Transaction = null;
             }
         }
 
+        /// <summary>
+        /// 回滚事务
+        /// </summary>
         public void RollbackTransaction()
         {
             if (trans != null)
@@ -124,71 +211,8 @@ namespace Easy4net.DBUtility
                 trans.Rollback();
                 trans.Dispose();
                 trans = null;
+                entityManager.Transaction = null;
             }
         }
-
-        /*public static int Save<T>(T entity)
-        {
-            if(trans != null) em.Transaction = trans;
-            return em.Save<T>(entity);
-        }
-
-        public static int Update<T>(T entity)
-        {
-            if (trans != null) em.Transaction = trans;
-            return em.Update<T>(entity);
-        }
-
-        public static int Remove<T>(T entity)
-        {
-            if (trans != null) em.Transaction = trans;
-            return em.Remove<T>(entity);
-        }
-
-        public static int Remove<T>(object id) where T : new()
-        {
-            if (trans != null) em.Transaction = trans;
-            return em.Remove<T>(id);
-        }
-
-        public static List<T> FindAll<T>() where T : new()
-        {
-            return em.FindAll<T>();
-        }
-
-        public static List<T> FindBySql<T>(string strSql) where T : new()
-        {
-            return em.FindBySql<T>(strSql);
-        }
-
-        public static T FindById<T>(object id) where T : new()
-        {
-            return em.FindById<T>(id);
-        }
-
-        public static void BeginTransaction()
-        {
-            trans = DbFactory.CreateDbTransaction();
-        }
-
-        public static void CommitTransaction()
-        {
-            if (trans != null)
-            {
-                trans.Commit();
-                trans.Dispose();
-                trans = null;
-            }
-        }
-
-        public static void RollbackTransaction()
-        {
-            if (trans != null)
-            {
-                trans.Rollback();
-                trans.Dispose();
-                trans = null;
-            }
-        }*/
     }
 }

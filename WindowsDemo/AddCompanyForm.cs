@@ -26,7 +26,7 @@ namespace WindowsDemo
             company.Address = txtAddress.Text.Trim();
 
             DBHelper dbHelper = DBHelper.getInstance();
-            dbHelper.Save<Company>(company);
+            dbHelper.Insert<Company>(company);
 
             if (company.Id > 0) {
                 MessageBox.Show("创建公司成功！");

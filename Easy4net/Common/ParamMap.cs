@@ -121,7 +121,7 @@ namespace Easy4net.Common
         /// 此方法已过时，请使用 setPageParamters方法分页
         /// </summary>
         /// <param name="pageIndex"></param>
-        public void setPageIndex(int pageIndex) 
+        private void setPageIndex(int pageIndex) 
         {
             this["pageIndex"] = pageIndex;
             setPages();
@@ -131,7 +131,7 @@ namespace Easy4net.Common
         /// 此方法已过时，请使用 setPageParamters方法分页
         /// </summary>
         /// <param name="pageSize"></param>
-        public void setPageSize(int pageSize)
+        private void setPageSize(int pageSize)
         {
             this["pageSize"] = pageSize;
             setPages();

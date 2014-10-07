@@ -44,7 +44,7 @@ namespace WindowsDemo
             param.setPageParamters(page, limit);
             param.setOrderFields("id", true);
 
-            companyList = dbHelper.FindBySql<Company>(strSql, param);
+            companyList = dbHelper.Find<Company>(strSql, param);
             dgCompany.DataSource = companyList;
         }
 
