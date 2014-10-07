@@ -23,6 +23,44 @@ List<Employee> emList = dbHelper.Find<Employee>(strSql, param);
 
 ```
 
+**分页查询：**
+* 1. 命名参数， ParamMap传参方式：
+* 2. 返回总条数和数据集合的对象PageResult
+
+***
+
+```c#
+public PageResult<Store> findByPage(int page, int limit)
+{
+    DBHelper db = DBHelper.getInstance();
+
+    String sql = "select * from store";
+
+    ParamMap param = ParamMap.newMap();
+    param.setPageParamters(page, limit);
+    param.setOrderFields("id", true);
+
+    PageResult<Store> pageResult = db.FindPage<Store>(sql, param);
+
+    return pageResult;
+}
+
+
+public class PageResult<T>
+{
+    /// <summary>
+    /// 分页查询中总记录数
+    /// </summary>
+    public int Total {get; set;}
+
+    /// <summary>
+    /// 分页查询中结果集合
+    /// </summary>
+    public List<T> DataList {get; set;}
+}
+```
+
+
 **查询单条记录：**
 ***
 
