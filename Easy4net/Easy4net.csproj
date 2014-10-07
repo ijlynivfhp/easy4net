@@ -53,6 +53,7 @@
     <Compile Include="Common\DynamicCalls.cs" />
     <Compile Include="Common\IdInfo.cs" />
     <Compile Include="Common\Map.cs" />
+    <Compile Include="Common\PageResult.cs" />
     <Compile Include="Common\ParamMap.cs" />
     <Compile Include="Common\ReflectionHelper.cs" />
     <Compile Include="Common\SQLBuilderHelper.cs" />

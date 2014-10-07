@@ -35,6 +35,10 @@ namespace Easy4net.EntityManager
 
         List<T> Find<T>(string strSql, ParamMap param) where T : new();
 
+        PageResult<T> FindPage<T>(string strSQL) where T : new();
+
+        PageResult<T> FindPage<T>(string strSQL, ParamMap param) where T : new();
+
         T Get<T>(object id) where T : new();        
     }
 }

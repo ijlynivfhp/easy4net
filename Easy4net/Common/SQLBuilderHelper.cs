@@ -106,6 +106,15 @@ namespace Easy4net.Common
             return strSql;
         }
 
+        public static string builderCountSQL(string strSQL)
+        {
+            int index = strSQL.IndexOf("from");
+            string strFooter = strSQL.Substring(index, strSQL.Length - index);
+            string strText = "select count(*) " + strFooter;
+
+            return strText;
+        }
+
         public static string builderAccessSQL(object entity, string strSql, IDbDataParameter[] parameters)
         {
             if (AdoHelper.DbType != DatabaseType.ACCESS)

@@ -510,6 +510,94 @@ namespace Easy4net.EntityManager
         }
         #endregion
 
+
+        #region 分页查询返回分页结果
+        public PageResult<T> FindPage<T>(string strSQL) where T : new()
+        {
+            PageResult<T> pageResult = new PageResult<T>();
+            List<T> list = new List<T>();
+            IDataReader sdr = null;
+            try
+            {
+                strSQL = strSQL.ToLower();
+                String countSQL = SQLBuilderHelper.builderCountSQL(strSQL);
+                String columns = SQLBuilderHelper.fetchColumns(strSQL);
+
+                T entity = new T();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
+
+                sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL, null);
+                
+                int count = this.Count(countSQL);
+                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
+
+                pageResult.Total = count;
+                pageResult.DataList = list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (sdr != null) sdr.Close();
+            }
+
+            return pageResult;
+        }
+        #endregion
+
+        #region 分页查询返回分页结果
+        public PageResult<T> FindPage<T>(string strSQL, ParamMap param) where T : new()
+        {
+            PageResult<T> pageResult = new PageResult<T>();
+            List<T> list = new List<T>();
+            IDataReader sdr = null;
+            try
+            {
+                strSQL = strSQL.ToLower();
+                String countSQL = SQLBuilderHelper.builderCountSQL(strSQL);
+                String columns = SQLBuilderHelper.fetchColumns(strSQL);
+
+                T entity = new T();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
+                if (param.IsPage && !SQLBuilderHelper.isPage(strSQL))
+                {
+                    strSQL = SQLBuilderHelper.builderPageSQL(strSQL, param.OrderFields, param.IsDesc);
+                }
+
+                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                {
+                    strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, param.toDbParameters());
+                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL);
+                }
+                else
+                {
+                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL, param.toDbParameters());
+                }
+
+                int count = this.Count(countSQL, param);
+                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
+
+                pageResult.Total = count;
+                pageResult.DataList = list;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (sdr != null) sdr.Close();
+            }
+
+            return pageResult;
+        }
+        #endregion
+
         #region 通过主键ID查询数据
         public T Get<T>(object id) where T : new()
         {
