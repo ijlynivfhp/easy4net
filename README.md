@@ -36,6 +36,8 @@ Employee em = dbHelper.FindOne<Employee>(strSql, param);
 
 ```
 
+**普通查询：**
+***
 ```c#
 
 string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id";
@@ -43,7 +45,6 @@ string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c
 List<Employee> emList = dbHelper.Find<Employee>(strSql);
 
 ```
-
 
 
 **新增：**
@@ -150,44 +151,66 @@ dbHelper.Delete(ids);
 ***
 
 ```c#
-namespace Entiry
-{
-    [Serializable]
-    [Table(Name = "U_Student")]
-    public class Student
-    {
-        //主键自增长
-        [Id(Name = "UserID", Strategy = GenerationType.INDENTITY)]
-        public int UserID { get; set; }
-
-        //数据库字段U_Name
-        [Column(Name = "U_Name")]
-        public string Name { get; set; }
-
-        [Column(Name = "U_Age")] // int? 允许int类型为空
-        public int? Age { get; set; }
-
-        [Column(Name = "U_Gender")]
-        public string Gender { get; set; }
-
-        [Column(Name = "U_Address")]
-        public string Address { get; set; }
-
-        [Column(Name = "U_CreateTime")]
-        public DateTime? CreateTime { get; set; }
-
-        [Column(Name = "ClassID")]
-        public int? ClassID { get; set; }
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;  
  
-        // 不保存该属性值到数据库库，忽略新增和修改
-        [Column(Name = "ClassName",IsInsert=false,IsUpdate=false)]
-        public string ClassName { get; set; }
- 
-        // 不保存该属性值到数据库库，忽略新增和修改
-        [Column(Name = "Teacher", IsInsert = false, IsUpdate = false)]
-        public string Teacher { get; set; }
-    }
-}
+namespace Easy4net.Entity  
+{  
+     [Table(Name = "company")] 
+	 public class Company
+	 { 
+		[Id(Name = "id", Strategy = GenerationType.INDENTITY)]
+		public int? Id{ get; set; } 
+
+		[Column(Name = "company_name")]
+		public String CompanyName{ get; set; }
+
+        [Column(Name = "industry")]
+        public String Industry { get; set; }
+
+        [Column(Name = "address")]
+        public String Address { get; set; } 
+
+	 } 
+}  
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text;  
+namespace Easy4net.Entity  
+{  
+     [Table(Name = "employee")] 
+	 public class Employee
+	 { 
+		[Id(Name = "id", Strategy = GenerationType.INDENTITY)]
+		public int? Id{ get; set; } 
+
+		[Column(Name = "name")]
+		public String Name{ get; set; } 
+
+		[Column(Name = "age")]
+		public int? Age{ get; set; } 
+
+		[Column(Name = "address")]
+		public String Address{ get; set; } 
+
+		[Column(Name = "created")]
+		public DateTime? Created{ get; set; } 
+
+		[Column(Name = "company_id")]
+		public int? CompanyId{ get; set; }
+
+        [Column(Name = "company_name", IsInsert = false, IsUpdate = false)]
+        public String CompanyName { get; set; } 
+
+	 } 
+}   
+
 ```
 
 **数据库连接配置 web.config中： **
@@ -196,16 +219,35 @@ namespace Entiry
 ***
 
 ```xml
+<?xml version="1.0"?>
 <configuration>
   <appSettings>
-    <add key="DbType" value="sqlserver"/>
-    <add key="connectionString" value="Data Source=127.0.0.1;Initial Catalog=test;User ID=test;Password=test123;Trusted_Connection=no;Min Pool Size=10;Max Pool Size=100;"/>
+    <!--<add key="DbType" value="sqlserver"/>
+    <add key="connectionString" value="Data Source=121.199.9.217;Initial Catalog=test;User ID=test;Password=test123;Trusted_Connection=no;Min Pool Size=10;Max Pool Size=100;"/>-->
 
     <!--<add key="DbType" value="mysql"/>
-    <add key="connectionString" value="Data Source=127.0.0.1;port=8001;User ID=test;Password=123456;DataBase=test;Min Pool Size=10;Max Pool Size=100;"/>-->
+    <add key="connectionString" value="Data Source=121.199.34.41;port=8001;User ID=test;Password=123456;DataBase=test;Min Pool Size=10;Max Pool Size=100;"/>-->
 
     <!--<add key="DbType" value="access"/>
     <add key="connectionString" value="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\tj.mdb"/>-->
+
+    <!--<add key="DbType" value="sqlserver"/>
+    <add key="DbHost" value="8QHMQCAJBCOOHW2\SQLEXPRESS" />
+    <add key="DbName" value="test"/>
+    <add key="DbUser" value="sa"/>
+    <add key="DbPassword" value="111111"/>
+    <add key="DbMinPoolSize" value="10"/>
+    <add key="DbMaxPoolSize" value="100"/>-->
+
+    <add key="DbType" value="mysql"/>
+    <add key="DbHost" value="localhost" />
+    <add key="DbName" value="test_db"/>
+    <add key="DbUser" value="user_test"/>
+    <add key="DbPassword" value="111111"/>
+    <add key="DbPort" value="3306"/>
+    <add key="DbMinPoolSize" value="10"/>
+    <add key="DbMaxPoolSize" value="100"/>
+
   </appSettings>
-</configuration>
+<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/></startup></configuration>
 ```
