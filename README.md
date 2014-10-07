@@ -55,12 +55,36 @@ List<Employee> emList = dbHelper.Find<Employee>(strSql);
 
 ```c#
 
-Student entity = new Student();
-entity.Name = "Lily";
-entity.Gender = "女";
-entity.Age = 23;
-entity.Address = "上海市徐汇区中山南二路918弄";
-int id = dbHelper.Insert(entity);
+//创建公司
+Company company = new Company();
+company.CompanyName = txtName.Text.Trim();
+company.Industry = txtIndustry.Text.Trim();
+company.Address = txtAddress.Text.Trim();
+
+DBHelper dbHelper = DBHelper.getInstance();
+dbHelper.Insert<Company>(company);
+
+if (company.Id > 0) {
+    MessageBox.Show("创建公司成功！");
+}
+
+
+//新增员工
+Company company = m_CompanyList[cbCompany.SelectedIndex]; 
+Employee employee = new Employee();
+employee.Name = txtName.Text.Trim();
+mployee.Age = Convert.ToInt32(txtAge.Text.Trim());
+employee.Address = txtAddress.Text.Trim();
+employee.Created = DateTime.Now;
+employee.CompanyId = company.Id;
+
+DBHelper dbHelper = DBHelper.getInstance();
+dbHelper.Insert<Employee>(employee);
+if (employee.Id > 0)
+{
+    MessageBox.Show("新增员工成功！");
+}
+
 ```
 
 
@@ -72,8 +96,8 @@ int id = dbHelper.Insert(entity);
 
 ```c#
 
-List<Student> studentList = ...;
-dbHelper.Insert(studentList);
+List<Company> companyList = ...;
+dbHelper.Insert(companyList);
 ```
 
 
@@ -82,10 +106,9 @@ dbHelper.Insert(studentList);
 ***
 
 ```c#
-Student entity = new Student();
-entity.UserID = 1;
-entity.Name = "Andy";
-entity.Age = 22;
+Company entity = new Company();
+entity.Id = 1;
+entity.Name = "百度";
 dbHelper.Update(entity);
 ```
 
@@ -97,8 +120,8 @@ dbHelper.Update(entity);
 
 ```c#
 DBHelper db = DBHelper.getInstance();
-List<Student> studentList = ...;
-dbHelper.Update(studentList);
+List<Company> companyList = ...;
+dbHelper.Update(companyList);
 ```
 
 
@@ -109,12 +132,12 @@ dbHelper.Update(studentList);
 ***
 
 ```c#
-Student student = m_stuList[i];
+Company company = m_companyList[i];
 //remove a object
-dbHelper.Delete(student);
+dbHelper.Delete(company);
 
 //remove by id
-dbHelper.Delete(student.UserID);
+dbHelper.Delete(company.Id);
 ```
 
 **批量删除：**
@@ -127,22 +150,13 @@ dbHelper.Delete(student.UserID);
 ```c#
 
 //remove by object
-List<Student> studentList = ...;
-dbHelper.Delete(studentList);
+List<Company> companyList = ...;
+dbHelper.Delete(companyList);
 
 //remove by id
 object[] ids = new object[]{1,2,3,4,5};
 dbHelper.Delete(ids);
 ```
-
-
-
-
-
-
-
-
-
 
 
 
