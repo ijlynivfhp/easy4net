@@ -40,7 +40,7 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(421, 293);
+            this.btnUpdate.Location = new System.Drawing.Point(492, 292);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(112, 55);
             this.btnUpdate.TabIndex = 9;
@@ -52,9 +52,9 @@
             // 
             this.btnOK.Location = new System.Drawing.Point(265, 292);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(118, 57);
+            this.btnOK.Size = new System.Drawing.Size(198, 57);
             this.btnOK.TabIndex = 8;
-            this.btnOK.Text = "确定";
+            this.btnOK.Text = "确定 (带事务的测试)";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 

@@ -1,5 +1,6 @@
 ﻿using Easy4net.DBUtility;
 using Easy4net.Entity;
+using Easy4net.Session;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,18 +21,38 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Company company = new Company();
-            company.CompanyName = txtName.Text.Trim();
-            company.Industry = txtIndustry.Text.Trim();
-            company.Address = txtAddress.Text.Trim();
+            Session session = SessionFactory.CreateSession();
+            session.BeginTransaction();
 
-            DBHelper dbHelper = DBHelper.getInstance();
-            dbHelper.Insert<Company>(company);
+            try
+            {
+                Company company = new Company();
+                company.CompanyName = txtName.Text.Trim();
+                company.Industry = txtIndustry.Text.Trim();
+                company.Address = txtAddress.Text.Trim();
 
-            if (company.Id > 0) {
-                MessageBox.Show("创建公司成功！");
+                session.Insert<Company>(company);
+
+                if (company.Id > 0)
+                {
+                    MessageBox.Show("创建公司成功！");
+                }
+
+                if (DialogResult.OK == MessageBox.Show("是否回滚事务？", "事务测试", MessageBoxButtons.OKCancel))
+                {
+                    throw new Exception("测试事务回滚！！！");
+                }
+                else
+                {
+                    session.CommitTransaction();
+                    MessageBox.Show("事务提交成功，请查看数据库是否存在该数据！");
+                }
             }
-
+            catch (Exception ex)
+            {
+                session.Rollback();
+                MessageBox.Show("事务回滚成功，请查看数据库是否存在该数据！");
+            }
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)

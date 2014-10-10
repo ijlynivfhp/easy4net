@@ -30,11 +30,11 @@
         {
             this.plContainer = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnAddCompanyList = new System.Windows.Forms.Button();
             this.btnAddEmployee = new System.Windows.Forms.Button();
             this.btnAddCompany = new System.Windows.Forms.Button();
             this.btnEmployeeSearch = new System.Windows.Forms.Button();
             this.btnCompanySearch = new System.Windows.Forms.Button();
-            this.btnAddCompanyList = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,9 +60,19 @@
             this.panel1.Size = new System.Drawing.Size(118, 655);
             this.panel1.TabIndex = 2;
             // 
+            // btnAddCompanyList
+            // 
+            this.btnAddCompanyList.Location = new System.Drawing.Point(0, 443);
+            this.btnAddCompanyList.Name = "btnAddCompanyList";
+            this.btnAddCompanyList.Size = new System.Drawing.Size(118, 100);
+            this.btnAddCompanyList.TabIndex = 4;
+            this.btnAddCompanyList.Text = "批量新增公司";
+            this.btnAddCompanyList.UseVisualStyleBackColor = true;
+            this.btnAddCompanyList.Click += new System.EventHandler(this.btnAddCompanyList_Click);
+            // 
             // btnAddEmployee
             // 
-            this.btnAddEmployee.Location = new System.Drawing.Point(0, 253);
+            this.btnAddEmployee.Location = new System.Drawing.Point(0, 348);
             this.btnAddEmployee.Name = "btnAddEmployee";
             this.btnAddEmployee.Size = new System.Drawing.Size(118, 100);
             this.btnAddEmployee.TabIndex = 3;
@@ -74,9 +84,9 @@
             // 
             this.btnAddCompany.Location = new System.Drawing.Point(0, 172);
             this.btnAddCompany.Name = "btnAddCompany";
-            this.btnAddCompany.Size = new System.Drawing.Size(118, 86);
+            this.btnAddCompany.Size = new System.Drawing.Size(118, 176);
             this.btnAddCompany.TabIndex = 2;
-            this.btnAddCompany.Text = "新增公司";
+            this.btnAddCompany.Text = "新增公司          (事务提交)";
             this.btnAddCompany.UseVisualStyleBackColor = true;
             this.btnAddCompany.Click += new System.EventHandler(this.btnAddCompany_Click);
             // 
@@ -99,16 +109,6 @@
             this.btnCompanySearch.Text = "公司查询";
             this.btnCompanySearch.UseVisualStyleBackColor = true;
             this.btnCompanySearch.Click += new System.EventHandler(this.btnSearch_Click);
-            // 
-            // btnAddCompanyList
-            // 
-            this.btnAddCompanyList.Location = new System.Drawing.Point(0, 348);
-            this.btnAddCompanyList.Name = "btnAddCompanyList";
-            this.btnAddCompanyList.Size = new System.Drawing.Size(118, 100);
-            this.btnAddCompanyList.TabIndex = 4;
-            this.btnAddCompanyList.Text = "批量新增公司";
-            this.btnAddCompanyList.UseVisualStyleBackColor = true;
-            this.btnAddCompanyList.Click += new System.EventHandler(this.btnAddCompanyList_Click);
             // 
             // MainForm
             // 

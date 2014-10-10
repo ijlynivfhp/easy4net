@@ -178,6 +178,7 @@ namespace Easy4net.DBUtility
             cmd.Parameters.Clear();
             return val;
         }
+
         /// <summary>
         /// 使用提供的参数，执行有结果集返回的数据库操作命令
         /// 并返回SqlDataReader对象
@@ -213,6 +214,79 @@ namespace Easy4net.DBUtility
                 throw;
             }
         }
+
+        /// <summary>
+        /// 使用提供的参数，执行有结果集返回的数据库操作命令
+        /// 并返回SqlDataReader对象
+        /// </summary>
+        /// <remarks>
+        /// e.g.:  
+        ///  SqlDataReader r = ExecuteReader(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
+        /// </remarks>
+        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+        /// <param name="commandParameters">执行命令所需的参数数组</param>
+        /// <returns>返回SqlDataReader对象</returns>
+        public static IDataReader ExecuteReader(IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        {
+            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbConnection conn = trans.Connection;
+
+            //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
+            //connection连接对象，因为异常发生datareader将不会存在，所以commandBehaviour.CloseConnection
+            //将不会执行。
+            try
+            {
+                PrepareCommand(cmd, conn, null, cmdType, cmdText, commandParameters);
+                IDataReader rdr = cmd.ExecuteReader();
+                cmd.Parameters.Clear();
+                return rdr;
+            }
+            catch
+            {
+                conn.Close();
+                cmd.Dispose();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 使用提供的参数，执行有结果集返回的数据库操作命令
+        /// 并返回SqlDataReader对象
+        /// </summary>
+        /// <remarks>
+        /// e.g.:  
+        ///  SqlDataReader r = ExecuteReader(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
+        /// </remarks>
+        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+        /// <param name="commandParameters">执行命令所需的参数数组</param>
+        /// <returns>返回SqlDataReader对象</returns>
+        public static IDataReader ExecuteReader(bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        {
+            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbConnection conn = connection;
+
+            //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
+            //connection连接对象，因为异常发生datareader将不会存在，所以commandBehaviour.CloseConnection
+            //将不会执行。
+            try
+            {
+                PrepareCommand(cmd, conn, null, cmdType, cmdText, commandParameters);
+                IDataReader rdr = closeConnection ? cmd.ExecuteReader(CommandBehavior.CloseConnection) : cmd.ExecuteReader(); 
+                cmd.Parameters.Clear();
+                return rdr;
+            }
+            catch
+            {
+                conn.Close();
+                cmd.Dispose();
+                throw;
+            }
+        }
+
         /// <summary>
         ///使用提供的参数，执行有结果集返回的数据库操作命令
         /// 并返回SqlDataReader对象
@@ -243,6 +317,69 @@ namespace Easy4net.DBUtility
                 throw ex;
             }
         }
+
+        /// <summary>
+        ///使用提供的参数，执行有结果集返回的数据库操作命令
+        /// 并返回SqlDataReader对象
+        /// </summary>
+        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+        /// <returns>返回SqlDataReader对象</returns>
+        public static IDataReader ExecuteReader(IDbTransaction trans, CommandType cmdType, string cmdText)
+        {
+            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbConnection conn = trans.Connection;
+
+            //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
+            //connection连接对象，因为异常发生datareader将不会存在，所以commandBehaviour.CloseConnection
+            //将不会执行。
+            try
+            {
+                PrepareCommand(cmd, conn, null, cmdType, cmdText, null);
+                IDataReader rdr = cmd.ExecuteReader();
+                cmd.Parameters.Clear();
+                return rdr;
+            }
+            catch (Exception ex)
+            {
+                conn.Close();
+                cmd.Dispose();
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///使用提供的参数，执行有结果集返回的数据库操作命令
+        /// 并返回SqlDataReader对象
+        /// </summary>
+        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+        /// <returns>返回SqlDataReader对象</returns>
+        public static IDataReader ExecuteReader(bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText)
+        {
+            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbConnection conn = connection;
+
+            //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
+            //connection连接对象，因为异常发生datareader将不会存在，所以commandBehaviour.CloseConnection
+            //将不会执行。
+            try
+            {
+                PrepareCommand(cmd, conn, null, cmdType, cmdText, null);
+                IDataReader rdr = closeConnection ? cmd.ExecuteReader(CommandBehavior.CloseConnection) : cmd.ExecuteReader(); 
+                cmd.Parameters.Clear();
+                return rdr;
+            }
+            catch (Exception ex)
+            {
+                conn.Close();
+                cmd.Dispose();
+                throw ex;
+            }
+        }
+        
 
         /// <summary>
         /// 查询数据填充到数据集DataSet中

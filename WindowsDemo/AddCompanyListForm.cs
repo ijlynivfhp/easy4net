@@ -1,5 +1,6 @@
 ﻿using Easy4net.DBUtility;
 using Easy4net.Entity;
+using Easy4net.Session;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,9 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            DBHelper dbHelper = DBHelper.getInstance();
+            Session session = SessionFactory.CreateSession();
+            session.BeginTransaction();
+
             List<Company> compList = new List<Company>();
 
             int count = Convert.ToInt32(txtCount.Text.Trim());
@@ -36,7 +39,8 @@ namespace WindowsDemo
                 compList.Add(company);
             }
 
-            dbHelper.Insert<Company>(compList);
+            session.Insert<Company>(compList);
+            session.CommitTransaction();
 
             MessageBox.Show("批量新增成功！");
         }

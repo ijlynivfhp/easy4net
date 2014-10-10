@@ -117,6 +117,7 @@
             this.txtCount.Name = "txtCount";
             this.txtCount.Size = new System.Drawing.Size(307, 29);
             this.txtCount.TabIndex = 18;
+            this.txtCount.Text = "2000";
             // 
             // label2
             // 
