@@ -30,6 +30,9 @@ namespace WindowsDemo
                 company.CompanyName = txtName.Text.Trim() + "-" + i;
                 company.Industry = txtIndustry.Text.Trim() + "-" + i;
                 company.Address = txtAddress.Text.Trim() + "-" + i;
+                company.Desc = "Description-" + i;
+                company.Order = "Order-" + i;
+                company.Created = DateTime.Now;
                 compList.Add(company);
             }
 
