@@ -223,7 +223,8 @@ namespace Easy4net.Common
             tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
             foreach (String key in tableInfo.Columns.Keys)
             {
-                sbColumns.Append(key).Append(",");
+                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                sbColumns.Append(nKey).Append(",");
             }
 
             if (sbColumns.Length > 0) sbColumns.Remove(sbColumns.ToString().Length - 1, 1);
@@ -250,7 +251,8 @@ namespace Easy4net.Common
             tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
             foreach (String key in tableInfo.Columns.Keys)
             {
-                sbColumns.Append(key).Append(",");
+                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                sbColumns.Append(nKey).Append(",");
             }
 
             if (sbColumns.Length > 0) sbColumns.Remove(sbColumns.ToString().Length - 1, 1);
@@ -272,7 +274,8 @@ namespace Easy4net.Common
 
             foreach (String key in tableInfo.Columns.Keys)
             {
-                sbColumns.Append(key).Append(",");
+                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                sbColumns.Append(nKey).Append(",");
             }
 
             if (sbColumns.Length > 0) sbColumns.Remove(sbColumns.ToString().Length - 1, 1);
@@ -292,7 +295,8 @@ namespace Easy4net.Common
 
             foreach (String key in tableInfo.Columns.Keys)
             {
-                sbColumns.Append(key).Append("=").Append(AdoHelper.DbParmChar).Append(key);
+                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                sbColumns.Append(nKey).Append("=").Append(AdoHelper.DbParmChar).Append(key);
             }
 
             if (sbColumns.Length > 0)
@@ -319,7 +323,8 @@ namespace Easy4net.Common
             tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
             foreach (String key in tableInfo.Columns.Keys)
             {
-                sbColumns.Append(key).Append(",");
+                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                sbColumns.Append(nKey).Append(",");
             }
 
             if (sbColumns.Length > 0) sbColumns.Remove(sbColumns.ToString().Length - 1, 1);
@@ -357,14 +362,25 @@ namespace Easy4net.Common
             StringBuilder sbValues = new StringBuilder();
 
             if(tableInfo.Strategy != GenerationType.INDENTITY)
-                tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
+            {
+                if (tableInfo.Strategy == GenerationType.GUID && tableInfo.Id.Value == null)
+                {
+                    tableInfo.Id.Value = Guid.NewGuid().ToString();
+                }
+
+                if (tableInfo.Id.Value != null)
+                {
+                    tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
+                }
+            }
             
             foreach (String key in tableInfo.Columns.Keys)
             {
                 Object value = tableInfo.Columns[key];
                 if (!string.IsNullOrEmpty(key.Trim()) && value != null)
                 {
-                    sbColumns.Append(key).Append(",");
+                    string nKey = DbKeywords.FormatColumnName(key.Trim());
+                    sbColumns.Append(nKey).Append(",");
                     sbValues.Append(AdoHelper.DbParmChar).Append(key).Append(",");
                 }
             }

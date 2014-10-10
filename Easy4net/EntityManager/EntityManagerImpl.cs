@@ -21,10 +21,11 @@ namespace Easy4net.EntityManager
         public int Insert<T>(T entity)
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 //从实体对象的属性配置上获取对应的表信息
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
@@ -66,6 +67,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -75,10 +84,11 @@ namespace Easy4net.EntityManager
         public int Insert<T>(List<T> entityList)
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 //从实体对象的属性配置上获取对应的表信息
                 T firstEntity = entityList[0];
@@ -126,6 +136,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -135,10 +153,11 @@ namespace Easy4net.EntityManager
         public int Update<T>(T entity)
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.UPDATE, properties);
@@ -162,6 +181,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -171,10 +198,11 @@ namespace Easy4net.EntityManager
         public int Update<T>(List<T> entityList)
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 T firstEntity = entityList[0];
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
@@ -202,6 +230,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -211,10 +247,11 @@ namespace Easy4net.EntityManager
         public int ExcuteSQL(string strSQL, ParamMap param)
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 IDbDataParameter[] parms = param.toDbParameters();
                 strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, parms);
@@ -232,6 +269,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -241,10 +286,11 @@ namespace Easy4net.EntityManager
         public int Delete<T>(T entity)
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
@@ -268,6 +314,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -277,10 +331,11 @@ namespace Easy4net.EntityManager
         public int Delete<T>(List<T> entityList)
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 T firstEntity = entityList[0];
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
@@ -310,6 +365,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -319,10 +382,11 @@ namespace Easy4net.EntityManager
         public int Delete<T>(object id) where T : new()
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 T entity = new T();
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
@@ -347,6 +411,14 @@ namespace Easy4net.EntityManager
             {
                 throw e;
             }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
 
             return Convert.ToInt32(val);
         }
@@ -356,10 +428,11 @@ namespace Easy4net.EntityManager
         public int Delete<T>(object[] ids) where T : new()
         {
             object val = 0;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                IDbConnection connection = GetConnection();
+                connection = GetConnection();
 
                 T entity = new T();
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
@@ -388,6 +461,14 @@ namespace Easy4net.EntityManager
             catch (Exception e)
             {
                 throw e;
+            }
+            finally
+            {
+                if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
             }
 
             return Convert.ToInt32(val);
@@ -466,7 +547,6 @@ namespace Easy4net.EntityManager
         }
         #endregion
 
-
         #region 通过自定义SQL语句查询数据
         public List<T> Find<T>(string strSQL, ParamMap param) where T : new()
         {
@@ -509,7 +589,6 @@ namespace Easy4net.EntityManager
             return list;
         }
         #endregion
-
 
         #region 分页查询返回分页结果
         public PageResult<T> FindPage<T>(string strSQL) where T : new()

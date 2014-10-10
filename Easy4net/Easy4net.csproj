@@ -49,6 +49,7 @@
     <Compile Include="Common\ColumnInfo.cs" />
     <Compile Include="Common\CommonUtils.cs" />
     <Compile Include="Common\DbCondition.cs" />
+    <Compile Include="Common\DbKeywords.cs" />
     <Compile Include="Common\EntityHelper.cs" />
     <Compile Include="Common\DynamicCalls.cs" />
     <Compile Include="Common\IdInfo.cs" />
