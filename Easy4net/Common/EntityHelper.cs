@@ -413,7 +413,8 @@ namespace Easy4net.Common
                 Object value = tableInfo.Columns[key];
                 if (!string.IsNullOrEmpty(key.Trim()) && value != null)
                 {
-                    sbBody.Append(key).Append("=").Append(AdoHelper.DbParmChar + key).Append(",");
+                    string nKey = DbKeywords.FormatColumnName(key.Trim());
+                    sbBody.Append(nKey).Append("=").Append(AdoHelper.DbParmChar + key).Append(",");
                 }
             }
 

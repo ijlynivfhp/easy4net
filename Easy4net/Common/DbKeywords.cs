@@ -17,6 +17,7 @@ namespace Easy4net.Common
             {
                 m_MySQL.Add("order", "`order`");
                 m_MySQL.Add("desc", "`desc`");
+                m_MySQL.Add("key", "`key`");
             }
         }
 
@@ -36,14 +37,15 @@ namespace Easy4net.Common
             InitMySQL();
             InitMSSQL();
 
-            if(AdoHelper.DbType == DatabaseType.MYSQL && m_MySQL.ContainsKey(colounName))
+            string colName = colounName.ToLower();
+            if (AdoHelper.DbType == DatabaseType.MYSQL && m_MySQL.ContainsKey(colName))
             {
-                return m_MySQL[colounName];
+                return m_MySQL[colName];
             }
 
-            if (AdoHelper.DbType == DatabaseType.SQLSERVER && m_MSSQL.ContainsKey(colounName))
+            if (AdoHelper.DbType == DatabaseType.SQLSERVER && m_MSSQL.ContainsKey(colName))
             {
-                return m_MSSQL[colounName];
+                return m_MSSQL[colName];
             }
 
             return colounName;
