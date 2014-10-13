@@ -32,4 +32,3 @@ C:\Users\wangwei\Desktop\Silverlight\Easy4net\Easy4net\bin\Debug\mysql.data.dll
 C:\Users\wangwei\Desktop\Silverlight\Easy4net\Easy4net\obj\Debug\Easy4net.csprojResolveAssemblyReference.cache
 C:\Users\wangwei\Desktop\Silverlight\Easy4net\Easy4net\obj\Debug\Easy4net.dll
 C:\Users\wangwei\Desktop\Silverlight\Easy4net\Easy4net\obj\Debug\Easy4net.pdb
-D:\Easy4net\Easy4net\obj\Debug\Easy4net.csprojResolveAssemblyReference.cache

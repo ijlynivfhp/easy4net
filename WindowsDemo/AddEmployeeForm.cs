@@ -1,6 +1,7 @@
 ﻿using Easy4net.Common;
 using Easy4net.DBUtility;
 using Easy4net.Entity;
+using Easy4net.Session;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,8 +43,8 @@ namespace WindowsDemo
             employee.Created = DateTime.Now;
             employee.CompanyId = company.Id;
 
-            DBHelper dbHelper = DBHelper.getInstance();
-            dbHelper.Insert<Employee>(employee);
+            Session session = SessionFactory.GetSession();
+            session.Insert<Employee>(employee);
             if (employee.Id > 0)
             {
                 MessageBox.Show("新增员工成功！");
@@ -52,7 +53,7 @@ namespace WindowsDemo
 
         private void InitCompanySelections()
         {
-            DBHelper dbHelper = DBHelper.getInstance();
+            Session session = SessionFactory.GetSession();
 
             string strSql = "SELECT * FROM company";
 
@@ -60,7 +61,7 @@ namespace WindowsDemo
             param.setPageParamters(1, 20);
             param.setOrderFields("id", true);
 
-            m_CompanyList = dbHelper.Find<Company>(strSql, param);
+            m_CompanyList = session.Find<Company>(strSql, param);
             cbCompany.DataSource = m_CompanyList;
             cbCompany.ValueMember = "Id";
             cbCompany.DisplayMember = "CompanyName";

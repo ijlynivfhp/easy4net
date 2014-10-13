@@ -8,7 +8,7 @@ namespace Easy4net.Session
 {
     public class SessionFactory
     {
-        public static Session CreateSession()
+        public static Session GetSession()
         {
             Session session = SessionThreadLocal.Get();
             if (session == null)

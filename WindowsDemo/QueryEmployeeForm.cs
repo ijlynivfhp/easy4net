@@ -1,6 +1,7 @@
 ﻿using Easy4net.Common;
 using Easy4net.DBUtility;
 using Easy4net.Entity;
+using Easy4net.Session;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,7 +32,7 @@ namespace WindowsDemo
 
         private void FindByPage(int page, int limit)
         {
-            DBHelper dbHelper = DBHelper.getInstance();
+            Session session = SessionFactory.GetSession();
 
             string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id";
             ParamMap param = ParamMap.newMap();
@@ -45,7 +46,7 @@ namespace WindowsDemo
             //分页时使用的排序字段，必填，请带上SQL表名的别名，如employee的为: e
             param.setOrderFields("e.id", true);
 
-            m_EmployeeList = dbHelper.Find<Employee>(strSql, param);
+            m_EmployeeList = session.Find<Employee>(strSql, param);
             dgEmployee.DataSource = m_EmployeeList;
         }
 

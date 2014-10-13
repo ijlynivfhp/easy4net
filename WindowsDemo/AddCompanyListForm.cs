@@ -21,7 +21,7 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Session session = SessionFactory.CreateSession();
+            Session session = SessionFactory.GetSession();
             session.BeginTransaction();
 
             List<Company> compList = new List<Company>();
@@ -40,7 +40,7 @@ namespace WindowsDemo
             }
 
             session.Insert<Company>(compList);
-            session.CommitTransaction();
+            session.Commit();
 
             MessageBox.Show("批量新增成功！");
         }

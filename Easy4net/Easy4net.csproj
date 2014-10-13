@@ -49,6 +49,7 @@
     <Compile Include="Common\ColumnInfo.cs" />
     <Compile Include="Common\CommonUtils.cs" />
     <Compile Include="Common\DbCondition.cs" />
+    <Compile Include="Common\DbEntityUtils.cs" />
     <Compile Include="Common\DbKeywords.cs" />
     <Compile Include="Common\EntityHelper.cs" />
     <Compile Include="Common\DynamicCalls.cs" />
@@ -67,20 +68,14 @@
     <Compile Include="DBUtility\AdoHelper.cs" />
     <Compile Include="DBUtility\DatabaseType.cs" />
     <Compile Include="DBUtility\DbFactory.cs" />
-    <Compile Include="DBUtility\DBHelper.cs" />
     <Compile Include="DBUtility\DbOperateType.cs" />
     <Compile Include="DBUtility\DbTypeConvert.cs" />
-    <Compile Include="EntityManager\EntityManager.cs" />
-    <Compile Include="EntityManager\EntityManagerFactory.cs" />
-    <Compile Include="EntityManager\EntityManagerImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\Session.cs" />
     <Compile Include="Session\SessionFactory.cs" />
     <Compile Include="Session\SessionThreadLocal.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Transaction\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

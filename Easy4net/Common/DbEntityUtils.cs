@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Orm.CustomAttributes;
-using Orm.DBUtility;
+using Easy4net.CustomAttributes;
+using Easy4net.DBUtility;
 using System.Collections;
 using System.Reflection;
 using System.Data;
 
-namespace Orm.Common
+namespace Easy4net.Common
 {
     public class DbEntityUtils
     {
@@ -42,10 +42,10 @@ namespace Orm.Common
                 {
                     case GenerationType.INDENTITY:
                         break;
-                    case GenerationType.SEQUENCE:
+                    case GenerationType.GUID:
                         strPrimary = System.Guid.NewGuid().ToString();
                         break;
-                    case GenerationType.TABLE:
+                    case GenerationType.FILL:
                         break;
                 }
             }
@@ -86,14 +86,14 @@ namespace Orm.Common
                 return tableInfo;
             }
 
-            PropertyInfo[] properties = ReflectionUtils.GetProperties(type);
+            PropertyInfo[] properties = ReflectionHelper.GetProperties(type);
             foreach (PropertyInfo property in properties)
             {
                 object propvalue = null;
                 string columnName = string.Empty;
                 string propName = columnName = property.Name;
-          
-                propvalue = ReflectionUtils.GetPropertyValue(entity, property);
+
+                propvalue = ReflectionHelper.GetPropertyValue(entity, property);
 
                 object[] propertyAttrs = property.GetCustomAttributes(false);
                 for (int i = 0; i < propertyAttrs.Length; i++)
@@ -142,8 +142,8 @@ namespace Orm.Common
             bool breakForeach = false;
             Type type = entity.GetType();
             PropertyInfo properyInfo = null;
-        
-            PropertyInfo[] properties = ReflectionUtils.GetProperties(type);
+
+            PropertyInfo[] properties = ReflectionHelper.GetProperties(type);
             foreach (PropertyInfo property in properties)
             {
                 string columnName = string.Empty;

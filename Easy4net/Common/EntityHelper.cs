@@ -138,6 +138,11 @@ namespace Easy4net.Common
                 tableInfo.PropToColumn.Put(propName, columnName);
             }
 
+            if (dbOpType == DbOperateType.UPDATE)
+            {
+                tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
+            }
+
             return tableInfo;
         }
 

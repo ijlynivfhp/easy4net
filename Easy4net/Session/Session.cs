@@ -22,13 +22,13 @@ namespace Easy4net.Session
         }
         public static Session GetCurrentSession()
         {
-            Session session = SessionThreadLocal.Get();
+            Session session = SessionFactory.GetSession();
             return session;
         }
 
         public static Session NewSession()
         {
-            Session session = SessionFactory.CreateSession();
+            Session session = new Session();
             return session;
         }
 
@@ -37,16 +37,28 @@ namespace Easy4net.Session
             m_Transaction = DbFactory.CreateDbTransaction();
         }
 
-        public void CommitTransaction()
+        public void Commit()
         {
-            m_Transaction.Commit();
-            m_Transaction.Connection.Close();
+            if (m_Transaction != null)
+            {
+                if (m_Transaction.Connection.State != ConnectionState.Closed)
+                {
+                    m_Transaction.Commit();
+                    m_Transaction.Connection.Close();
+                }
+            }
         }
 
         public void Rollback()
         {
-            m_Transaction.Rollback();
-            m_Transaction.Connection.Close();
+            if (m_Transaction != null)
+            {
+                if (m_Transaction.Connection.State != ConnectionState.Closed)
+                {
+                    m_Transaction.Rollback();
+                    m_Transaction.Connection.Close();
+                }
+            }
         }
 
         private IDbTransaction GetTransaction()
@@ -58,22 +70,33 @@ namespace Easy4net.Session
 
         private void Commit(IDbTransaction transaction)
         {
-            if (m_Transaction == null)
+            if (m_Transaction == null && transaction != null)
             {
-                transaction.Commit();
-                transaction.Connection.Close();
+                if (transaction.Connection.State != ConnectionState.Closed)
+                {
+                    transaction.Commit();
+                    transaction.Connection.Close();
+                }
             }
         }
 
         private void Rollback(IDbTransaction transaction)
         {
-            transaction.Commit();
-            transaction.Connection.Close();
+            if (transaction != null)
+            {
+                if (transaction.Connection.State != ConnectionState.Closed)
+                {
+                    transaction.Rollback();
+                    transaction.Connection.Close();
+                }
+            }
         }
 
         #region 将实体数据保存到数据库
         public int Insert<T>(T entity)
         {
+            if (entity == null) return 0;
+
             object val = 0;
 
             IDbTransaction transaction = null;
@@ -143,7 +166,10 @@ namespace Easy4net.Session
         #region 批量保存
         public int Insert<T>(List<T> entityList)
         {
+            if (entityList == null || entityList.Count == 0) return 0;
+
             object val = 0;
+
             //IDbConnection connection = null;
             IDbTransaction transaction = null;
             try
@@ -217,6 +243,8 @@ namespace Easy4net.Session
         #region 将实体数据修改到数据库
         public int Update<T>(T entity)
         {
+            if (entity == null) return 0;
+
             object val = 0;
             //IDbConnection connection = null;
             IDbTransaction transaction = null;
@@ -267,6 +295,8 @@ namespace Easy4net.Session
         #region 批量更新
         public int Update<T>(List<T> entityList)
         {
+            if (entityList == null || entityList.Count == 0) return 0;
+
             object val = 0;
             //IDbConnection connection = null;
             IDbTransaction transaction = null;
@@ -365,6 +395,8 @@ namespace Easy4net.Session
         #region 删除实体对应数据库中的数据
         public int Delete<T>(T entity)
         {
+            if (entity == null) return 0;
+
             object val = 0;
             //IDbConnection connection = null;
             IDbTransaction transaction = null;
@@ -415,6 +447,8 @@ namespace Easy4net.Session
         #region 批量删除
         public int Delete<T>(List<T> entityList)
         {
+            if (entityList == null || entityList.Count == 0) return 0;
+
             object val = 0;
             //IDbConnection connection = null;
             IDbTransaction transaction = null;
@@ -522,6 +556,8 @@ namespace Easy4net.Session
         #region 批量根据主键id删除数据
         public int Delete<T>(object[] ids) where T : new()
         {
+            if (ids == null || ids.Length == 0) return 0;
+
             object val = 0;
             //IDbConnection connection = null;
             IDbTransaction transaction = null;

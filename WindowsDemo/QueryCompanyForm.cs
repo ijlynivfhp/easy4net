@@ -1,6 +1,7 @@
 ﻿using Easy4net.Common;
 using Easy4net.DBUtility;
 using Easy4net.Entity;
+using Easy4net.Session;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,7 +33,7 @@ namespace WindowsDemo
 
         private void FindByPage(int page, int limit)
         {
-            DBHelper dbHelper = DBHelper.getInstance();
+            Session session = SessionFactory.GetSession();
 
             string strSql = "SELECT * FROM company";
             ParamMap param = ParamMap.newMap();
@@ -44,7 +45,7 @@ namespace WindowsDemo
             param.setPageParamters(page, limit);
             param.setOrderFields("id", true);
 
-            companyList = dbHelper.Find<Company>(strSql, param);
+            companyList = session.Find<Company>(strSql, param);
             dgCompany.DataSource = companyList;
         }
 

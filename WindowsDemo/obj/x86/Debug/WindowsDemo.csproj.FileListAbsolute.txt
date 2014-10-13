@@ -45,7 +45,6 @@ D:\workspace\easy4net_os\WindowsDemo\obj\x86\Debug\WindowsDemo.Form1.resources
 D:\workspace\easy4net_os\WindowsDemo\obj\x86\Debug\WindowsDemo.Properties.Resources.resources
 D:\workspace\easy4net_os\WindowsDemo\obj\x86\Debug\WindowsDemo.csproj.GenerateResource.Cache
 D:\Easy4net\WindowsDemo\bin\Debug\WindowsDemo.exe.config
-D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.Form1.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.Properties.Resources.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.csproj.GenerateResource.Cache
 D:\Easy4net\WindowsDemo\bin\Debug\tj.mdb

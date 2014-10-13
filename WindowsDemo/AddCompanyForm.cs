@@ -21,7 +21,7 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Session session = SessionFactory.CreateSession();
+            Session session = SessionFactory.GetSession();
             session.BeginTransaction();
 
             try
@@ -44,7 +44,7 @@ namespace WindowsDemo
                 }
                 else
                 {
-                    session.CommitTransaction();
+                    session.Commit();
                     MessageBox.Show("事务提交成功，请查看数据库是否存在该数据！");
                 }
             }
