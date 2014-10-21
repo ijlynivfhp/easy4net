@@ -21,8 +21,12 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Session session = SessionFactory.GetSession();
-            session.BeginTransaction();
+            //Session session = SessionFactory.GetSession();
+            //session.BeginTransaction();
+
+            //旧的写法，新的写法为Session，但是保持了兼容性
+            DBHelper dbHelper = DBHelper.getInstance();
+            dbHelper.BeginTransaction();
 
             try
             {
@@ -31,7 +35,8 @@ namespace WindowsDemo
                 company.Industry = txtIndustry.Text.Trim();
                 company.Address = txtAddress.Text.Trim();
 
-                session.Insert<Company>(company);
+                //session.Insert<Company>(company);
+                dbHelper.Save<Company>(company);
 
                 if (company.Id > 0)
                 {
@@ -44,13 +49,15 @@ namespace WindowsDemo
                 }
                 else
                 {
-                    session.Commit();
+                    //session.Commit();
+                    dbHelper.CommitTransaction();
                     MessageBox.Show("事务提交成功，请查看数据库是否存在该数据！");
                 }
             }
             catch (Exception ex)
             {
-                session.Rollback();
+                //session.Rollback();
+                dbHelper.RollbackTransaction();
                 MessageBox.Show("事务回滚成功，请查看数据库是否存在该数据！");
             }
         }

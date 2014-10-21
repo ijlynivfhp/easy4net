@@ -21,6 +21,10 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            //DBHelper dbHelper = DBHelper.getInstance();
+            //dbHelper.BeginTransaction();
+
+            //新的写法，兼容DbHelper写法
             Session session = SessionFactory.GetSession();
             session.BeginTransaction();
 

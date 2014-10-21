@@ -32,6 +32,10 @@ namespace WindowsDemo
 
         private void FindByPage(int page, int limit)
         {
+            //DBHelper dbHelper = DBHelper.getInstance();
+            //dbHelper.BeginTransaction();
+
+            //新的写法，兼容DbHelper写法
             Session session = SessionFactory.GetSession();
 
             string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id";

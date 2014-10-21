@@ -33,7 +33,11 @@ namespace WindowsDemo
 
         private void FindByPage(int page, int limit)
         {
-            Session session = SessionFactory.GetSession();
+            //Session session = SessionFactory.GetSession();
+
+            //旧的写法，新的写法为Session，但是保持了兼容性
+            DBHelper dbHelper = DBHelper.getInstance();
+
 
             string strSql = "SELECT * FROM company";
             ParamMap param = ParamMap.newMap();
@@ -45,7 +49,7 @@ namespace WindowsDemo
             param.setPageParamters(page, limit);
             param.setOrderFields("id", true);
 
-            companyList = session.Find<Company>(strSql, param);
+            companyList = dbHelper.FindBySql<Company>(strSql, param);
             dgCompany.DataSource = companyList;
         }
 

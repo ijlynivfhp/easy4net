@@ -68,6 +68,7 @@
     <Compile Include="DBUtility\AdoHelper.cs" />
     <Compile Include="DBUtility\DatabaseType.cs" />
     <Compile Include="DBUtility\DbFactory.cs" />
+    <Compile Include="DBUtility\DbHelper.cs" />
     <Compile Include="DBUtility\DbOperateType.cs" />
     <Compile Include="DBUtility\DbTypeConvert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -348,7 +348,7 @@ namespace Easy4net.Session
         }
         #endregion
 
-        #region 将实体数据修改到数据库
+        #region 执行SQL语句
         public int ExcuteSQL(string strSQL, ParamMap param)
         {
             object val = 0;
@@ -371,6 +371,39 @@ namespace Easy4net.Session
                 {
                     val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL, parms);
                 }
+
+                Commit(transaction);
+            }
+            catch (Exception e)
+            {
+                Rollback(transaction);
+                throw e;
+            }
+            finally
+            {
+                /*if (transaction == null)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }*/
+            }
+
+            return Convert.ToInt32(val);
+        }
+        #endregion
+
+        #region 执行SQL语句
+        public int ExcuteSQL(string strSQL)
+        {
+            object val = 0;
+            //IDbConnection connection = null;
+            IDbTransaction transaction = null;
+            try
+            {
+                //获取数据库连接，如果开启了事务，从事务中获取
+                //connection = GetConnection();
+                transaction = GetTransaction();
+                val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
 
                 Commit(transaction);
             }
