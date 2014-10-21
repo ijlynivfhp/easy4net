@@ -180,17 +180,6 @@ namespace Easy4net.DBUtility
         /// </summary>
         /// <typeparam name="T">对象类型</typeparam>
         /// <param name="strSQL">SQL命令</param>
-        /// <returns></returns>
-        PageResult<T> FindPage<T>(string strSQL) where T : new()
-        {
-            return session.FindPage<T>(strSQL);
-        }
-
-        /// <summary>
-        /// 分页查询返回分页对象
-        /// </summary>
-        /// <typeparam name="T">对象类型</typeparam>
-        /// <param name="strSQL">SQL命令</param>
         /// <param name="param">参数</param>
         /// <returns></returns>
         public PageResult<T> FindPage<T>(string strSQL, ParamMap param) where T : new()

@@ -768,47 +768,6 @@ namespace Easy4net.Session
         #endregion
 
         #region 分页查询返回分页结果
-        public PageResult<T> FindPage<T>(string strSQL) where T : new()
-        {
-            PageResult<T> pageResult = new PageResult<T>();
-            List<T> list = new List<T>();
-            IDataReader sdr = null;
-            IDbConnection connection = null;
-            try
-            {
-                connection = GetConnection();
-                bool closeConnection = GetWillConnectionState();
-
-                strSQL = strSQL.ToLower();
-                String countSQL = SQLBuilderHelper.builderCountSQL(strSQL);
-                String columns = SQLBuilderHelper.fetchColumns(strSQL);
-
-                T entity = new T();
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
-                TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
-
-                sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, null);
-
-                int count = this.Count(countSQL);
-                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
-
-                pageResult.Total = count;
-                pageResult.DataList = list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (sdr != null) sdr.Close();
-            }
-
-            return pageResult;
-        }
-        #endregion
-
-        #region 分页查询返回分页结果
         public PageResult<T> FindPage<T>(string strSQL, ParamMap param) where T : new()
         {
             PageResult<T> pageResult = new PageResult<T>();
