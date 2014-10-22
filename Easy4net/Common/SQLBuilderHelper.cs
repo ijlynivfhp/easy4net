@@ -133,6 +133,10 @@ namespace Easy4net.Common
                 { 
                     paramValue = "'" + paramValue + "'";
                 }
+                else if (type == null)
+                {
+                    paramValue = "'" + paramValue + "'";
+                }
                 
                 strSql = strSql.Replace("@"+paramName, paramValue);
             }

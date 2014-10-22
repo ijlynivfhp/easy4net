@@ -26,7 +26,7 @@ namespace Easy4net.Session
             return session;
         }
 
-        public static Session NewSession()
+        public static Session OpenSession()
         {
             Session session = new Session();
             return session;
@@ -39,57 +39,29 @@ namespace Easy4net.Session
 
         public void Commit()
         {
-            if (m_Transaction != null)
+            if (m_Transaction != null && m_Transaction.Connection != null)
             {
                 if (m_Transaction.Connection.State != ConnectionState.Closed)
                 {
                     m_Transaction.Commit();
-                    m_Transaction.Connection.Close();
                 }
             }
         }
 
         public void Rollback()
         {
-            if (m_Transaction != null)
+            if (m_Transaction != null && m_Transaction.Connection != null)
             {
                 if (m_Transaction.Connection.State != ConnectionState.Closed)
                 {
                     m_Transaction.Rollback();
-                    m_Transaction.Connection.Close();
                 }
             }
         }
 
         private IDbTransaction GetTransaction()
         {
-            if (m_Transaction != null) return m_Transaction;
-
-            return DbFactory.CreateDbTransaction();
-        }
-
-        private void Commit(IDbTransaction transaction)
-        {
-            if (m_Transaction == null && transaction != null)
-            {
-                if (transaction.Connection.State != ConnectionState.Closed)
-                {
-                    transaction.Commit();
-                    transaction.Connection.Close();
-                }
-            }
-        }
-
-        private void Rollback(IDbTransaction transaction)
-        {
-            if (transaction != null)
-            {
-                if (transaction.Connection.State != ConnectionState.Closed)
-                {
-                    transaction.Rollback();
-                    transaction.Connection.Close();
-                }
-            }
+            return m_Transaction;
         }
 
         #region 将实体数据保存到数据库
@@ -100,11 +72,11 @@ namespace Easy4net.Session
             object val = 0;
 
             IDbTransaction transaction = null;
-            //IDbConnection connection = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 //从实体对象的属性配置上获取对应的表信息
@@ -124,16 +96,16 @@ namespace Easy4net.Session
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
                     //执行Insert命令
-                    val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, strSql);
+                    val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, strSql);
 
                     //如果是Access数据库，另外执行获取自动生成的ID
                     String autoSql = EntityHelper.GetAutoSql();
-                    val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, autoSql);
+                    val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, autoSql);
                 }
                 else
                 {
                     //执行Insert命令
-                    val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, strSql, parms);
+                    val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, strSql, parms);
                 }
 
                 //把自动生成的主键ID赋值给返回的对象
@@ -142,21 +114,17 @@ namespace Easy4net.Session
                     PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
                     ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
                 }
-
-                Commit(transaction);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -170,12 +138,12 @@ namespace Easy4net.Session
 
             object val = 0;
 
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 //从实体对象的属性配置上获取对应的表信息
@@ -200,16 +168,16 @@ namespace Easy4net.Session
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
                         //执行Insert命令
-                        val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, strSQL);
+                        val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, strSQL);
 
                         //如果是Access数据库，另外执行获取自动生成的ID
                         String autoSql = EntityHelper.GetAutoSql();
-                        val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, autoSql);
+                        val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, autoSql);
                     }
                     else
                     {
                         //执行Insert命令
-                        val = AdoHelper.ExecuteScalar(transaction, CommandType.Text, strSQL, parms);
+                        val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, strSQL, parms);
                     }
 
                     //把自动生成的主键ID赋值给返回的对象
@@ -218,22 +186,18 @@ namespace Easy4net.Session
                         PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
                         ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
                     }
-
-                    Commit(transaction);
                 }
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -246,12 +210,13 @@ namespace Easy4net.Session
             if (entity == null) return 0;
 
             object val = 0;
-            //IDbConnection connection = null;
+
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
@@ -264,28 +229,23 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSql);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSql);
                 }
                 else
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSql, parms);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSql, parms);
                 }
-
-                Commit(transaction);
-
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -298,12 +258,12 @@ namespace Easy4net.Session
             if (entityList == null || entityList.Count == 0) return 0;
 
             object val = 0;
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 T firstEntity = entityList[0];
@@ -320,28 +280,24 @@ namespace Easy4net.Session
 
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
-                        val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
                     }
                     else
                     {
-                        val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL, parms);
+                        val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
                     }
                 }
-
-                Commit(transaction);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -352,12 +308,12 @@ namespace Easy4net.Session
         public int ExcuteSQL(string strSQL, ParamMap param)
         {
             object val = 0;
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 IDbDataParameter[] parms = param.toDbParameters();
@@ -365,27 +321,23 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL, parms);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
-
-                Commit(transaction);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -396,29 +348,26 @@ namespace Easy4net.Session
         public int ExcuteSQL(string strSQL)
         {
             object val = 0;
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
-                val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
 
-                Commit(transaction);
+                val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -431,12 +380,12 @@ namespace Easy4net.Session
             if (entity == null) return 0;
 
             object val = 0;
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
@@ -450,27 +399,23 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL, parms);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
-
-                Commit(transaction);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -483,12 +428,12 @@ namespace Easy4net.Session
             if (entityList == null || entityList.Count == 0) return 0;
 
             object val = 0;
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 T firstEntity = entityList[0];
@@ -507,28 +452,24 @@ namespace Easy4net.Session
 
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
-                        val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
+                        val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                     }
                     else
                     {
-                        val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL, parms);
+                        val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                     }
                 }
-
-                Commit(transaction);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -539,12 +480,12 @@ namespace Easy4net.Session
         public int Delete<T>(object id) where T : new()
         {
             object val = 0;
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 T entity = new T();
@@ -559,27 +500,23 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
-                    val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL, parms);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
-
-                Commit(transaction);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -592,12 +529,12 @@ namespace Easy4net.Session
             if (ids == null || ids.Length == 0) return 0;
 
             object val = 0;
-            //IDbConnection connection = null;
             IDbTransaction transaction = null;
+            IDbConnection connection = null;
             try
             {
                 //获取数据库连接，如果开启了事务，从事务中获取
-                //connection = GetConnection();
+                connection = GetConnection();
                 transaction = GetTransaction();
 
                 T entity = new T();
@@ -616,28 +553,24 @@ namespace Easy4net.Session
 
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
-                        val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL);
+                        val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                     }
                     else
                     {
-                        val = AdoHelper.ExecuteNonQuery(transaction, CommandType.Text, strSQL, parms);
+                        val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                     }
                 }
-
-                Commit(transaction);
             }
             catch (Exception e)
             {
-                Rollback(transaction);
                 throw e;
             }
             finally
             {
-                /*if (transaction == null)
+                if (m_Transaction == null)
                 {
                     connection.Close();
-                    connection.Dispose();
-                }*/
+                }
             }
 
             return Convert.ToInt32(val);
@@ -648,13 +581,23 @@ namespace Easy4net.Session
         public int Count(string strSQL)
         {
             int count = 0;
+            IDbConnection connection = null;
+            bool closeConnection = GetWillConnectionState();
             try
             {
-                count = Convert.ToInt32(AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSQL));
+                connection = GetConnection();
+                count = Convert.ToInt32(AdoHelper.ExecuteScalar(connection, CommandType.Text, strSQL));
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (closeConnection)
+                {
+                    connection.Close();
+                }
             }
 
             return count;
@@ -665,8 +608,12 @@ namespace Easy4net.Session
         public int Count(string strSql, ParamMap param)
         {
             int count = 0;
+            IDbConnection connection = null;
+            bool closeConnection = GetWillConnectionState();
             try
             {
+                connection = GetConnection();
+
                 strSql = strSql.ToLower();
                 String columns = SQLBuilderHelper.fetchColumns(strSql);
 
@@ -675,11 +622,18 @@ namespace Easy4net.Session
                     strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
                 }
 
-                count = Convert.ToInt32(AdoHelper.ExecuteScalar(AdoHelper.ConnectionString, CommandType.Text, strSql, param.toDbParameters()));
+                count = Convert.ToInt32(AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql, param.toDbParameters()));
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (closeConnection)
+                {
+                    connection.Close();
+                }
             }
 
             return count;
@@ -827,8 +781,12 @@ namespace Easy4net.Session
             List<T> list = new List<T>();
 
             IDataReader sdr = null;
+            IDbConnection connection = null;
             try
             {
+                connection = GetConnection();
+                bool closeConnection = GetWillConnectionState();
+
                 T entity = new T();
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
 
@@ -841,11 +799,11 @@ namespace Easy4net.Session
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
                     strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, parms);
-                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL);
+                    sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL);
                 }
                 else
                 {
-                    sdr = AdoHelper.ExecuteReader(AdoHelper.ConnectionString, CommandType.Text, strSQL, parms);
+                    sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, parms);
                 }
 
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);

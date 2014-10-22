@@ -47,6 +47,11 @@ namespace Easy4net.Common
                 return m_MSSQL[colName];
             }
 
+            if (AdoHelper.DbType == DatabaseType.ACCESS && m_MSSQL.ContainsKey(colName))
+            {
+                return m_MSSQL[colName];
+            }
+
             return colounName;
         }
 

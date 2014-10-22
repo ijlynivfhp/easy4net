@@ -47,7 +47,6 @@ D:\workspace\easy4net_os\WindowsDemo\obj\x86\Debug\WindowsDemo.csproj.GenerateRe
 D:\Easy4net\WindowsDemo\bin\Debug\WindowsDemo.exe.config
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.Properties.Resources.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.csproj.GenerateResource.Cache
-D:\Easy4net\WindowsDemo\bin\Debug\tj.mdb
 D:\Easy4net\WindowsDemo\bin\Debug\WindowsDemo.exe
 D:\Easy4net\WindowsDemo\bin\Debug\WindowsDemo.pdb
 D:\Easy4net\WindowsDemo\bin\Debug\Easy4net.dll
@@ -67,3 +66,4 @@ D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.AddEmployeeForm.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.QueryCompanyForm.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.QueryEmployeeForm.resources
 D:\Easy4net\WindowsDemo\obj\x86\Debug\WindowsDemo.AddCompanyListForm.resources
+D:\Easy4net\WindowsDemo\bin\Debug\test.mdb

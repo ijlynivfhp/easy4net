@@ -21,32 +21,39 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            //DBHelper dbHelper = DBHelper.getInstance();
-            //dbHelper.BeginTransaction();
-
-            //新的写法，兼容DbHelper写法
             Session session = SessionFactory.GetSession();
-            session.BeginTransaction();
+            try
+            {
+                //DBHelper dbHelper = DBHelper.getInstance();
+                //dbHelper.BeginTransaction();
 
-            List<Company> compList = new List<Company>();
+                //新的写法，兼容DbHelper写法
+                session.BeginTransaction();
 
-            int count = Convert.ToInt32(txtCount.Text.Trim());
-            for(int i = 0; i < count; i++)
-            { 
-                Company company = new Company();
-                company.CompanyName = txtName.Text.Trim() + "-" + i;
-                company.Industry = txtIndustry.Text.Trim() + "-" + i;
-                company.Address = txtAddress.Text.Trim() + "-" + i;
-                company.Desc = "Description-" + i;
-                company.Order = "Order-" + i;
-                company.Created = DateTime.Now;
-                compList.Add(company);
+                List<Company> compList = new List<Company>();
+
+                int count = Convert.ToInt32(txtCount.Text.Trim());
+                for (int i = 0; i < count; i++)
+                {
+                    Company company = new Company();
+                    company.CompanyName = txtName.Text.Trim() + "-" + i;
+                    company.Industry = txtIndustry.Text.Trim() + "-" + i;
+                    company.Address = txtAddress.Text.Trim() + "-" + i;
+                    company.Desc = "Description-" + i;
+                    company.Order = "Order-" + i;
+                    company.Created = DateTime.Now;
+                    compList.Add(company);
+                }
+
+                session.Insert<Company>(compList);
+                session.Commit();
+                MessageBox.Show("批量新增成功！");
             }
-
-            session.Insert<Company>(compList);
-            session.Commit();
-
-            MessageBox.Show("批量新增成功！");
+            catch (Exception ex)
+            {
+                session.Rollback();
+                MessageBox.Show("批量新增失败！");
+            }
         }
     }
 }

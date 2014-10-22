@@ -14,7 +14,7 @@ namespace Easy4net.DBUtility
         Session.Session session;
         public DBHelper()
         {
-            session = SessionFactory.GetSession();
+            session = Session.Session.PriviteInstance();
         }
 
         public static DBHelper getInstance()
