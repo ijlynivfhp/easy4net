@@ -96,5 +96,29 @@ namespace WindowsDemo
         {
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+             //旧的写法，新的写法为Session，但是保持了兼容性
+            DBHelper dbHelper = DBHelper.getInstance();
+            dbHelper.BeginTransaction();
+
+            try
+            {
+                Company company = new Company();
+                company.Id = 1;
+                company.CompanyName = txtName.Text.Trim();
+                company.Industry = txtIndustry.Text.Trim();
+                company.Address = txtAddress.Text.Trim();
+
+                //session.Insert<Company>(company);
+                dbHelper.Update<Company>(company);
+                dbHelper.CommitTransaction();
+            }catch(Exception eX)
+            {
+                dbHelper.RollbackTransaction();
+                MessageBox.Show("AAAAAAAAAAAAAAAAAAAA");
+            }
+        }
     }
 }
