@@ -30,7 +30,7 @@ namespace WindowsDemo
 
             DBHelper dbHelper = DBHelper.getInstance();
             Company company = new Company();
-            company.Id = 34;
+            company.Id = 5393;
             company.Industry = "Industry";
             company.CompanyName = "CompanyName";
             company.Address = "Address";
@@ -55,7 +55,7 @@ namespace WindowsDemo
             //param.setPageSize(limit);
 
             param.setPageParamters(page, limit);
-            param.setOrderFields("[id]", true);
+            param.setOrderFields("id", true);
 
             companyList = dbHelper.FindBySql<Company>(strSql, param);
             dgCompany.DataSource = companyList;

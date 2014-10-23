@@ -223,18 +223,17 @@ namespace Easy4net.Session
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.UPDATE, properties);
 
                 String strSQL = EntityHelper.GetUpdateSql(tableInfo);
+
+                tableInfo.Columns.Add(tableInfo.Id.Key, tableInfo.Id.Value);
+                IDbDataParameter[] parms = tableInfo.GetParameters();
                 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    tableInfo.Columns.Add(tableInfo.Id.Key, tableInfo.Id.Value);
-                    IDbDataParameter[] parms = tableInfo.GetParameters();
-
                     strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
-                    IDbDataParameter[] parms = tableInfo.GetParameters();
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
 
@@ -276,6 +275,9 @@ namespace Easy4net.Session
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(firstEntity, DbOperateType.UPDATE, properties);
                 String strSQL = EntityHelper.GetUpdateSql(tableInfo);
+                
+                tableInfo.Columns.Add(tableInfo.Id.Key, tableInfo.Id.Value);
+                IDbDataParameter[] parms = tableInfo.GetParameters();
 
                 foreach (T entity in entityList)
                 {
@@ -283,15 +285,11 @@ namespace Easy4net.Session
 
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
-                        tableInfo.Columns.Add(tableInfo.Id.Key, tableInfo.Id.Value);
-                        IDbDataParameter[] parms = tableInfo.GetParameters();
-
                         strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                         val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
                     }
                     else
                     {
-                        IDbDataParameter[] parms = table.GetParameters();
                         val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
                     }
 
