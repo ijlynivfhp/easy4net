@@ -28,6 +28,14 @@ namespace WindowsDemo
         {
             dgCompany.AutoGenerateColumns = false;
 
+            DBHelper dbHelper = DBHelper.getInstance();
+            Company company = new Company();
+            company.Id = 34;
+            company.Industry = "Industry";
+            company.CompanyName = "CompanyName";
+            company.Address = "Address";
+            dbHelper.Update<Company>(company);
+
             FindByPage(1, m_Limit);
         }
 
@@ -47,7 +55,7 @@ namespace WindowsDemo
             //param.setPageSize(limit);
 
             param.setPageParamters(page, limit);
-            param.setOrderFields("id", true);
+            param.setOrderFields("[id]", true);
 
             companyList = dbHelper.FindBySql<Company>(strSql, param);
             dgCompany.DataSource = companyList;

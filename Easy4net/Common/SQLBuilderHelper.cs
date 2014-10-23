@@ -114,7 +114,7 @@ namespace Easy4net.Common
             return strText;
         }
 
-        public static string builderAccessSQL(object entity, string strSql, IDbDataParameter[] parameters)
+        public static string builderAccessSQL(Type classType, TableInfo tableInfo, string strSql, IDbDataParameter[] parameters)
         {
             if (AdoHelper.DbType != DatabaseType.ACCESS)
             {
@@ -127,15 +127,17 @@ namespace Easy4net.Common
 
                 string paramName = param.ParameterName;
                 string paramValue = param.Value.ToString();
-                string type = ReflectionHelper.GetPropertyType(entity, paramName);
-                
-                if (type == "System.String" || type == "System.DateTime")
-                { 
-                    paramValue = "'" + paramValue + "'";
-                }
-                else if (type == null)
+
+                if (tableInfo.ColumnToProp.ContainsKey(paramName))
                 {
-                    paramValue = "'" + paramValue + "'";
+                    string propertyName = tableInfo.ColumnToProp[paramName].ToString();
+                    Type type = ReflectionHelper.GetPropertyType(classType, propertyName);
+
+                    string typeName = TypeUtils.GetTypeName(type);
+                    if (typeName == "System.String" || typeName == "System.DateTime")
+                    {
+                        paramValue = "'" + paramValue + "'";
+                    }
                 }
                 
                 strSql = strSql.Replace("@"+paramName, paramValue);
@@ -158,11 +160,7 @@ namespace Easy4net.Common
                 string paramName = param.ParameterName;
                 string paramValue = param.Value.ToString();
 
-                /*if (type == "System.String" || type == "System.DateTime")
-                {
-                    paramValue = "'" + paramValue + "'";
-                }*/
-
+                paramValue = "'" + paramValue + "'";
                 strSql = strSql.Replace("@" + paramName, paramValue);
             }
 

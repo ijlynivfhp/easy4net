@@ -79,8 +79,9 @@ namespace Easy4net.Session
                 connection = GetConnection();
                 transaction = GetTransaction();
 
+                Type classType = entity.GetType();
                 //从实体对象的属性配置上获取对应的表信息
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.INSERT, properties);
 
                 //获取SQL语句
@@ -89,14 +90,12 @@ namespace Easy4net.Session
                 //获取参数
                 IDbDataParameter[] parms = tableInfo.GetParameters();
 
-                //如果是Access数据库，直接根据参数拼接最终的SQL语句
-                strSql = SQLBuilderHelper.builderAccessSQL(entity, strSql, parms);
-
                 //Access数据库执行不需要命名参数
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
                     //执行Insert命令
-                    val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, strSql);
+                    strSql = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSql, parms);
+                    val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, strSql, parms);
 
                     //如果是Access数据库，另外执行获取自动生成的ID
                     String autoSql = EntityHelper.GetAutoSql();
@@ -148,7 +147,9 @@ namespace Easy4net.Session
 
                 //从实体对象的属性配置上获取对应的表信息
                 T firstEntity = entityList[0];
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
+                Type classType = firstEntity.GetType();
+
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
                 TableInfo tableInfo = EntityHelper.GetTableInfo(firstEntity, DbOperateType.INSERT, properties);
 
                 //获取SQL语句
@@ -161,13 +162,11 @@ namespace Easy4net.Session
                     //获取参数
                     IDbDataParameter[] parms = tableInfo.GetParameters();
 
-                    //如果是Access数据库，直接根据参数拼接最终的SQL语句
-                    strSQL = SQLBuilderHelper.builderAccessSQL(entity, strSQL, parms);
-
                     //Access数据库执行不需要命名参数
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
                         //执行Insert命令
+                        strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                         val = AdoHelper.ExecuteScalar(connection, transaction, CommandType.Text, strSQL);
 
                         //如果是Access数据库，另外执行获取自动生成的ID
@@ -219,22 +218,27 @@ namespace Easy4net.Session
                 connection = GetConnection();
                 transaction = GetTransaction();
 
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                Type classType = entity.GetType();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.UPDATE, properties);
 
-                String strSql = EntityHelper.GetUpdateSql(tableInfo);
-                IDbDataParameter[] parms = tableInfo.GetParameters();
-
-                strSql = SQLBuilderHelper.builderAccessSQL(entity, strSql, parms);
-
+                String strSQL = EntityHelper.GetUpdateSql(tableInfo);
+                
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSql);
+                    tableInfo.Columns.Add(tableInfo.Id.Key, tableInfo.Id.Value);
+                    IDbDataParameter[] parms = tableInfo.GetParameters();
+
+                    strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
-                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSql, parms);
+                    IDbDataParameter[] parms = tableInfo.GetParameters();
+                    val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
+
+                //val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSql, parms);
             }
             catch (Exception e)
             {
@@ -267,6 +271,8 @@ namespace Easy4net.Session
                 transaction = GetTransaction();
 
                 T firstEntity = entityList[0];
+                Type classType = firstEntity.GetType();
+
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(firstEntity, DbOperateType.UPDATE, properties);
                 String strSQL = EntityHelper.GetUpdateSql(tableInfo);
@@ -274,18 +280,22 @@ namespace Easy4net.Session
                 foreach (T entity in entityList)
                 {
                     TableInfo table = EntityHelper.GetTableInfo(entity, DbOperateType.UPDATE, properties);
-                    IDbDataParameter[] parms = table.GetParameters();
-
-                    strSQL = SQLBuilderHelper.builderAccessSQL(entity, strSQL, parms);
 
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
+                        tableInfo.Columns.Add(tableInfo.Id.Key, tableInfo.Id.Value);
+                        IDbDataParameter[] parms = tableInfo.GetParameters();
+
+                        strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                         val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL);
                     }
                     else
                     {
+                        IDbDataParameter[] parms = table.GetParameters();
                         val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
                     }
+
+                    //val = AdoHelper.ExecuteNonQuery(connection, CommandType.Text, strSQL, parms);
                 }
             }
             catch (Exception e)
@@ -317,16 +327,18 @@ namespace Easy4net.Session
                 transaction = GetTransaction();
 
                 IDbDataParameter[] parms = param.toDbParameters();
-                strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, parms);
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
+                    strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, parms);
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
+
+                //val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
             }
             catch (Exception e)
             {
@@ -388,23 +400,27 @@ namespace Easy4net.Session
                 connection = GetConnection();
                 transaction = GetTransaction();
 
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                Type classType = entity.GetType();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
-
-                String strSQL = EntityHelper.GetDeleteByIdSql(tableInfo);
 
                 IDbDataParameter[] parms = DbFactory.CreateDbParameters(1);
                 parms[0].ParameterName = tableInfo.Id.Key;
                 parms[0].Value = tableInfo.Id.Value;
 
+                String strSQL = EntityHelper.GetDeleteByIdSql(tableInfo);
+
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
+                    strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
+
+                //val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
             }
             catch (Exception e)
             {
@@ -437,6 +453,8 @@ namespace Easy4net.Session
                 transaction = GetTransaction();
 
                 T firstEntity = entityList[0];
+                Type classType = firstEntity.GetType();
+
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(firstEntity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(firstEntity, DbOperateType.DELETE, properties);
 
@@ -452,12 +470,15 @@ namespace Easy4net.Session
 
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
+                        strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                         val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                     }
                     else
                     {
                         val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                     }
+
+                    //val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
             }
             catch (Exception e)
@@ -489,6 +510,8 @@ namespace Easy4net.Session
                 transaction = GetTransaction();
 
                 T entity = new T();
+                Type classType = entity.GetType();
+
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
 
@@ -500,12 +523,15 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
+                    strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                 }
                 else
                 {
                     val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
+
+                //val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
             }
             catch (Exception e)
             {
@@ -538,6 +564,8 @@ namespace Easy4net.Session
                 transaction = GetTransaction();
 
                 T entity = new T();
+                Type classType = entity.GetType();
+
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.DELETE, properties);
 
@@ -553,12 +581,15 @@ namespace Easy4net.Session
 
                     if (AdoHelper.DbType == DatabaseType.ACCESS)
                     {
+                        strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                         val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL);
                     }
                     else
                     {
                         val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                     }
+
+                    //val = AdoHelper.ExecuteNonQuery(connection, transaction, CommandType.Text, strSQL, parms);
                 }
             }
             catch (Exception e)
@@ -620,9 +651,12 @@ namespace Easy4net.Session
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
                     strSql = SQLBuilderHelper.builderAccessSQL(strSql, param.toDbParameters());
+                    count = Convert.ToInt32(AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql));
                 }
-
-                count = Convert.ToInt32(AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql, param.toDbParameters()));
+                else 
+                {
+                    count = Convert.ToInt32(AdoHelper.ExecuteScalar(connection, CommandType.Text, strSql, param.toDbParameters()));
+                }
             }
             catch (Exception ex)
             {
@@ -689,7 +723,8 @@ namespace Easy4net.Session
                 String columns = SQLBuilderHelper.fetchColumns(strSQL);
 
                 T entity = new T();
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                Type classType = entity.GetType();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
                 if (param.IsPage && !SQLBuilderHelper.isPage(strSQL))
                 {
@@ -698,13 +733,15 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, param.toDbParameters());
+                    strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, param.toDbParameters());
                     sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL);
                 }
                 else
                 {
                     sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
                 }
+
+                //sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
 
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
             }
@@ -738,7 +775,9 @@ namespace Easy4net.Session
                 String columns = SQLBuilderHelper.fetchColumns(strSQL);
 
                 T entity = new T();
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                Type classType = entity.GetType();
+
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
                 if (param.IsPage && !SQLBuilderHelper.isPage(strSQL))
                 {
@@ -747,13 +786,15 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, param.toDbParameters());
+                    strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, param.toDbParameters());
                     sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL);
                 }
                 else
                 {
                     sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
                 }
+
+                //sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
 
                 int count = this.Count(countSQL, param);
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
@@ -788,7 +829,8 @@ namespace Easy4net.Session
                 bool closeConnection = GetWillConnectionState();
 
                 T entity = new T();
-                PropertyInfo[] properties = ReflectionHelper.GetProperties(entity.GetType());
+                Type classType = entity.GetType();
+                PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
 
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
                 IDbDataParameter[] parms = DbFactory.CreateDbParameters(1);
@@ -798,7 +840,7 @@ namespace Easy4net.Session
                 String strSQL = EntityHelper.GetFindByIdSql(tableInfo);
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    strSQL = SQLBuilderHelper.builderAccessSQL(strSQL, parms);
+                    strSQL = SQLBuilderHelper.builderAccessSQL(classType, tableInfo, strSQL, parms);
                     sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL);
                 }
                 else

@@ -36,6 +36,10 @@ namespace Easy4net.Common
             {
                 value = Convert.ToInt64(value);
             }
+            else if (type == typeof(System.Nullable<DateTime>))
+            {
+                value = Convert.ToDateTime(value);
+            }
 
             switch (typeName)
             {
@@ -82,6 +86,43 @@ namespace Easy4net.Common
             }
 
             return value;
+        }
+
+        public static string GetTypeName(Type type)
+        {
+            if (type == null) return "System.Int32";
+            string typeName = type.FullName.ToString();
+
+            if (type == typeof(System.Nullable<UInt16>))
+            {
+                typeName = "System.UInt16";
+            }
+            else if (type == typeof(System.Nullable<UInt32>))
+            {
+                typeName = "System.UInt32";
+            }
+            else if (type == typeof(System.Nullable<UInt64>))
+            {
+                typeName = "System.UInt64";
+            }
+            else if (type == typeof(System.Nullable<Int16>))
+            {
+                typeName = "System.Int16";
+            }
+            else if (type == typeof(System.Nullable<Int32>))
+            {
+                typeName = "System.Int32";
+            }
+            else if (type == typeof(System.Nullable<Int64>))
+            {
+                typeName = "System.Int64";
+            }
+            else if (type == typeof(System.Nullable<DateTime>))
+            {
+                typeName = "System.DateTime";
+            }
+
+            return typeName;
         }
 
         static bool isNullOrEmpty(object val)

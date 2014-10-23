@@ -13,7 +13,8 @@ namespace Easy4net.Common
         private int strategy;        
         private IdInfo id = new IdInfo();
         private ColumnInfo columns = new ColumnInfo();
-        private Map propToColumn = new Map();                
+        private Map propToColumn = new Map();
+        private Map columnToProp = new Map();     
 
         public string TableName
         {
@@ -43,7 +44,15 @@ namespace Easy4net.Common
         {
             get { return propToColumn; }
             set { propToColumn = value; }
+        }
+
+        public Map ColumnToProp
+        {
+            get { return columnToProp; }
+            set { columnToProp = value; }
         } 
+
+        
 
         public IDbDataParameter[] GetParameters()
         {

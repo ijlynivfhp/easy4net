@@ -28,6 +28,8 @@ namespace Easy4net.Common
                 m_MSSQL.Add("desc", "[desc]");
                 m_MSSQL.Add("key", "[key]");
                 m_MSSQL.Add("text", "[text]");
+                m_MSSQL.Add("limit", "[limit]");
+                m_MSSQL.Add("offset", "[offset]");
             }
         }
 

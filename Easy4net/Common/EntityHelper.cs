@@ -128,6 +128,7 @@ namespace Easy4net.Common
                         tableInfo.Id.Key = columnName;
                         tableInfo.Id.Value = propvalue;
                         tableInfo.PropToColumn.Put(propName, columnName);
+                        tableInfo.ColumnToProp.Put(columnName, propName);
                         breakForeach = true;
                     }
                 }
@@ -136,6 +137,7 @@ namespace Easy4net.Common
                 if (breakForeach) { breakForeach = false; continue; }
                 tableInfo.Columns.Put(columnName, propvalue);
                 tableInfo.PropToColumn.Put(propName, columnName);
+                tableInfo.ColumnToProp.Put(columnName, propName);
             }
 
             /*if (dbOpType == DbOperateType.UPDATE)
@@ -425,7 +427,7 @@ namespace Easy4net.Common
 
             if (sbBody.Length > 0) sbBody.Remove(sbBody.ToString().Length - 1, 1);
 
-            tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
+            //tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
 
             string strSql = "update {0} set {1} where {2} =" + AdoHelper.DbParmChar + tableInfo.Id.Key;
             strSql = string.Format(strSql, tableInfo.TableName, sbBody.ToString(), tableInfo.Id.Key);

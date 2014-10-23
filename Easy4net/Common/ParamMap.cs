@@ -203,6 +203,7 @@ namespace Easy4net.Common
                 {
                     object value = this[key];
                     if (value == null) value = DBNull.Value;
+
                     paramArr[i].ParameterName = key;
                     paramArr[i].Value = value;
                     i++;

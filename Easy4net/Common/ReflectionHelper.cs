@@ -137,12 +137,12 @@ namespace Easy4net.Common
         /// <param name="entity"></param>
         /// <param name="propertyName"></param>
         /// <returns></returns>
-        public static string GetPropertyType<T>(T entity, string propertyName)
+        public static Type GetPropertyType(Type classType, string propertyName)
         {
-            PropertyInfo property = entity.GetType().GetProperty(propertyName);
+            PropertyInfo property = classType.GetProperty(propertyName);
             if (property != null)
             {
-                return property.PropertyType.FullName;
+                return property.PropertyType;
             }
 
             return null;
