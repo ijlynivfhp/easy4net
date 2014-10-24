@@ -739,8 +739,6 @@ namespace Easy4net.Session
                     sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
                 }
 
-                //sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
-
                 list = EntityHelper.toList<T>(sdr, tableInfo, properties);
             }
             catch (Exception ex)

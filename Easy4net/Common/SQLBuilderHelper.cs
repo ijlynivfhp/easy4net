@@ -128,6 +128,7 @@ namespace Easy4net.Common
                 string paramName = param.ParameterName;
                 string paramValue = param.Value.ToString();
 
+                float i = 0;
                 if (tableInfo.ColumnToProp.ContainsKey(paramName))
                 {
                     string propertyName = tableInfo.ColumnToProp[paramName].ToString();
@@ -139,7 +140,11 @@ namespace Easy4net.Common
                         paramValue = "'" + paramValue + "'";
                     }
                 }
-                
+                else if (!float.TryParse(paramValue, out i)) {
+                    paramValue = "'" + paramValue + "'";
+                }
+
+                paramName = paramName.ToLower();
                 strSql = strSql.Replace("@"+paramName, paramValue);
             }
 
