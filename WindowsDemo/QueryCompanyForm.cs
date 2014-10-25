@@ -48,7 +48,7 @@ namespace WindowsDemo
 
 
             //string strSql = "SELECT * FROM company where company_name=@companyName";
-            string strSql = "SELECT * FROM company";
+            string strSql = "SELECT * FROM COMPANY";
             ParamMap param = ParamMap.newMap();
 
             //以下分页参数设置已过时，请使用 setPageParamters方法

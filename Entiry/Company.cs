@@ -12,13 +12,13 @@ namespace Easy4net.Entity
         [Id(Name = "id", Strategy = GenerationType.INDENTITY)]
         public int? Id { get; set; }
 
-        [Column(Name = "company_name")]
+        [Column(Name = "Company_Name")]
         public String CompanyName { get; set; }
 
         [Column(Name = "industry")]
         public String Industry { get; set; }
 
-        [Column(Name = "address")]
+        [Column(Name = "ADDRESS")]
         public String Address { get; set; }
 
         [Column(Name = "order")]

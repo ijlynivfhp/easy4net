@@ -15,7 +15,8 @@ namespace Easy4net.Common
 
         public static string fetchColumns(string strSQL)
         {
-            String columns = strSQL.Substring(6, strSQL.IndexOf("from") - 6);
+            string lowerSQL = strSQL.ToLower();
+            String columns = lowerSQL.Substring(6, lowerSQL.IndexOf("from") - 6);
             return columns;
         }
 
@@ -144,7 +145,7 @@ namespace Easy4net.Common
                     paramValue = "'" + paramValue + "'";
                 }
 
-                paramName = paramName.ToLower();
+                //paramName = paramName.ToLower();
                 strSql = strSql.Replace("@"+paramName, paramValue);
             }
 

@@ -717,14 +717,14 @@ namespace Easy4net.Session
                 connection = GetConnection();
                 bool closeConnection = GetWillConnectionState();
 
-                strSQL = strSQL.ToLower();
-                String columns = SQLBuilderHelper.fetchColumns(strSQL);
+                string lowerSQL = strSQL.ToLower();
+                String columns = SQLBuilderHelper.fetchColumns(lowerSQL);
 
                 T entity = new T();
                 Type classType = entity.GetType();
                 PropertyInfo[] properties = ReflectionHelper.GetProperties(classType);
                 TableInfo tableInfo = EntityHelper.GetTableInfo(entity, DbOperateType.SELECT, properties);
-                if (param.IsPage && !SQLBuilderHelper.isPage(strSQL))
+                if (param.IsPage && !SQLBuilderHelper.isPage(lowerSQL))
                 {
                     strSQL = SQLBuilderHelper.builderPageSQL(strSQL, param.OrderFields, param.IsDesc);
                 }
