@@ -11,7 +11,7 @@ namespace Easy4net.Common
         private static string mssqlPageTemplate = "select * from (select ROW_NUMBER() OVER(order by {0}) AS RowNumber, {1}) as tmp_tbl where RowNumber BETWEEN @pageStart and @pageEnd ";
         private static string mysqlOrderPageTemplate = "{0} order by {1} limit ?offset,?limit";
         private static string mysqlPageTemplate = "{0} limit ?offset,?limit";
-        private static string accessPageTemplate = "select * from (select top @limit * from (select top @offset {0} order by id desc) order by id) order by {1}";
+        private static string accessPageTemplate = "select * from (select top @page_limit * from (select top @page_offset {0} order by id desc) order by id) order by {1}";
 
         public static string fetchColumns(string strSQL)
         {
@@ -113,6 +113,28 @@ namespace Easy4net.Common
             string strText = "select count(*) " + strFooter;
 
             return strText;
+        }
+
+        public static string builderAccessPageSQL(string strSql, ParamMap param)
+        {
+            if (AdoHelper.DbType != DatabaseType.ACCESS)
+            {
+                return strSql;
+            }
+
+            if (param.ContainsKey("page_limit"))
+            {
+                strSql = strSql.Replace("@" + "page_limit", param.getString("page_limit"));
+                param.Remove("page_limit");
+            }
+
+            if (param.ContainsKey("page_offset"))
+            {
+                strSql = strSql.Replace("@" + "page_offset", param.getString("page_offset"));
+                param.Remove("page_offset");
+            }
+
+            return strSql;
         }
 
         public static string builderAccessSQL(Type classType, TableInfo tableInfo, string strSql, IDbDataParameter[] parameters)

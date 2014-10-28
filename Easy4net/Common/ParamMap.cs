@@ -184,8 +184,8 @@ namespace Easy4net.Common
                     int pageIndex = this.getInt("pageIndex");
                     int pageSize = this.getInt("pageSize");
 
-                    this["offset"] = pageIndex * pageSize;
-                    this["limit"] = pageSize;
+                    this["page_offset"] = pageIndex * pageSize;
+                    this["page_limit"] = pageSize;
 
                     this.Remove("pageIndex");
                     this.Remove("pageSize");
