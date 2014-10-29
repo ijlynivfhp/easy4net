@@ -30,7 +30,7 @@ namespace WindowsDemo
 
             DBHelper dbHelper = DBHelper.getInstance();
             Company company = new Company();
-            company.Id = 5;
+            company.Id = 47;
             company.Industry = "Industry";
             company.CompanyName = "CompanyName";
             company.Address = "Address";
@@ -47,8 +47,8 @@ namespace WindowsDemo
             DBHelper dbHelper = DBHelper.getInstance();
 
 
-            string strSql = "SELECT * FROM company where company_name=@companyName";
-            //string strSql = "SELECT * FROM COMPANY";
+            //string strSql = "SELECT * FROM company where company_name=@companyName";
+            string strSql = "SELECT * FROM COMPANY";
             ParamMap param = ParamMap.newMap();
 
             //以下分页参数设置已过时，请使用 setPageParamters方法
@@ -57,7 +57,7 @@ namespace WindowsDemo
 
             param.setPageParamters(page, limit);
             param.setOrderFields("id", true);
-            param.setParameter("companyName", "上海巨人网络信息科技");
+            //param.setParameter("companyName", "上海巨人网络信息科技");
 
             companyList = dbHelper.FindBySql<Company>(strSql, param);
             dgCompany.DataSource = companyList;

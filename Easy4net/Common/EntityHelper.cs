@@ -451,10 +451,12 @@ namespace Easy4net.Common
                 if (!string.IsNullOrEmpty(key.Trim()))
                 {
                     object value = columns[key];
-                    if (value == null) value = DBNull.Value;
-                    parms[i].ParameterName = key;
-                    parms[i].Value = value;
-                    i++;
+                    if (value != null)
+                    {
+                        parms[i].ParameterName = key;
+                        parms[i].Value = value;
+                        i++;
+                    }
                 }
             }
         }

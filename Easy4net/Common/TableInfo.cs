@@ -50,18 +50,74 @@ namespace Easy4net.Common
         {
             get { return columnToProp; }
             set { columnToProp = value; }
-        } 
+        }
 
-        
+        public List<IDbDataParameter> GetParameterList()
+        {
+            if (this.Columns == null || this.Columns.Count == 0) return new List<IDbDataParameter>();
+
+            List<IDbDataParameter> paramList = new List<IDbDataParameter>();
+            foreach (string key in this.Columns.Keys)
+            {
+                if (!string.IsNullOrEmpty(key.Trim()))
+                {
+                    object value = this.Columns[key];
+                    if (value != null)
+                    {
+                        IDbDataParameter param = DbFactory.CreateDbParameter();
+                        param.ParameterName = key;
+                        param.Value = value;
+
+                        paramList.Add(param);
+                    }
+                }
+            }
+
+            return paramList;
+        }
+
+        public IDbDataParameter[] GetParameters(List<IDbDataParameter> paramList)
+        {
+            int i = 0;
+            IDbDataParameter[] parameters = DbFactory.CreateDbParameters(paramList.Count);
+            foreach (IDbDataParameter dbParameter in paramList)
+            {
+                parameters[i] = dbParameter;
+                i++;
+            }
+
+            return parameters;
+        }  
 
         public IDbDataParameter[] GetParameters()
         {
-            IDbDataParameter[] parameters = null;
-            if (this.Columns != null && this.Columns.Count > 0)
+            if (this.Columns == null || this.Columns.Count == 0) return DbFactory.CreateDbParameters(1);
+            
+            List<IDbDataParameter> paramList = new List<IDbDataParameter>();
+            foreach (string key in this.Columns.Keys)
             {
-                parameters = DbFactory.CreateDbParameters(this.Columns.Count);
-                EntityHelper.SetParameters(this.Columns, parameters);
+                if (!string.IsNullOrEmpty(key.Trim()))
+                {
+                    object value = this.Columns[key];
+                    if (value != null)
+                    {
+                        IDbDataParameter param = DbFactory.CreateDbParameter();
+                        param.ParameterName = key;
+                        param.Value = value;
+
+                        paramList.Add(param);
+                    }
+                }
             }
+
+            int i = 0;
+            IDbDataParameter[] parameters = DbFactory.CreateDbParameters(paramList.Count);
+            foreach (IDbDataParameter dbParameter in paramList)
+            {
+                parameters[i] = dbParameter;
+                i++;
+            }
+         
             return parameters;
         }       
     }

@@ -195,7 +195,34 @@ namespace Easy4net.Common
 
         public IDbDataParameter[] toDbParameters()
         {
+            List<IDbDataParameter> paramList = new List<IDbDataParameter>();
+            foreach (string key in this.Keys)
+            {
+                if (!string.IsNullOrEmpty(key.Trim()))
+                {
+                    object value = this[key];
+                    if (value != null)
+                    {
+                        IDbDataParameter param = DbFactory.CreateDbParameter();
+                        param.ParameterName = key;
+                        param.Value = value;
+
+                        paramList.Add(param);
+                    }
+                }
+            }
+
             int i = 0;
+            IDbDataParameter[] paramArr = DbFactory.CreateDbParameters(paramList.Count);
+            foreach (IDbDataParameter dbParameter in paramList)
+            {
+                paramArr[i] = dbParameter;
+                i++;
+            }
+
+            return paramArr;
+
+            /*int i = 0;
             IDbDataParameter[] paramArr = DbFactory.CreateDbParameters(this.Keys.Count);
             foreach(string key in this.Keys) 
             {
@@ -210,7 +237,7 @@ namespace Easy4net.Common
                 }
             }
 
-            return paramArr;
+            return paramArr;*/
         }
     }
 }
