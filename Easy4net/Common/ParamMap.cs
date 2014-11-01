@@ -15,6 +15,8 @@ namespace Easy4net.Common
         private string orderFields;
         private bool isDesc = true;
 
+        private List<IDbDataParameter> m_ParamList = new List<IDbDataParameter>();
+
         private ParamMap() { }
 
         public string OrderFields
@@ -36,10 +38,10 @@ namespace Easy4net.Common
 
         public bool IsPage
         {
-          get 
-          {
-              return isPage;
-          }
+            get
+            {
+                return isPage;
+            }
         }
 
         public int PageOffset
@@ -73,7 +75,7 @@ namespace Easy4net.Common
             }
         }
 
-        public int getInt(string key) 
+        public int getInt(string key)
         {
             var value = this[key];
             return Convert.ToInt32(value);
@@ -94,7 +96,7 @@ namespace Easy4net.Common
         public Int64 toLong(string key)
         {
             var value = this[key];
-            return Convert.ToInt64(value); 
+            return Convert.ToInt64(value);
         }
 
         public Decimal toDecimal(string key)
@@ -115,12 +117,12 @@ namespace Easy4net.Common
             this.isDesc = isDesc;
         }
 
-        
+
         /// <summary>
         /// 此方法已过时，请使用 setPageParamters方法分页
         /// </summary>
         /// <param name="pageIndex"></param>
-        private void setPageIndex(int pageIndex) 
+        private void setPageIndex(int pageIndex)
         {
             this["pageIndex"] = pageIndex;
             setPages();
@@ -148,7 +150,7 @@ namespace Easy4net.Common
             setPages();
         }
 
-       private void setPages() 
+        private void setPages()
         {
             if (this.ContainsKey("pageIndex") && this.ContainsKey("pageSize"))
             {
@@ -160,10 +162,10 @@ namespace Easy4net.Common
 
                     this.Remove("pageIndex");
                     this.Remove("pageSize");
-                }
 
-                 //int start = (pageIndex-1) * pageSize + 1;
-                //int end = pageIndex * pageSize;
+                    this.Add("offset", this.getInt("offset"));
+                    this.Add("limit", this.getInt("limit"));
+                }
 
                 if (AdoHelper.DbType == DatabaseType.SQLSERVER)
                 {
@@ -177,6 +179,9 @@ namespace Easy4net.Common
 
                     this.Remove("pageIndex");
                     this.Remove("pageSize");
+
+                    this.Add("pageStart", this.getInt("pageStart"));
+                    this.Add("pageEnd", this.getInt("pageEnd"));
                 }
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
@@ -193,9 +198,26 @@ namespace Easy4net.Common
             }
         }
 
+        public void Add(object key, object value)
+        {
+            base.Put(key, value);
+            IDbDataParameter param = DbFactory.CreateDbParameter(key.ToString(), value);
+            m_ParamList.Add(param);
+        }
+
+        public void Put(object key, object value)
+        {
+            this.Add(key, value);
+        }
+
+        public void setParameter(string key, object value)
+        {
+            this.Add(key, value);
+        }
+
         public IDbDataParameter[] toDbParameters()
         {
-            List<IDbDataParameter> paramList = new List<IDbDataParameter>();
+            /*List<IDbDataParameter> paramList = new List<IDbDataParameter>();
             foreach (string key in this.Keys)
             {
                 if (!string.IsNullOrEmpty(key.Trim()))
@@ -210,11 +232,11 @@ namespace Easy4net.Common
                         paramList.Add(param);
                     }
                 }
-            }
+            }*/
 
             int i = 0;
-            IDbDataParameter[] paramArr = DbFactory.CreateDbParameters(paramList.Count);
-            foreach (IDbDataParameter dbParameter in paramList)
+            IDbDataParameter[] paramArr = DbFactory.CreateDbParameters(m_ParamList.Count);
+            foreach (IDbDataParameter dbParameter in m_ParamList)
             {
                 paramArr[i] = dbParameter;
                 i++;
