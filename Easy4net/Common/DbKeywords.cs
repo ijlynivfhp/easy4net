@@ -30,6 +30,7 @@ namespace Easy4net.Common
                 m_MSSQL.Add("text", "[text]");
                 m_MSSQL.Add("limit", "[limit]");
                 m_MSSQL.Add("offset", "[offset]");
+                m_MSSQL.Add("password", "[password]");
             }
         }
 
