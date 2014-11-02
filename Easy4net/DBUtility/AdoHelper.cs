@@ -709,7 +709,13 @@ namespace Easy4net.DBUtility
             if (cmdParms != null)
             {
                 foreach (IDbDataParameter parm in cmdParms)
+                {
+                    if (AdoHelper.DbType == DatabaseType.ACCESS && parm.DbType == System.Data.DbType.DateTime)
+                    {
+                        parm.DbType = System.Data.DbType.Object;
+                    }
                     cmd.Parameters.Add(parm);
+                }
             }
         }
 
