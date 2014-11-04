@@ -1,1 +1,5 @@
 Easy4net/EntityManager/og0nfzoy.jgf
+bin/
+obj/
+*.suo
+dll/mysql.data.dll

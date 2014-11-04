@@ -14,7 +14,6 @@ namespace Easy4net.Common
             }
 
             string typeName = type.FullName.ToString();
-            System.Console.WriteLine(typeName);
 
             if (type == typeof(System.Nullable<UInt16>))
             {

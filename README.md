@@ -2,7 +2,8 @@ easy4net是一个轻量级orm框架，灵活在于可以自己编写复杂的SQL
 
 **分页查询：**
 * 1. 命名参数， ParamMap传参方式：
-* 2. 支持多层嵌套查询自动分页功能。
+* 2. **注意**：对于Access这类使用OldDb，或者使用Odbc方式连接数据库的情况，没有命名参数，只有位置参数，所以参数添加的顺序必须跟参数在sql语句中出现的顺序一致
+* 3. 支持多层嵌套查询自动分页功能。
 
 ***
 
@@ -100,7 +101,7 @@ company.Industry = txtIndustry.Text.Trim();
 company.Address = txtAddress.Text.Trim();
 
 DBHelper dbHelper = DBHelper.getInstance();
-dbHelper.Insert<Company>(company);
+dbHelper.Save<Company>(company);
 
 if (company.Id > 0) {
     MessageBox.Show("创建公司成功！");
@@ -117,7 +118,7 @@ employee.Created = DateTime.Now;
 employee.CompanyId = company.Id;
 
 DBHelper dbHelper = DBHelper.getInstance();
-dbHelper.Insert<Employee>(employee);
+dbHelper.Save<Employee>(employee);
 if (employee.Id > 0)
 {
     MessageBox.Show("新增员工成功！");
@@ -135,7 +136,7 @@ if (employee.Id > 0)
 ```c#
 
 List<Company> companyList = ...;
-dbHelper.Insert(companyList);
+dbHelper.Save(companyList);
 ```
 
 
@@ -265,7 +266,7 @@ namespace Easy4net.Entity
 
 ```
 
-**数据库连接配置 web.config中： **
+**数据库连接配置 web.config中：**
 * dbType中配置sqlserver, mysql, oracle来支持不同的数据库
 
 ***
