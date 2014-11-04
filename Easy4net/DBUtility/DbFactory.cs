@@ -7,6 +7,7 @@ using System.Data.OracleClient;
 using System.Data.OleDb;
 using System.Data.Odbc;
 using MySql.Data.MySqlClient;
+using System.Data.SQLite;
 using Easy4net.Common;
 
 namespace Easy4net.DBUtility
@@ -34,6 +35,9 @@ namespace Easy4net.DBUtility
                     character = "?";
                     break;
                 case DatabaseType.ACCESS:
+                    character = "@";
+                    break;
+                case DatabaseType.SQLITE:
                     character = "@";
                     break;
                 default:
@@ -66,6 +70,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     conn = new OleDbConnection(connectionString);
                     break;
+                case DatabaseType.SQLITE:
+                    conn = new SQLiteConnection(connectionString);
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
             }
@@ -94,6 +101,9 @@ namespace Easy4net.DBUtility
                     break;
                 case DatabaseType.ACCESS:
                     cmd = new OleDbCommand();
+                    break;
+                case DatabaseType.SQLITE:
+                    cmd = new SQLiteCommand();
                     break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
@@ -124,6 +134,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     adapter = new OleDbDataAdapter();
                     break;
+                case DatabaseType.SQLITE:
+                    adapter = new SQLiteDataAdapter();
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
             }
@@ -153,6 +166,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     adapter = new OleDbDataAdapter((OleDbCommand)cmd);
                     break;
+                case DatabaseType.SQLITE:
+                    adapter = new SQLiteDataAdapter((SQLiteCommand)cmd);
+                    break;
                 default: throw new Exception("数据库类型目前不支持！");
             }
 
@@ -181,6 +197,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     param = new OleDbParameter();
                     break;
+                case DatabaseType.SQLITE:
+                    param = new SQLiteParameter();
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
             }
@@ -195,7 +214,7 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
@@ -214,7 +233,7 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, DbType dbType)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
@@ -234,7 +253,7 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, ParameterDirection direction)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
@@ -254,7 +273,7 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, int size, ParameterDirection direction)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
@@ -275,7 +294,7 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbOutParameter(string paramName, int size)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
@@ -295,7 +314,7 @@ namespace Easy4net.DBUtility
         /// <returns></returns>
         public static IDbDataParameter CreateDbParameter(string paramName, object value, DbType dbType, ParameterDirection direction)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
@@ -335,6 +354,10 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     param = new OleDbParameter[size];
                     while (i < size) { param[i] = new OleDbParameter(); i++; }
+                    break;
+                case DatabaseType.SQLITE:
+                    param = new SQLiteParameter[size];
+                    while (i < size) { param[i] = new SQLiteParameter(); i++; }
                     break;
                 default:
                     throw new Exception("数据库类型目前不支持！");

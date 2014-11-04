@@ -12,6 +12,7 @@ namespace Easy4net.DBUtility
         SQLSERVER,
         ORACLE,
         ACCESS,
-        MYSQL
+        MYSQL,
+        SQLITE
     }
 }

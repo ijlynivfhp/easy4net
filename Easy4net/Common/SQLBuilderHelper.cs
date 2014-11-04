@@ -11,6 +11,8 @@ namespace Easy4net.Common
         private static string mssqlPageTemplate = "select * from (select ROW_NUMBER() OVER(order by {0}) AS RowNumber, {1}) as tmp_tbl where RowNumber BETWEEN @pageStart and @pageEnd ";
         private static string mysqlOrderPageTemplate = "{0} order by {1} limit ?offset,?limit";
         private static string mysqlPageTemplate = "{0} limit ?offset,?limit";
+        private static string sqliteOrderPageTemplate = "{0} order by {1} limit @offset,@limit";
+        private static string sqlitePageTemplate = "{0} limit @offset,@limit";
         private static string accessPageTemplate = "select * from (select top @page_limit * from (select top @page_offset {0} order by id desc) order by id) order by {1}";
 
         public static string fetchColumns(string strSQL)
@@ -50,6 +52,11 @@ namespace Easy4net.Common
             }
 
             if(AdoHelper.DbType == DatabaseType.MYSQL && strSql.IndexOf("limit") == -1)
+            {
+                return false;
+            }
+
+            if (AdoHelper.DbType == DatabaseType.SQLITE && strSql.IndexOf("limit") == -1)
             {
                 return false;
             }
@@ -100,6 +107,18 @@ namespace Easy4net.Common
                 else
                 {
                     strSql = string.Format(mysqlPageTemplate, strSql);
+                }
+            }
+
+            if (AdoHelper.DbType == DatabaseType.SQLITE)
+            {
+                if (!string.IsNullOrEmpty(order))
+                {
+                    strSql = string.Format(sqliteOrderPageTemplate, strSql, orderBy);
+                }
+                else
+                {
+                    strSql = string.Format(sqlitePageTemplate, strSql);
                 }
             }
             
