@@ -114,8 +114,12 @@ namespace Easy4net.Common
 
             return strText;
         }
-
         public static string builderAccessPageSQL(string strSql, ParamMap param)
+        {
+            return builderAccessPageSQL(strSql, param, -1);
+        }
+
+        public static string builderAccessPageSQL(string strSql, ParamMap param, int limit)
         {
             if (AdoHelper.DbType != DatabaseType.ACCESS)
             {
@@ -124,7 +128,14 @@ namespace Easy4net.Common
 
             if (param.ContainsKey("page_limit"))
             {
-                strSql = strSql.Replace("@" + "page_limit", param.getString("page_limit"));
+                if (limit != -1)
+                {
+                    strSql = strSql.Replace("@" + "page_limit", limit.ToString());
+                }
+                else
+                {
+                    strSql = strSql.Replace("@" + "page_limit", param.getString("page_limit"));
+                }
                 param.Remove("page_limit");
             }
 

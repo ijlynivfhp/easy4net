@@ -738,6 +738,8 @@ namespace Easy4net.Session
                 String countSQL = SQLBuilderHelper.builderCountSQL(strSQL);
                 String columns = SQLBuilderHelper.fetchColumns(strSQL);
 
+                int count = this.Count(countSQL, param);
+
                 T entity = new T();
                 Type classType = entity.GetType();
 
@@ -750,14 +752,28 @@ namespace Easy4net.Session
 
                 if (AdoHelper.DbType == DatabaseType.ACCESS)
                 {
-                    strSQL = SQLBuilderHelper.builderAccessPageSQL(strSQL, param);
+                    if (param.getInt("page_offset") > count)
+                    {
+                        int limit = param.getInt("page_limit") + count - param.getInt("page_offset");
+                        if (limit > 0)
+                        {
+                            strSQL = SQLBuilderHelper.builderAccessPageSQL(strSQL, param, limit);
+                            sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
+                            list = EntityHelper.toList<T>(sdr, tableInfo, properties);
+                        }
+                    }
+                    else
+                    {
+                        strSQL = SQLBuilderHelper.builderAccessPageSQL(strSQL, param);
+                        sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
+                        list = EntityHelper.toList<T>(sdr, tableInfo, properties);
+                    }
                 }
-
-                sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
-
-                int count = this.Count(countSQL, param);
-                list = EntityHelper.toList<T>(sdr, tableInfo, properties);
-
+                else
+                {
+                    sdr = AdoHelper.ExecuteReader(closeConnection, connection, CommandType.Text, strSQL, param.toDbParameters());
+                    list = EntityHelper.toList<T>(sdr, tableInfo, properties);
+                }
                 pageResult.Total = count;
                 pageResult.DataList = list;
 
