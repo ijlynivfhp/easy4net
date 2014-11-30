@@ -44,6 +44,7 @@ namespace Easy4net.Session
                 if (m_Transaction.Connection.State != ConnectionState.Closed)
                 {
                     m_Transaction.Commit();
+                    m_Transaction = null;
                 }
             }
         }
@@ -55,6 +56,7 @@ namespace Easy4net.Session
                 if (m_Transaction.Connection.State != ConnectionState.Closed)
                 {
                     m_Transaction.Rollback();
+                    m_Transaction = null;
                 }
             }
         }

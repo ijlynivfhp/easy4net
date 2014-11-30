@@ -64,7 +64,10 @@ namespace Easy4net.Common
             {
                 var propertySetter = DynamicCalls.GetPropertySetter(property);
                 value = TypeUtils.ConvertForType(value, property.PropertyType);
-                propertySetter(obj, value);
+                if (value != null)
+                {
+                    propertySetter(obj, value);
+                }
             }
         }
 
