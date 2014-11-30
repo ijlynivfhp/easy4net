@@ -11,25 +11,55 @@ namespace Easy4net.Common
 {
     public class DbEntityUtils
     {
-        public static string GetTableName(Type classType)
+        //public static string GetTableName(Type classType)
+        //{
+        //    return GetTableAttribute(classType).Name;
+
+        //    //string strTableName = string.Empty;
+        //    //string strEntityName = string.Empty;
+
+        //    //strEntityName = classType.FullName;
+
+        //    //object classAttr = classType.GetCustomAttributes(false)[0];
+        //    //if (classAttr is TableAttribute)
+        //    //{
+        //    //    TableAttribute tableAttr = classAttr as TableAttribute;
+        //    //    strTableName = tableAttr.Name;
+        //    //}
+        //    //if (string.IsNullOrEmpty(strTableName))
+        //    //{
+        //    //    throw new Exception("实体类:" + strEntityName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
+        //    //}
+
+        //    //return strTableName;
+        //}
+
+        public static TableAttribute GetTableAttribute(Type classType)
         {
             string strTableName = string.Empty;
-            string strEntityName = string.Empty;
+            //string strEntityName = string.Empty;
+            TableAttribute tableAttr = null;
 
-            strEntityName = classType.FullName;
+            //strEntityName = classType.FullName;
 
             object classAttr = classType.GetCustomAttributes(false)[0];
             if (classAttr is TableAttribute)
             {
-                TableAttribute tableAttr = classAttr as TableAttribute;
-                strTableName = tableAttr.Name;
-            }
-            if (string.IsNullOrEmpty(strTableName))
-            {
-                throw new Exception("实体类:" + strEntityName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
+                tableAttr = classAttr as TableAttribute;
+                //strTableName = tableAttr.Name;
             }
 
-            return strTableName;
+            if (tableAttr == null)
+            {
+                throw new Exception("实体类:" + classType.FullName + "的属性配置[Table(name=\"tablename\")]未配置");
+            }
+
+            if (string.IsNullOrEmpty(tableAttr.Name))
+            {
+                throw new Exception("实体类:" + classType.FullName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
+            }
+
+            return tableAttr;
         }
 
         public static string GetPrimaryKey(object attribute, DbOperateType type)
@@ -79,8 +109,12 @@ namespace Easy4net.Common
             string strPrimaryKey = string.Empty;
             TableInfo tableInfo = new TableInfo();
             Type type = entity.GetType();
+            TableAttribute tableAttr = GetTableAttribute(type);
 
-            tableInfo.TableName = GetTableName(type);
+            tableInfo.TableName = tableAttr.Name;
+            tableInfo.NoAutomaticKey = tableAttr.NoAutomaticKey;
+
+            //tableInfo.TableName = GetTableName(type);
             if (dbOpType == DbOperateType.COUNT)
             {
                 return tableInfo;

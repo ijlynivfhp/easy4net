@@ -103,10 +103,13 @@ namespace Easy4net.Session
                 }
 
                 //把自动生成的主键ID赋值给返回的对象
-                if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+                if (!tableInfo.NoAutomaticKey)
                 {
-                    PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
-                    ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
+                    if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL || AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+                    {
+                        PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
+                        ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
+                    }
                 }
             }
             catch (Exception e)

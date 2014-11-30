@@ -11,31 +11,62 @@ namespace Easy4net.Common
 {
     public class EntityHelper
     {
-        public static string GetTableName(Type classType, DbOperateType type)
+        //public static string GetTableName(Type classType, DbOperateType type)
+        //{
+        //    //string strTableName = string.Empty;
+        //    //string strEntityName = string.Empty;
+
+        //    //strEntityName = classType.FullName;
+
+        //    //object[] attr = classType.GetCustomAttributes(false);
+        //    //if (attr.Length == 0) return strTableName;
+
+        //    //foreach (object classAttr in attr)
+        //    //{
+        //    //    if (classAttr is TableAttribute)
+        //    //    {
+        //    //        TableAttribute tableAttr = classAttr as TableAttribute;
+        //    //        strTableName = tableAttr.Name;
+        //    //    }
+        //    //}
+
+        //    TableAttribute tableAttr = GetTableAttribute(classType, type);
+
+        //    //if (string.IsNullOrEmpty(strTableName) && (type == DbOperateType.INSERT || type == DbOperateType.UPDATE || type == DbOperateType.DELETE))
+        //    //{
+        //    //    throw new Exception("实体类:" + strEntityName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
+        //    //}
+
+        //    return tableAttr.Name;
+        //}
+
+
+        public static TableAttribute GetTableAttribute(Type classType, DbOperateType type)
         {
-            string strTableName = string.Empty;
+            TableAttribute tableAttr = null;
+            //string strTableName = string.Empty;
             string strEntityName = string.Empty;
 
             strEntityName = classType.FullName;
 
             object[] attr = classType.GetCustomAttributes(false);
-            if (attr.Length == 0) return strTableName;
+            if (attr.Length == 0) return null;
 
             foreach (object classAttr in attr)
             {
                 if (classAttr is TableAttribute)
                 {
-                    TableAttribute tableAttr = classAttr as TableAttribute;
-                    strTableName = tableAttr.Name;
+                    tableAttr = classAttr as TableAttribute;
+                    //atrTableName = tableAttr.Name;
                 }
             }
 
-            if (string.IsNullOrEmpty(strTableName) && (type == DbOperateType.INSERT || type == DbOperateType.UPDATE || type == DbOperateType.DELETE))
+            if (tableAttr == null && (type == DbOperateType.INSERT || type == DbOperateType.UPDATE || type == DbOperateType.DELETE))
             {
                 throw new Exception("实体类:" + strEntityName + "的属性配置[Table(name=\"tablename\")]错误或未配置");
             }
 
-            return strTableName;
+            return tableAttr;
         }
 
         public static string GetPrimaryKey(object attribute, DbOperateType type)
@@ -84,7 +115,12 @@ namespace Easy4net.Common
             TableInfo tableInfo = new TableInfo();
             Type type = entity.GetType();
 
-            tableInfo.TableName = GetTableName(type, dbOpType);
+            TableAttribute tableAttr = GetTableAttribute(type, dbOpType);
+            tableInfo.TableName = tableAttr.Name;
+            tableInfo.NoAutomaticKey = tableAttr.NoAutomaticKey;
+
+            //tableInfo.TableName = GetTableName(type, dbOpType);
+
             if (dbOpType == DbOperateType.COUNT)
             {
                 return tableInfo;
@@ -380,7 +416,7 @@ namespace Easy4net.Common
                     tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
                 }
             }
-            
+           
             foreach (String key in tableInfo.Columns.Keys)
             {
                 Object value = tableInfo.Columns[key];
@@ -401,10 +437,14 @@ namespace Easy4net.Common
             string strSql = "INSERT INTO {0}({1}) VALUES({2})";
             strSql = string.Format(strSql, tableInfo.TableName, sbColumns.ToString(), sbValues.ToString());
 
-            if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL)
+
+            if (!tableInfo.NoAutomaticKey)
             {
-                string autoSql = EntityHelper.GetAutoSql();
-                strSql = strSql + autoSql;
+                if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL)
+                {
+                    string autoSql = EntityHelper.GetAutoSql();
+                    strSql = strSql + autoSql;
+                }
             }
 
             return strSql;

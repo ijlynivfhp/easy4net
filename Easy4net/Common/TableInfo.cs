@@ -14,7 +14,14 @@ namespace Easy4net.Common
         private IdInfo id = new IdInfo();
         private ColumnInfo columns = new ColumnInfo();
         private Map propToColumn = new Map();
-        private Map columnToProp = new Map();     
+        private Map columnToProp = new Map();
+
+
+        public bool NoAutomaticKey
+        {
+            get;
+            set;
+        }
 
         public string TableName
         {

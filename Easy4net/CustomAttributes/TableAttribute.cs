@@ -9,12 +9,19 @@ namespace Easy4net.CustomAttributes
     {
         private string _Name = string.Empty;
         
-        public TableAttribute() { }
+        public TableAttribute() {
+            NoAutomaticKey = false;
+        }
 
         public string Name
         {
             get { return _Name; }
             set { _Name = value; }
-        }        
+        }
+
+        /// <summary>
+        /// 不具备自增长键的表
+        /// </summary>
+        public bool NoAutomaticKey { get; set; }
     }
 }
