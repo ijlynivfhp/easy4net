@@ -37,6 +37,11 @@ namespace Easy4net.Session
             m_Transaction = DbFactory.CreateDbTransaction();
         }
 
+        public void BeginTransaction(System.Data.IsolationLevel level)
+        {
+            m_Transaction = DbFactory.CreateDbTransaction(level);
+        }
+
         public void Commit()
         {
             if (m_Transaction != null && m_Transaction.Connection != null)

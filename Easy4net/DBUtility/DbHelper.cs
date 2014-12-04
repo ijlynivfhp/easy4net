@@ -218,6 +218,11 @@ namespace Easy4net.DBUtility
             session.BeginTransaction();
         }
 
+        public void BeginTransaction(System.Data.IsolationLevel level)
+        {
+            session.BeginTransaction(level);
+        }
+
         /// <summary>
         /// 提交事务
         /// </summary>

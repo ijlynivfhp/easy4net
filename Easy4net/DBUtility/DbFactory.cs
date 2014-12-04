@@ -383,5 +383,23 @@ namespace Easy4net.DBUtility
 
             return conn.BeginTransaction();
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public static IDbTransaction CreateDbTransaction(System.Data.IsolationLevel level)
+        {
+            IDbConnection conn = CreateDbConnection(AdoHelper.ConnectionString);
+
+            if (conn.State == ConnectionState.Closed)
+            {
+                conn.Open();
+            }
+
+            return conn.BeginTransaction(level);
+        } 
     }
 }
