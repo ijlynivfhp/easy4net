@@ -222,14 +222,9 @@ namespace Easy4net.Common
                 T entity = new T();
                 foreach (PropertyInfo property in properties)
                 {
-                    String name = tableInfo.PropToColumn[property.Name].ToString();
-                    if (tableInfo.TableName == string.Empty)
-                    {
-                        if (EntityHelper.IsCaseColumn(property, DbOperateType.SELECT)) continue;
-                        ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
-                        continue;
-                    }
+                    if (EntityHelper.IsCaseColumn(property, DbOperateType.SELECT)) continue;
 
+                    String name = tableInfo.PropToColumn[property.Name].ToString();
                     ReflectionHelper.SetPropertyValue(entity, property, sdr[name]);
                 }
                 list.Add(entity);
