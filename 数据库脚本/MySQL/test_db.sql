@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : Easy4netTest
-Source Server Version : 50518
-Source Host           : chenghong.mysql.rds.aliyuncs.com:3306
+Source Server         : ch20150916.mysql.rds.aliyuncs.com_3306
+Source Server Version : 50616
+Source Host           : ch20150916.mysql.rds.aliyuncs.com:3306
 Source Database       : test_db
 
 Target Server Type    : MYSQL
-Target Server Version : 50518
+Target Server Version : 50616
 File Encoding         : 65001
 
-Date: 2014-10-03 23:15:01
+Date: 2015-09-16 22:44:18
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,26 +24,36 @@ CREATE TABLE `company` (
   `company_name` varchar(255) DEFAULT NULL,
   `industry` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
+  `order` varchar(255) DEFAULT NULL,
+  `desc` varchar(255) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of company
 -- ----------------------------
-INSERT INTO `company` VALUES ('1', '深圳天游网络有限公司', '游戏/互联网', '深圳市');
-INSERT INTO `company` VALUES ('2', '上海巨人网络信息科技', '游戏/互联网', '上海市徐汇区');
-INSERT INTO `company` VALUES ('3', '上海澄泓信息科技有限公司', '移动互联网', '上海市普陀区枣阳路185弄');
-INSERT INTO `company` VALUES ('4', '测试公司1001', '互联网/软件开发', '上海市浦东区');
-INSERT INTO `company` VALUES ('5', '测试公司1002', '互联网/软件开发', '上海市徐汇区');
-INSERT INTO `company` VALUES ('6', '测试公司1003', '互联网/软件开发', '上海市浦东新区张江高科');
-INSERT INTO `company` VALUES ('7', '测试公司1004', '互联网/软件开发', '上海市普陀区枣阳路');
-INSERT INTO `company` VALUES ('8', '测试公司1005', '互联网/软件开发', '上海市曹安国际鞋城');
-INSERT INTO `company` VALUES ('9', '测试公司1006', '互联网/软件开发', '上海市嘉定区');
-INSERT INTO `company` VALUES ('10', '测试公司1007', '互联网/软件开发', '武汉市');
-INSERT INTO `company` VALUES ('11', '测试公司1008', '互联网/软件开发', '深圳市');
-INSERT INTO `company` VALUES ('12', '测试公司1009', '互联网/软件开发', '北京市西直门');
-INSERT INTO `company` VALUES ('13', '测试公司1010', '互联网/软件开发', '北京市西单');
-INSERT INTO `company` VALUES ('14', '测试公司1010', '互联网/软件开发', '北京市上地软件园');
+INSERT INTO `company` VALUES ('1', '', '', '', null, null, null);
+INSERT INTO `company` VALUES ('2', '上海巨人网络信息科技', '游戏/互联网', '上海市徐汇区', null, null, null);
+INSERT INTO `company` VALUES ('3', '上海澄泓信息科技有限公司', '移动互联网', '上海市普陀区枣阳路185弄', null, null, null);
+INSERT INTO `company` VALUES ('4', '测试公司1001', '互联网/软件开发', '上海市浦东区', null, null, null);
+INSERT INTO `company` VALUES ('5', '测试公司1002', '互联网/软件开发', '上海市徐汇区', null, null, null);
+INSERT INTO `company` VALUES ('6', '测试公司1003', '互联网/软件开发', '上海市浦东新区张江高科', null, null, null);
+INSERT INTO `company` VALUES ('7', '测试公司1004', '互联网/软件开发', '上海市普陀区枣阳路', null, null, null);
+INSERT INTO `company` VALUES ('8', '测试公司1005', '互联网/软件开发', '上海市曹安国际鞋城', null, null, null);
+INSERT INTO `company` VALUES ('9', '测试公司1006', '互联网/软件开发', '上海市嘉定区', null, null, null);
+INSERT INTO `company` VALUES ('10', '测试公司1007', '互联网/软件开发', '武汉市', null, null, null);
+INSERT INTO `company` VALUES ('11', '测试公司1008', '互联网/软件开发', '深圳市', null, null, null);
+INSERT INTO `company` VALUES ('12', '测试公司1009', '互联网/软件开发', '北京市西直门', null, null, null);
+INSERT INTO `company` VALUES ('13', '测试公司1010', '互联网/软件开发', '北京市西单', null, null, null);
+INSERT INTO `company` VALUES ('14', '测试公司1010', '互联网/软件开发', '北京市上地软件园', null, null, null);
+INSERT INTO `company` VALUES ('21', 'SSSS', 'SSSS', 'SSSS', null, null, null);
+INSERT INTO `company` VALUES ('22', 'WWWW', 'WWWW', 'WWWW', null, null, null);
+INSERT INTO `company` VALUES ('23', '5555-0', '5555-0', '5555-0', 'Order-0', 'Description-0', '2015-09-16 22:41:09');
+INSERT INTO `company` VALUES ('24', '5555-1', '5555-1', '5555-1', 'Order-1', 'Description-1', '2015-09-16 22:41:09');
+INSERT INTO `company` VALUES ('25', '5555-2', '5555-2', '5555-2', 'Order-2', 'Description-2', '2015-09-16 22:41:09');
+INSERT INTO `company` VALUES ('26', '5555-3', '5555-3', '5555-3', 'Order-3', 'Description-3', '2015-09-16 22:41:09');
+INSERT INTO `company` VALUES ('27', '5555-4', '5555-4', '5555-4', 'Order-4', 'Description-4', '2015-09-16 22:41:09');
 
 -- ----------------------------
 -- Table structure for `employee`
