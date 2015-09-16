@@ -1,4 +1,5 @@
-﻿using Easy4net.DBUtility;
+﻿using Easy4net.Context;
+using Easy4net.DBUtility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,28 +35,28 @@ namespace Easy4net.Common
             }
         }
 
-        public static string FormatColumnName(string colounName)
+        public static string FormatColumnName(string columnName, DatabaseType dbType)
         {
             InitMySQL();
             InitMSSQL();
 
-            string colName = colounName.ToLower();
-            if (AdoHelper.DbType == DatabaseType.MYSQL && m_MySQL.ContainsKey(colName))
+            string colName = columnName.ToLower();
+            if (dbType == DatabaseType.MYSQL && m_MySQL.ContainsKey(colName))
             {
                 return m_MySQL[colName];
             }
 
-            if (AdoHelper.DbType == DatabaseType.SQLSERVER && m_MSSQL.ContainsKey(colName))
+            if (dbType == DatabaseType.SQLSERVER && m_MSSQL.ContainsKey(colName))
             {
                 return m_MSSQL[colName];
             }
 
-            if (AdoHelper.DbType == DatabaseType.ACCESS && m_MSSQL.ContainsKey(colName))
+            if (dbType == DatabaseType.ACCESS && m_MSSQL.ContainsKey(colName))
             {
                 return m_MSSQL[colName];
             }
 
-            return colounName;
+            return columnName;
         }
 
     }

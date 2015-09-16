@@ -4,18 +4,19 @@ using System.Text;
 using System.Collections;
 using System.Data;
 using Easy4net.DBUtility;
+using Easy4net.Context;
 
 namespace Easy4net.Common
 {
     public class TableInfo
     {
         private string tableName;
-        private int strategy;        
+        private int strategy;
+
         private IdInfo id = new IdInfo();
         private ColumnInfo columns = new ColumnInfo();
         private Map propToColumn = new Map();
         private Map columnToProp = new Map();
-
 
         public bool NoAutomaticKey
         {
@@ -63,6 +64,8 @@ namespace Easy4net.Common
         {
             if (this.Columns == null || this.Columns.Count == 0) return new List<IDbDataParameter>();
 
+            Session session = SessionThreadLocal.Get();
+
             List<IDbDataParameter> paramList = new List<IDbDataParameter>();
             foreach (string key in this.Columns.Keys)
             {
@@ -71,7 +74,7 @@ namespace Easy4net.Common
                     object value = this.Columns[key];
                     if (value != null)
                     {
-                        IDbDataParameter param = DbFactory.CreateDbParameter();
+                        IDbDataParameter param = session.DbFactory.CreateDbParameter();
                         param.ParameterName = key;
                         param.Value = value;
 
@@ -85,8 +88,10 @@ namespace Easy4net.Common
 
         public IDbDataParameter[] GetParameters(List<IDbDataParameter> paramList)
         {
+            Session session = SessionThreadLocal.Get();
+
             int i = 0;
-            IDbDataParameter[] parameters = DbFactory.CreateDbParameters(paramList.Count);
+            IDbDataParameter[] parameters = session.DbFactory.CreateDbParameters(paramList.Count);
             foreach (IDbDataParameter dbParameter in paramList)
             {
                 parameters[i] = dbParameter;
@@ -98,7 +103,9 @@ namespace Easy4net.Common
 
         public IDbDataParameter[] GetParameters()
         {
-            if (this.Columns == null || this.Columns.Count == 0) return DbFactory.CreateDbParameters(1);
+            Session session = SessionThreadLocal.Get();
+
+            if (this.Columns == null || this.Columns.Count == 0) return session.DbFactory.CreateDbParameters(1);
             
             List<IDbDataParameter> paramList = new List<IDbDataParameter>();
             foreach (string key in this.Columns.Keys)
@@ -108,7 +115,7 @@ namespace Easy4net.Common
                     object value = this.Columns[key];
                     if (value != null)
                     {
-                        IDbDataParameter param = DbFactory.CreateDbParameter();
+                        IDbDataParameter param = session.DbFactory.CreateDbParameter();
                         param.ParameterName = key;
                         param.Value = value;
 
@@ -118,7 +125,7 @@ namespace Easy4net.Common
             }
 
             int i = 0;
-            IDbDataParameter[] parameters = DbFactory.CreateDbParameters(paramList.Count);
+            IDbDataParameter[] parameters = session.DbFactory.CreateDbParameters(paramList.Count);
             foreach (IDbDataParameter dbParameter in paramList)
             {
                 parameters[i] = dbParameter;

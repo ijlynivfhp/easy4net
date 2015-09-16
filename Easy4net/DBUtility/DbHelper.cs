@@ -5,21 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using Easy4net.Common;
-using Easy4net.Session;
+using Easy4net.Context;
 
 namespace Easy4net.DBUtility
 {
     public class DBHelper
     {
-        Session.Session session;
-        public DBHelper()
+        Session session;
+        public DBHelper(string connName)
         {
-            session = Session.Session.PriviteInstance();
+            session = Session.NewInstance(connName);
         }
 
-        public static DBHelper getInstance()
+        public static DBHelper getInstance(string connName)
         {
-            return new DBHelper();
+            return new DBHelper(connName);
         }
 
         /// <summary>

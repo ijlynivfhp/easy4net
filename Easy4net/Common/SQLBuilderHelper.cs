@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Easy4net.DBUtility;
 using System.Data;
+using Easy4net.Context;
 
 namespace Easy4net.Common
 {
@@ -14,6 +15,12 @@ namespace Easy4net.Common
         private static string sqliteOrderPageTemplate = "{0} order by {1} limit @offset,@limit";
         private static string sqlitePageTemplate = "{0} limit @offset,@limit";
         private static string accessPageTemplate = "select * from (select top @page_limit * from (select top @page_offset {0} order by id desc) order by id) order by {1}";
+
+
+        public SQLBuilderHelper()
+        {
+
+        }
 
         public static string fetchColumns(string strSQL)
         {
@@ -40,28 +47,29 @@ namespace Easy4net.Common
         public static bool isPage(string strSQL)
         { 
             string strSql = strSQL.ToLower();
+            Session session = SessionThreadLocal.Get();
 
-            if (AdoHelper.DbType == DatabaseType.ACCESS && strSql.IndexOf("top") == -1)
+            if (session.DbFactory.DbType == DatabaseType.ACCESS && strSql.IndexOf("top") == -1)
             {
                 return false;
             }
 
-            if (AdoHelper.DbType == DatabaseType.SQLSERVER && strSql.IndexOf("row_number()") == -1)
+            if (session.DbFactory.DbType == DatabaseType.SQLSERVER && strSql.IndexOf("row_number()") == -1)
             {
                 return false;
             }
 
-            if(AdoHelper.DbType == DatabaseType.MYSQL && strSql.IndexOf("limit") == -1)
+            if (session.DbFactory.DbType == DatabaseType.MYSQL && strSql.IndexOf("limit") == -1)
             {
                 return false;
             }
 
-            if (AdoHelper.DbType == DatabaseType.SQLITE && strSql.IndexOf("limit") == -1)
+            if (session.DbFactory.DbType == DatabaseType.SQLITE && strSql.IndexOf("limit") == -1)
             {
                 return false;
             }
 
-            if (AdoHelper.DbType == DatabaseType.ORACLE && strSql.IndexOf("rowid") == -1)
+            if (session.DbFactory.DbType == DatabaseType.ORACLE && strSql.IndexOf("rowid") == -1)
             {
                 return false;
             }
@@ -71,11 +79,13 @@ namespace Easy4net.Common
 
         public static string builderPageSQL(string strSql, string order, bool desc)
         {
+            Session session = SessionThreadLocal.Get();
+
             string columns = fetchColumns(strSql);
             string orderBy = order + (desc ? " desc " : " asc ");
-            
 
-            if (AdoHelper.DbType == DatabaseType.SQLSERVER && strSql.IndexOf("row_number()") == -1)
+
+            if (session.DbFactory.DbType == DatabaseType.SQLSERVER && strSql.IndexOf("row_number()") == -1)
             {
                 if (string.IsNullOrEmpty(order))
                 {
@@ -86,7 +96,7 @@ namespace Easy4net.Common
                 strSql = string.Format(mssqlPageTemplate, orderBy, pageBody);
             }
 
-            if (AdoHelper.DbType == DatabaseType.ACCESS && strSql.IndexOf("top") == -1)
+            if (session.DbFactory.DbType == DatabaseType.ACCESS && strSql.IndexOf("top") == -1)
             {
                 if (string.IsNullOrEmpty(order))
                 {
@@ -98,7 +108,7 @@ namespace Easy4net.Common
                 strSql = string.Format(accessPageTemplate, pageBody, orderBy);
             }
 
-            if (AdoHelper.DbType == DatabaseType.MYSQL)
+            if (session.DbFactory.DbType == DatabaseType.MYSQL)
             {
                 if (!string.IsNullOrEmpty(order))
                 {
@@ -110,7 +120,7 @@ namespace Easy4net.Common
                 }
             }
 
-            if (AdoHelper.DbType == DatabaseType.SQLITE)
+            if (session.DbFactory.DbType == DatabaseType.SQLITE)
             {
                 if (!string.IsNullOrEmpty(order))
                 {
@@ -140,7 +150,9 @@ namespace Easy4net.Common
 
         public static string builderAccessPageSQL(string strSql, ParamMap param, int limit)
         {
-            if (AdoHelper.DbType != DatabaseType.ACCESS)
+            Session session = SessionThreadLocal.Get();
+
+            if (session.DbFactory.DbType != DatabaseType.ACCESS)
             {
                 return strSql;
             }
@@ -169,7 +181,9 @@ namespace Easy4net.Common
 
         public static string builderAccessSQL(Type classType, TableInfo tableInfo, string strSql, IDbDataParameter[] parameters)
         {
-            if (AdoHelper.DbType != DatabaseType.ACCESS)
+            Session session = SessionThreadLocal.Get();
+
+            if (session.DbFactory.DbType != DatabaseType.ACCESS)
             {
                 return strSql;
             }
@@ -206,7 +220,9 @@ namespace Easy4net.Common
 
         public static string builderAccessSQL(string strSql, IDbDataParameter[] parameters)
         {
-            if (AdoHelper.DbType != DatabaseType.ACCESS)
+            Session session = SessionThreadLocal.Get();
+
+            if (session.DbFactory.DbType != DatabaseType.ACCESS)
             {
                 return strSql;
             }

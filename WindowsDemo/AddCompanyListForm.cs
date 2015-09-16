@@ -1,6 +1,6 @@
 ﻿using Easy4net.DBUtility;
 using Easy4net.Entity;
-using Easy4net.Session;
+using Easy4net.Context;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,13 +21,13 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Session session = SessionFactory.GetSession();
+            Session session = SessionFactory.GetSession("MySQLString");
+            
+            //session.ConnectDB("SqlServerString");
+
+
             try
             {
-                //DBHelper dbHelper = DBHelper.getInstance();
-                //dbHelper.BeginTransaction();
-
-                //新的写法，兼容DbHelper写法
                 session.BeginTransaction();
 
                 List<Company> compList = new List<Company>();

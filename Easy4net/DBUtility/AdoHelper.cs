@@ -12,27 +12,18 @@ using Easy4net.Common;
 namespace Easy4net.DBUtility
 {
     public class AdoHelper
-    {
+    {   
         //获取数据库类型
-        private static string strDbType = CommonUtils.GetConfigValueByKey("dbType").ToUpper();
+        //private static string strDbType = CommonUtils.GetConfigValueByKey("dbType").ToUpper();
 
         //将数据库类型转换成枚举类型
-        public static DatabaseType DbType = DatabaseTypeEnumParse<DatabaseType>(strDbType);
-
-        public static string DbHost = CommonUtils.GetConfigValueByKey("DbHost");
-        public static string DbPort = CommonUtils.GetConfigValueByKey("DbPort");
-        public static string DbName = CommonUtils.GetConfigValueByKey("DbName");
-        public static string DbUser = CommonUtils.GetConfigValueByKey("DbUser");
-        public static string DbPassword = CommonUtils.GetConfigValueByKey("DbPassword");
-        public static string DbMinPoolSize = CommonUtils.GetConfigValueByKey("DbMinPoolSize");
-        public static string DbMaxPoolSize = CommonUtils.GetConfigValueByKey("DbMaxPoolSize");
-        public static string DbCharset = CommonUtils.GetConfigValueByKey("DbCharset");
+        //public static DatabaseType DbType = DatabaseTypeEnumParse<DatabaseType>(strDbType);
 
         //获取数据库连接字符串
-        public static string ConnectionString = GetConnectionString("connectionString");
+        //public static string ConnectionString = GetConnectionString("connectionString");
 
         //获取数据库命名参数符号，比如@(SQLSERVER)、:(ORACLE)
-        public static string DbParmChar = DbFactory.CreateDbParmCharacter();
+        //public static string DbParmChar = DbFactory.CreateDbParmCharacter();
 
         private static Hashtable parmCache = Hashtable.Synchronized(new Hashtable());
 
@@ -45,13 +36,13 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(string connectionString, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static int ExecuteNonQuery(DbFactory dbFactory, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            using (IDbConnection conn = DbFactory.CreateDbConnection(connectionString))
+            using (IDbConnection conn = dbFactory.CreateDbConnection())
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, commandParameters);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, commandParameters);
                 int val = cmd.ExecuteNonQuery();
                 cmd.Parameters.Clear();
                 return val;
@@ -65,13 +56,13 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(string connectionString, CommandType cmdType, string cmdText)
+        public static int ExecuteNonQuery(DbFactory dbFactory, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            using (IDbConnection conn = DbFactory.CreateDbConnection(connectionString))
+            using (IDbConnection conn = dbFactory.CreateDbConnection())
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, null);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, null);
                 int val = cmd.ExecuteNonQuery();
                 cmd.Parameters.Clear();
                 return val;
@@ -91,11 +82,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, connection, null, cmdType, cmdText, commandParameters);
+            PrepareCommand(dbFactory, cmd, connection, null, cmdType, cmdText, commandParameters);
             int val = cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
             return val;
@@ -113,11 +104,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(IDbConnection connection, CommandType cmdType, string cmdText)
+        public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, connection, null, cmdType, cmdText, null);
+            PrepareCommand(dbFactory, cmd, connection, null, cmdType, cmdText, null);
             int val = cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
             return val;
@@ -135,11 +126,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText)
+        public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, connection, transaction, cmdType, cmdText, null);
+            PrepareCommand(dbFactory, cmd, connection, transaction, cmdType, cmdText, null);
             int val = cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
             return val;
@@ -156,11 +147,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, connection, transaction, cmdType, cmdText, commandParameters);
+            PrepareCommand(dbFactory, cmd, connection, transaction, cmdType, cmdText, commandParameters);
             int val = cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
             return val;
@@ -180,22 +171,22 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static int ExecuteNonQuery(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
             int val = 0;
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
             if (trans == null || trans.Connection == null)
             {
-                using (IDbConnection conn = DbFactory.CreateDbConnection(AdoHelper.ConnectionString))
+                using (IDbConnection conn = dbFactory.CreateDbConnection())
                 {
-                    PrepareCommand(cmd, conn, trans, cmdType, cmdText, commandParameters);
+                    PrepareCommand(dbFactory, cmd, conn, trans, cmdType, cmdText, commandParameters);
                     val = cmd.ExecuteNonQuery();
                 }
             }
             else
             {
-                PrepareCommand(cmd, trans.Connection, trans, cmdType, cmdText, commandParameters);
+                PrepareCommand(dbFactory, cmd, trans.Connection, trans, cmdType, cmdText, commandParameters);
                 val = cmd.ExecuteNonQuery();
             }
 
@@ -214,10 +205,10 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
-        public static int ExecuteNonQuery(IDbTransaction trans, CommandType cmdType, string cmdText)
+        public static int ExecuteNonQuery(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
-            PrepareCommand(cmd, trans.Connection, trans, cmdType, cmdText, null);
+            IDbCommand cmd = dbFactory.CreateDbCommand();
+            PrepareCommand(dbFactory, cmd, trans.Connection, trans, cmdType, cmdText, null);
             int val = cmd.ExecuteNonQuery();
             cmd.Parameters.Clear();
             return val;
@@ -236,17 +227,17 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回SqlDataReader对象</returns>
-        public static IDataReader ExecuteReader(string connectionString, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static IDataReader ExecuteReader(DbFactory dbFactory, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
-            IDbConnection conn = DbFactory.CreateDbConnection(connectionString);
+            IDbCommand cmd = dbFactory.CreateDbCommand();
+            IDbConnection conn = dbFactory.CreateDbConnection();
 
             //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
             //connection连接对象，因为异常发生datareader将不会存在，所以commandBehaviour.CloseConnection
             //将不会执行。
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, commandParameters);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, commandParameters);
                 IDataReader rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 cmd.Parameters.Clear();
                 return rdr;
@@ -272,9 +263,9 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回SqlDataReader对象</returns>
-        public static IDataReader ExecuteReader(IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static IDataReader ExecuteReader(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
             IDbConnection conn = trans.Connection;
 
             //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
@@ -282,7 +273,7 @@ namespace Easy4net.DBUtility
             //将不会执行。
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, commandParameters);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, commandParameters);
                 IDataReader rdr = cmd.ExecuteReader();
                 cmd.Parameters.Clear();
                 return rdr;
@@ -308,9 +299,9 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回SqlDataReader对象</returns>
-        public static IDataReader ExecuteReader(bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static IDataReader ExecuteReader(DbFactory dbFactory, bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
             IDbConnection conn = connection;
 
             //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
@@ -318,7 +309,7 @@ namespace Easy4net.DBUtility
             //将不会执行。
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, commandParameters);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, commandParameters);
                 IDataReader rdr = closeConnection ? cmd.ExecuteReader(CommandBehavior.CloseConnection) : cmd.ExecuteReader(); 
                 cmd.Parameters.Clear();
                 return rdr;
@@ -339,17 +330,17 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <returns>返回SqlDataReader对象</returns>
-        public static IDataReader ExecuteReader(string connectionString, CommandType cmdType, string cmdText)
+        public static IDataReader ExecuteReader(DbFactory dbFactory, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
-            IDbConnection conn = DbFactory.CreateDbConnection(connectionString);
+            IDbCommand cmd = dbFactory.CreateDbCommand();
+            IDbConnection conn = dbFactory.CreateDbConnection();
 
             //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
             //connection连接对象，因为异常发生datareader将不会存在，所以commandBehaviour.CloseConnection
             //将不会执行。
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, null);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, null);
                 IDataReader rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 cmd.Parameters.Clear();
                 return rdr;
@@ -370,9 +361,9 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <returns>返回SqlDataReader对象</returns>
-        public static IDataReader ExecuteReader(IDbTransaction trans, CommandType cmdType, string cmdText)
+        public static IDataReader ExecuteReader(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
             IDbConnection conn = trans.Connection;
 
             //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
@@ -380,7 +371,7 @@ namespace Easy4net.DBUtility
             //将不会执行。
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, null);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, null);
                 IDataReader rdr = cmd.ExecuteReader();
                 cmd.Parameters.Clear();
                 return rdr;
@@ -401,9 +392,9 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
         /// <returns>返回SqlDataReader对象</returns>
-        public static IDataReader ExecuteReader(bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText)
+        public static IDataReader ExecuteReader(DbFactory dbFactory, bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
             IDbConnection conn = connection;
 
             //我们在这里使用一个 try/catch,因为如果PrepareCommand方法抛出一个异常，我们想在捕获代码里面关闭
@@ -411,7 +402,7 @@ namespace Easy4net.DBUtility
             //将不会执行。
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, null);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, null);
                 IDataReader rdr = closeConnection ? cmd.ExecuteReader(CommandBehavior.CloseConnection) : cmd.ExecuteReader(); 
                 cmd.Parameters.Clear();
                 return rdr;
@@ -433,15 +424,15 @@ namespace Easy4net.DBUtility
         /// <param name="cmdText">命令文本</param>
         /// <param name="commandParameters">参数数组</param>
         /// <returns>数据集DataSet对象</returns>
-        public static DataSet dataSet(string connectionString, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static DataSet dataSet(DbFactory dbFactory, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
             DataSet ds = new DataSet();
-            IDbCommand cmd = DbFactory.CreateDbCommand();
-            IDbConnection conn = DbFactory.CreateDbConnection(connectionString);
+            IDbCommand cmd = dbFactory.CreateDbCommand();
+            IDbConnection conn = dbFactory.CreateDbConnection();
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, commandParameters);
-                IDbDataAdapter sda = DbFactory.CreateDataAdapter(cmd);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, commandParameters);
+                IDbDataAdapter sda = dbFactory.CreateDataAdapter(cmd);
                 sda.Fill(ds);
                 return ds;
             }
@@ -465,15 +456,15 @@ namespace Easy4net.DBUtility
         /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="cmdText">命令文本</param>
         /// <returns>数据集DataSet对象</returns>
-        public static DataSet dataSet(string connectionString, CommandType cmdType, string cmdText)
+        public static DataSet dataSet(DbFactory dbFactory, CommandType cmdType, string cmdText)
         {
             DataSet ds = new DataSet();
-            IDbCommand cmd = DbFactory.CreateDbCommand();
-            IDbConnection conn = DbFactory.CreateDbConnection(connectionString);
+            IDbCommand cmd = dbFactory.CreateDbCommand();
+            IDbConnection conn = dbFactory.CreateDbConnection();
             try
             {
-                PrepareCommand(cmd, conn, null, cmdType, cmdText, null);
-                IDbDataAdapter sda = DbFactory.CreateDataAdapter(cmd);
+                PrepareCommand(dbFactory, cmd, conn, null, cmdType, cmdText, null);
+                IDbDataAdapter sda = dbFactory.CreateDataAdapter(cmd);
                 sda.Fill(ds);
                 return ds;
             }
@@ -503,13 +494,13 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
-        public static object ExecuteScalar(string connectionString, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static object ExecuteScalar(DbFactory dbFactory, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            using (IDbConnection connection = DbFactory.CreateDbConnection(connectionString))
+            using (IDbConnection connection = dbFactory.CreateDbConnection())
             {
-                PrepareCommand(cmd, connection, null, cmdType, cmdText, commandParameters);
+                PrepareCommand(dbFactory, cmd, connection, null, cmdType, cmdText, commandParameters);
                 object val = cmd.ExecuteScalar();
                 cmd.Parameters.Clear();
                 return val;
@@ -527,13 +518,13 @@ namespace Easy4net.DBUtility
         /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
-        public static object ExecuteScalar(string connectionString, CommandType cmdType, string cmdText)
+        public static object ExecuteScalar(DbFactory dbFactory, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            using (IDbConnection connection = DbFactory.CreateDbConnection(connectionString))
+            using (IDbConnection connection = dbFactory.CreateDbConnection())
             {
-                PrepareCommand(cmd, connection, null, cmdType, cmdText, null);
+                PrepareCommand(dbFactory, cmd, connection, null, cmdType, cmdText, null);
                 object val = cmd.ExecuteScalar();
                 cmd.Parameters.Clear();
                 return val;
@@ -552,11 +543,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
-        public static object ExecuteScalar(IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static object ExecuteScalar(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, connection, null, cmdType, cmdText, commandParameters);
+            PrepareCommand(dbFactory, cmd, connection, null, cmdType, cmdText, commandParameters);
             object val = cmd.ExecuteScalar();
             cmd.Parameters.Clear();
             return val;
@@ -575,11 +566,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
-        public static object ExecuteScalar(IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static object ExecuteScalar(DbFactory dbFactory, IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, connection, transaction, cmdType, cmdText, commandParameters);
+            PrepareCommand(dbFactory, cmd, connection, transaction, cmdType, cmdText, commandParameters);
             object val = cmd.ExecuteScalar();
             cmd.Parameters.Clear();
             return val;
@@ -598,11 +589,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
-        public static object ExecuteScalar(IDbConnection connection, CommandType cmdType, string cmdText)
+        public static object ExecuteScalar(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, connection, null, cmdType, cmdText, null);
+            PrepareCommand(dbFactory, cmd, connection, null, cmdType, cmdText, null);
             object val = cmd.ExecuteScalar();
             cmd.Parameters.Clear();
             return val;
@@ -621,11 +612,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
-        public static object ExecuteScalar(IDbConnection conn, IDbTransaction trans, CommandType cmdType, string cmdText)
+        public static object ExecuteScalar(DbFactory dbFactory, IDbConnection conn, IDbTransaction trans, CommandType cmdType, string cmdText)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, conn, trans, cmdType, cmdText, null);
+            PrepareCommand(dbFactory, cmd, conn, trans, cmdType, cmdText, null);
             object val = cmd.ExecuteScalar();
             cmd.Parameters.Clear();
             return val;
@@ -644,11 +635,11 @@ namespace Easy4net.DBUtility
         /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
-        public static object ExecuteScalar(IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
+        public static object ExecuteScalar(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
-            IDbCommand cmd = DbFactory.CreateDbCommand();
+            IDbCommand cmd = dbFactory.CreateDbCommand();
 
-            PrepareCommand(cmd, trans.Connection, trans, cmdType, cmdText, commandParameters);
+            PrepareCommand(dbFactory, cmd, trans.Connection, trans, cmdType, cmdText, commandParameters);
             object val = cmd.ExecuteScalar();
             cmd.Parameters.Clear();
             return val;
@@ -693,7 +684,7 @@ namespace Easy4net.DBUtility
         /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="cmdText">存储过程名称或者T-SQL命令行, e.g. Select * from Products</param>
         /// <param name="cmdParms">SqlParameters to use in the command</param>
-        private static void PrepareCommand(IDbCommand cmd, IDbConnection conn, IDbTransaction trans, CommandType cmdType, string cmdText, IDbDataParameter[] cmdParms)
+        private static void PrepareCommand(DbFactory dbFactory, IDbCommand cmd, IDbConnection conn, IDbTransaction trans, CommandType cmdType, string cmdText, IDbDataParameter[] cmdParms)
         {
             if (conn.State != ConnectionState.Open)
                 conn.Open();
@@ -710,7 +701,7 @@ namespace Easy4net.DBUtility
             {
                 foreach (IDbDataParameter parm in cmdParms)
                 {
-                    if (AdoHelper.DbType == DatabaseType.ACCESS && parm.DbType == System.Data.DbType.DateTime)
+                    if (dbFactory.DbType == DatabaseType.ACCESS && parm.DbType == System.Data.DbType.DateTime)
                     {
                         parm.DbType = System.Data.DbType.Object;
                     }
@@ -730,44 +721,7 @@ namespace Easy4net.DBUtility
             try
             {
                 string connectionString = CommonUtils.GetConfigValueByKey(Key);
-                if (!String.IsNullOrEmpty(connectionString)) return connectionString;
-
-                string DbHost = CommonUtils.GetConfigValueByKey("DbHost");
-                string DbPort = CommonUtils.GetConfigValueByKey("DbPort");
-                string DbName = CommonUtils.GetConfigValueByKey("DbName");
-                string DbUser = CommonUtils.GetConfigValueByKey("DbUser");
-                string DbPassword = CommonUtils.GetConfigValueByKey("DbPassword");
-                string DbMinPoolSize = CommonUtils.GetConfigValueByKey("DbMinPoolSize");
-                string DbMaxPoolSize = CommonUtils.GetConfigValueByKey("DbMaxPoolSize");
-
-                StringBuilder sb = new StringBuilder();
-                sb.Append("Data Source=").Append(DbHost).Append(";");
-
-                if (!String.IsNullOrEmpty(DbPort))
-                {
-                    sb.Append("port=").Append(DbPort).Append(";");
-                }
-
-                sb.Append("User ID=").Append(DbUser).Append(";");
-                sb.Append("Password=").Append(DbPassword).Append(";");
-                sb.Append("DataBase=").Append(DbName).Append(";");
-
-                if (!String.IsNullOrEmpty(DbMinPoolSize))
-                {
-                    sb.Append("Min Pool Size=").Append(DbMinPoolSize).Append(";");
-                }
-
-                if (!String.IsNullOrEmpty(DbMinPoolSize))
-                {
-                    sb.Append("Max Pool Size=").Append(DbMaxPoolSize).Append(";");
-                }
-
-                if (!String.IsNullOrEmpty(DbCharset))
-                {
-                    sb.Append("charset=").Append(DbCharset).Append(";");
-                }
-
-                return sb.ToString();
+                return connectionString;
             }
             catch
             {

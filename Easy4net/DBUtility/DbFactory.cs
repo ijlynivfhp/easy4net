@@ -13,16 +13,55 @@ namespace Easy4net.DBUtility
 {
     public class DbFactory
     {
+
+        private DbFactory()
+        {
+
+        }
+
+        public static DbFactory NewInstance(string connectionString, DatabaseType dbType)
+        {
+            DbFactory factory = new DbFactory();
+            factory.connectionString = connectionString;
+            factory.dbType = dbType;
+            factory.DbParmChar = factory.CreateDbParmCharacter();
+
+            return factory;
+        }
+
+        private string connectionString;
+        private DatabaseType dbType;
+        private string dbParmChar;
+
+        public DatabaseType DbType
+        {
+            get { return dbType; }
+            set { value = dbType; }
+        }
+
+        public string ConnectionString
+        {
+            get { return connectionString; }
+            set { value = connectionString; }
+        }
+
+        public string DbParmChar
+        {
+            get { return dbParmChar; }
+            set { dbParmChar = value; }
+        }
+
+
         /// <summary>
         /// 根据配置文件中所配置的数据库类型
         /// 来获取命令参数中的参数符号oracle为":",sqlserver为"@"
         /// </summary>
         /// <returns></returns>
-        public static string CreateDbParmCharacter()
+        public string CreateDbParmCharacter()
         {
             string character = string.Empty;
 
-            switch (AdoHelper.DbType)
+            switch (dbType)
             {
                 case DatabaseType.SQLSERVER:
                     character = "@";
@@ -52,10 +91,10 @@ namespace Easy4net.DBUtility
         /// </summary>
         /// <param name="connectionString"></param>
         /// <returns></returns>
-        public static IDbConnection CreateDbConnection(string connectionString)
+        public IDbConnection CreateDbConnection()
         {
             IDbConnection conn = null;
-            switch (AdoHelper.DbType)
+            switch (dbType)
             {
                 case DatabaseType.SQLSERVER:
                     conn = new SqlConnection(connectionString);
@@ -84,10 +123,10 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库命令对象
         /// </summary>
         /// <returns></returns>
-        public static IDbCommand CreateDbCommand()
+        public IDbCommand CreateDbCommand()
         {
             IDbCommand cmd = null;
-            switch (AdoHelper.DbType)
+            switch (dbType)
             {
                 case DatabaseType.SQLSERVER:
                     cmd = new SqlCommand();
@@ -116,10 +155,10 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库适配器对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataAdapter CreateDataAdapter()
+        public IDbDataAdapter CreateDataAdapter()
         {
             IDbDataAdapter adapter = null;
-            switch (AdoHelper.DbType)
+            switch (dbType)
             {
                 case DatabaseType.SQLSERVER:
                     adapter = new SqlDataAdapter();
@@ -148,10 +187,10 @@ namespace Easy4net.DBUtility
         /// 和传入的命令对象来创建相应数据库适配器对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataAdapter CreateDataAdapter(IDbCommand cmd)
+        public IDbDataAdapter CreateDataAdapter(IDbCommand cmd)
         {
             IDbDataAdapter adapter = null;
-            switch (AdoHelper.DbType)
+            switch (dbType)
             {
                 case DatabaseType.SQLSERVER:
                     adapter = new SqlDataAdapter((SqlCommand)cmd);
@@ -179,10 +218,10 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的参数对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter CreateDbParameter()
+        public IDbDataParameter CreateDbParameter()
         {
             IDbDataParameter param = null;
-            switch (AdoHelper.DbType)
+            switch (dbType)
             {
                 case DatabaseType.SQLSERVER:
                     param = new SqlParameter();
@@ -211,14 +250,14 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的参数对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter CreateDbParameter(string paramName, object value)
+        public IDbDataParameter CreateDbParameter(string paramName, object value)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+            if (dbType == DatabaseType.ACCESS || dbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
 
-            IDbDataParameter param = DbFactory.CreateDbParameter();
+            IDbDataParameter param = CreateDbParameter();
             param.ParameterName = paramName;
             param.Value = value;
 
@@ -230,15 +269,15 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的参数对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter CreateDbParameter(string paramName, object value, DbType dbType)
+        public IDbDataParameter CreateDbParameter(string paramName, object value, DbType _dataType)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+            if (dbType == DatabaseType.ACCESS || dbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
 
-            IDbDataParameter param = DbFactory.CreateDbParameter();
-            param.DbType = dbType;
+            IDbDataParameter param = CreateDbParameter();
+            param.DbType = _dataType;
             param.ParameterName = paramName;
             param.Value = value;
 
@@ -250,14 +289,14 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的参数对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter CreateDbParameter(string paramName, object value, ParameterDirection direction)
+        public IDbDataParameter CreateDbParameter(string paramName, object value, ParameterDirection direction)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+            if (dbType == DatabaseType.ACCESS || dbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
 
-            IDbDataParameter param = DbFactory.CreateDbParameter();
+            IDbDataParameter param = CreateDbParameter();
             param.Direction = direction;
             param.ParameterName = paramName;
             param.Value = value;
@@ -270,14 +309,14 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的参数对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter CreateDbParameter(string paramName, object value, int size, ParameterDirection direction)
+        public IDbDataParameter CreateDbParameter(string paramName, object value, int size, ParameterDirection direction)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+            if (dbType == DatabaseType.ACCESS || dbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
 
-            IDbDataParameter param = DbFactory.CreateDbParameter();
+            IDbDataParameter param = CreateDbParameter();
             param.Direction = direction;
             param.ParameterName = paramName;
             param.Value = value;
@@ -291,14 +330,14 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的参数对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter CreateDbOutParameter(string paramName, int size)
+        public IDbDataParameter CreateDbOutParameter(string paramName, int size)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+            if (dbType == DatabaseType.ACCESS || dbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
 
-            IDbDataParameter param = DbFactory.CreateDbParameter();
+            IDbDataParameter param = CreateDbParameter();
             param.Direction = ParameterDirection.Output;
             param.ParameterName = paramName;
             param.Size = size;
@@ -311,16 +350,16 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的参数对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter CreateDbParameter(string paramName, object value, DbType dbType, ParameterDirection direction)
+        public IDbDataParameter CreateDbParameter(string paramName, object value, DbType _dataType, ParameterDirection direction)
         {
-            if (AdoHelper.DbType == DatabaseType.ACCESS || AdoHelper.DbType == DatabaseType.SQLITE)
+            if (dbType == DatabaseType.ACCESS || dbType == DatabaseType.SQLITE)
             {
                 paramName = "@" + paramName;
             }
 
-            IDbDataParameter param = DbFactory.CreateDbParameter();
+            IDbDataParameter param = CreateDbParameter();
             param.Direction = direction;
-            param.DbType = dbType;
+            param.DbType = _dataType;
             param.ParameterName = paramName;
             param.Value = value;
 
@@ -332,11 +371,11 @@ namespace Easy4net.DBUtility
         /// 和传入的参数来创建相应数据库的参数数组对象
         /// </summary>
         /// <returns></returns>
-        public static IDbDataParameter[] CreateDbParameters(int size)
+        public IDbDataParameter[] CreateDbParameters(int size)
         {
             int i = 0;
             IDbDataParameter[] param = null;
-            switch (AdoHelper.DbType)
+            switch (dbType)
             {
                 case DatabaseType.SQLSERVER:
                     param = new SqlParameter[size];
@@ -371,9 +410,9 @@ namespace Easy4net.DBUtility
         /// 来创建相应数据库的事物对象
         /// </summary>
         /// <returns></returns>
-        public static IDbTransaction CreateDbTransaction()
+        public IDbTransaction CreateDbTransaction()
         {
-            IDbConnection conn = CreateDbConnection(AdoHelper.ConnectionString);
+            IDbConnection conn = CreateDbConnection();
 
             if (conn.State == ConnectionState.Closed)
             {
@@ -389,9 +428,9 @@ namespace Easy4net.DBUtility
         /// </summary>
         /// <param name="level"></param>
         /// <returns></returns>
-        public static IDbTransaction CreateDbTransaction(System.Data.IsolationLevel level)
+        public IDbTransaction CreateDbTransaction(System.Data.IsolationLevel level)
         {
-            IDbConnection conn = CreateDbConnection(AdoHelper.ConnectionString);
+            IDbConnection conn = CreateDbConnection();
 
             if (conn.State == ConnectionState.Closed)
             {

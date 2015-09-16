@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Easy4net.DBUtility;
+using Easy4net.Context;
 
 namespace Easy4net.Common
 {
@@ -34,18 +35,22 @@ namespace Easy4net.Common
         private static string ORDER_BY_ASC = " ORDER BY {0} ASC ";
         private static string ORDER_BY_DESC = " ORDER BY {0} DESC ";
 
-        private static string paramChar = DbFactory.CreateDbParmCharacter();
+        private static string paramChar = string.Empty;
         private StringBuilder sbSQL = new StringBuilder();
         public string queryString = String.Empty;
         public ColumnInfo Columns = new ColumnInfo();
 
         public DbCondition()
         {
-
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            paramChar = dbFactory.DbParmChar;
         }
 
         public DbCondition(string query)
         {
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            paramChar = dbFactory.DbParmChar;
+
             this.queryString = query;
             sbSQL.Append(query);
         }

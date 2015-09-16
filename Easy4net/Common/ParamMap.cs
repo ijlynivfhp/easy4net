@@ -4,6 +4,7 @@ using System.Text;
 using Easy4net.Common;
 using System.Data;
 using Easy4net.DBUtility;
+using Easy4net.Context;
 
 namespace Easy4net.Common
 {
@@ -33,7 +34,8 @@ namespace Easy4net.Common
 
         public static ParamMap newMap()
         {
-            return new ParamMap();
+            ParamMap paramMap = new ParamMap();
+            return paramMap;
         }
 
         public bool IsPage
@@ -152,10 +154,12 @@ namespace Easy4net.Common
 
         private void setPages()
         {
+            Session session = SessionThreadLocal.Get();
+
             if (this.ContainsKey("pageIndex") && this.ContainsKey("pageSize"))
             {
                 this.isPage = true;
-                if (AdoHelper.DbType == DatabaseType.MYSQL)
+                if (session.DbFactory.DbType == DatabaseType.MYSQL)
                 {
                     this["offset"] = this.PageOffset;
                     this["limit"] = this.PageLimit;
@@ -167,7 +171,7 @@ namespace Easy4net.Common
                     this.Add("limit", this.getInt("limit"));
                 }
 
-                if (AdoHelper.DbType == DatabaseType.SQLSERVER)
+                if (session.DbFactory.DbType == DatabaseType.SQLSERVER)
                 {
                     int pageIndex = this.getInt("pageIndex");
                     int pageSize = this.getInt("pageSize");
@@ -184,7 +188,7 @@ namespace Easy4net.Common
                     this.Add("pageEnd", this.getInt("pageEnd"));
                 }
 
-                if (AdoHelper.DbType == DatabaseType.ACCESS)
+                if (session.DbFactory.DbType == DatabaseType.ACCESS)
                 {
                     int pageIndex = this.getInt("pageIndex");
                     int pageSize = this.getInt("pageSize");
@@ -201,7 +205,10 @@ namespace Easy4net.Common
         public void Add(object key, object value)
         {
             base.Put(key, value);
-            IDbDataParameter param = DbFactory.CreateDbParameter(key.ToString(), value);
+
+            Session session = SessionThreadLocal.Get();
+
+            IDbDataParameter param = session.DbFactory.CreateDbParameter(key.ToString(), value);
             m_ParamList.Add(param);
         }
 
@@ -217,49 +224,15 @@ namespace Easy4net.Common
 
         public IDbDataParameter[] toDbParameters()
         {
-            /*List<IDbDataParameter> paramList = new List<IDbDataParameter>();
-            foreach (string key in this.Keys)
-            {
-                if (!string.IsNullOrEmpty(key.Trim()))
-                {
-                    object value = this[key];
-                    if (value != null)
-                    {
-                        IDbDataParameter param = DbFactory.CreateDbParameter();
-                        param.ParameterName = key;
-                        param.Value = value;
-
-                        paramList.Add(param);
-                    }
-                }
-            }*/
-
             int i = 0;
-            IDbDataParameter[] paramArr = DbFactory.CreateDbParameters(m_ParamList.Count);
+            IDbDataParameter[] paramArr = new IDbDataParameter[m_ParamList.Count];
             foreach (IDbDataParameter dbParameter in m_ParamList)
             {
                 paramArr[i] = dbParameter;
                 i++;
             }
 
-            return paramArr;
-
-            /*int i = 0;
-            IDbDataParameter[] paramArr = DbFactory.CreateDbParameters(this.Keys.Count);
-            foreach(string key in this.Keys) 
-            {
-                if (!string.IsNullOrEmpty(key.Trim()))
-                {
-                    object value = this[key];
-                    if (value == null) value = DBNull.Value;
-
-                    paramArr[i].ParameterName = key;
-                    paramArr[i].Value = value;
-                    i++;
-                }
-            }
-
-            return paramArr;*/
+            return paramArr;          
         }
     }
 }

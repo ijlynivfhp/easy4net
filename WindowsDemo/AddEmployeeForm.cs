@@ -1,7 +1,7 @@
 ﻿using Easy4net.Common;
 using Easy4net.DBUtility;
 using Easy4net.Entity;
-using Easy4net.Session;
+using Easy4net.Context;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,7 +47,8 @@ namespace WindowsDemo
             //dbHelper.BeginTransaction();
 
             //新的写法，兼容DbHelper写法
-            Session session = SessionFactory.GetSession();
+            Session session = SessionFactory.GetSession("MySQLString");
+
             session.Insert<Employee>(employee);
             if (employee.Id > 0)
             {
@@ -57,7 +58,7 @@ namespace WindowsDemo
 
         private void InitCompanySelections()
         {
-            Session session = SessionFactory.GetSession();
+            Session session = SessionFactory.GetSession("MySQLString");
 
             string strSql = "SELECT * FROM company";
 

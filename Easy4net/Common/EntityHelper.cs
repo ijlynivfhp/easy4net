@@ -6,6 +6,7 @@ using Easy4net.DBUtility;
 using System.Collections;
 using System.Reflection;
 using System.Data;
+using Easy4net.Context;
 
 namespace Easy4net.Common
 {
@@ -256,12 +257,15 @@ namespace Easy4net.Common
 
         public static string GetFindSql(TableInfo tableInfo, DbCondition condition)
         {
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
+
             StringBuilder sbColumns = new StringBuilder();
 
             tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
             foreach (String key in tableInfo.Columns.Keys)
             {
-                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                string nKey = DbKeywords.FormatColumnName(key.Trim(), dbFactory.DbType);
                 sbColumns.Append(nKey).Append(",");
             }
 
@@ -284,12 +288,15 @@ namespace Easy4net.Common
 
         public static string GetFindAllSql(TableInfo tableInfo)
         {
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
+
             StringBuilder sbColumns = new StringBuilder();
 
             tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
             foreach (String key in tableInfo.Columns.Keys)
             {
-                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                string nKey = DbKeywords.FormatColumnName(key.Trim(), dbFactory.DbType);
                 sbColumns.Append(nKey).Append(",");
             }
 
@@ -303,6 +310,9 @@ namespace Easy4net.Common
 
         public static string GetFindByIdSql(TableInfo tableInfo)
         {
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
+
             StringBuilder sbColumns = new StringBuilder();
 
             if (tableInfo.Columns.ContainsKey(tableInfo.Id.Key))
@@ -312,13 +322,13 @@ namespace Easy4net.Common
 
             foreach (String key in tableInfo.Columns.Keys)
             {
-                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                string nKey = DbKeywords.FormatColumnName(key.Trim(), dbFactory.DbType);
                 sbColumns.Append(nKey).Append(",");
             }
 
             if (sbColumns.Length > 0) sbColumns.Remove(sbColumns.ToString().Length - 1, 1);
 
-            string strSql = "SELECT {0} FROM {1} WHERE {2} = " + AdoHelper.DbParmChar + "{2}";
+            string strSql = "SELECT {0} FROM {1} WHERE {2} = " + dbParmChar + "{2}";
             strSql = string.Format(strSql, sbColumns.ToString(), tableInfo.TableName, tableInfo.Id.Key);
 
             return strSql;
@@ -326,6 +336,9 @@ namespace Easy4net.Common
 
         public static string GetFindCountSql(TableInfo tableInfo)
         {
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
+
             StringBuilder sbColumns = new StringBuilder();
 
             string strSql = "SELECT COUNT(0) FROM {1} ";
@@ -333,8 +346,8 @@ namespace Easy4net.Common
 
             foreach (String key in tableInfo.Columns.Keys)
             {
-                string nKey = DbKeywords.FormatColumnName(key.Trim());
-                sbColumns.Append(nKey).Append("=").Append(AdoHelper.DbParmChar).Append(key);
+                string nKey = DbKeywords.FormatColumnName(key.Trim(), dbFactory.DbType);
+                sbColumns.Append(nKey).Append("=").Append(dbParmChar).Append(key);
             }
 
             if (sbColumns.Length > 0)
@@ -356,37 +369,40 @@ namespace Easy4net.Common
 
         public static string GetFindByPropertySql(TableInfo tableInfo)
         {
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
+
             StringBuilder sbColumns = new StringBuilder();
 
             tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
             foreach (String key in tableInfo.Columns.Keys)
             {
-                string nKey = DbKeywords.FormatColumnName(key.Trim());
+                string nKey = DbKeywords.FormatColumnName(key.Trim(), dbFactory.DbType);
                 sbColumns.Append(nKey).Append(",");
             }
 
             if (sbColumns.Length > 0) sbColumns.Remove(sbColumns.ToString().Length - 1, 1);
 
-            string strSql = "SELECT {0} FROM {1} WHERE {2} = " + AdoHelper.DbParmChar + "{2}";
+            string strSql = "SELECT {0} FROM {1} WHERE {2} = " + dbParmChar + "{2}";
             strSql = string.Format(strSql, sbColumns.ToString(), tableInfo.TableName, tableInfo.Id.Key);
 
             return strSql;
         }
 
-        public static string GetAutoSql()
+        public static string GetAutoSql(DatabaseType dbType)
         {
             string autoSQL = "";
-            if (AdoHelper.DbType == DatabaseType.SQLSERVER)
+            if (dbType == DatabaseType.SQLSERVER)
             {
                 autoSQL = " select scope_identity() as AutoId ";
             }
 
-            if (AdoHelper.DbType == DatabaseType.ACCESS)
+            if (dbType == DatabaseType.ACCESS)
             {
                 autoSQL = " select @@IDENTITY as AutoId ";
             }
 
-            if (AdoHelper.DbType == DatabaseType.MYSQL)
+            if (dbType == DatabaseType.MYSQL)
             {
                 autoSQL = " ;select @@identity ";
             }
@@ -396,6 +412,9 @@ namespace Easy4net.Common
 
         public static string GetInsertSql(TableInfo tableInfo)
         {
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
+
             StringBuilder sbColumns = new StringBuilder();
             StringBuilder sbValues = new StringBuilder();
 
@@ -417,9 +436,9 @@ namespace Easy4net.Common
                 Object value = tableInfo.Columns[key];
                 if (!string.IsNullOrEmpty(key.Trim()) && value != null)
                 {
-                    string nKey = DbKeywords.FormatColumnName(key.Trim());
+                    string nKey = DbKeywords.FormatColumnName(key.Trim(), dbFactory.DbType);
                     sbColumns.Append(nKey).Append(",");
-                    sbValues.Append(AdoHelper.DbParmChar).Append(key).Append(",");
+                    sbValues.Append(dbParmChar).Append(key).Append(",");
                 }
             }
 
@@ -435,9 +454,9 @@ namespace Easy4net.Common
 
             if (!tableInfo.NoAutomaticKey)
             {
-                if (AdoHelper.DbType == DatabaseType.SQLSERVER || AdoHelper.DbType == DatabaseType.MYSQL)
+                if (dbFactory.DbType == DatabaseType.SQLSERVER || dbFactory.DbType == DatabaseType.MYSQL)
                 {
-                    string autoSql = EntityHelper.GetAutoSql();
+                    string autoSql = EntityHelper.GetAutoSql(dbFactory.DbType);
                     strSql = strSql + autoSql;
                 }
             }
@@ -447,16 +466,18 @@ namespace Easy4net.Common
 
         public static string GetUpdateSql(TableInfo tableInfo)
         {
-            StringBuilder sbBody = new StringBuilder();
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
 
+            StringBuilder sbBody = new StringBuilder();
             
             foreach (String key in tableInfo.Columns.Keys)
             {
                 Object value = tableInfo.Columns[key];
                 if (!string.IsNullOrEmpty(key.Trim()) && value != null)
                 {
-                    string nKey = DbKeywords.FormatColumnName(key.Trim());
-                    sbBody.Append(nKey).Append("=").Append(AdoHelper.DbParmChar + key).Append(",");
+                    string nKey = DbKeywords.FormatColumnName(key.Trim(), dbFactory.DbType);
+                    sbBody.Append(nKey).Append("=").Append(dbParmChar).Append(key).Append(",");
                 }
             }
 
@@ -464,7 +485,7 @@ namespace Easy4net.Common
 
             //tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
 
-            string strSql = "update {0} set {1} where {2} =" + AdoHelper.DbParmChar + tableInfo.Id.Key;
+            string strSql = "update {0} set {1} where {2} =" + dbParmChar + tableInfo.Id.Key;
             strSql = string.Format(strSql, tableInfo.TableName, sbBody.ToString(), tableInfo.Id.Key);
 
             return strSql;
@@ -472,7 +493,10 @@ namespace Easy4net.Common
 
         public static string GetDeleteByIdSql(TableInfo tableInfo)
         {
-            string strSql = "delete from {0} where {1} =" + AdoHelper.DbParmChar + tableInfo.Id.Key;
+            DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
+            string dbParmChar = dbFactory.DbParmChar;
+
+            string strSql = "delete from {0} where {1} =" + dbParmChar + tableInfo.Id.Key;
             strSql = string.Format(strSql, tableInfo.TableName, tableInfo.Id.Key);
 
             return strSql;

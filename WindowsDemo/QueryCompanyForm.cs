@@ -1,7 +1,7 @@
 ﻿using Easy4net.Common;
 using Easy4net.DBUtility;
 using Easy4net.Entity;
-using Easy4net.Session;
+using Easy4net.Context;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,13 +28,13 @@ namespace WindowsDemo
         {
             dgCompany.AutoGenerateColumns = false;
 
-            DBHelper dbHelper = DBHelper.getInstance();
+            /*Session session = SessionFactory.GetSession("MySQLString");
             Company company = new Company();
             company.Id = 47;
             company.Industry = "Industry";
             company.CompanyName = "CompanyName";
             company.Address = "Address";
-            dbHelper.Update<Company>(company);
+            session.Update<Company>(company);*/
 
             FindByPage(1, m_Limit);
         }
@@ -44,7 +44,8 @@ namespace WindowsDemo
             //Session session = SessionFactory.GetSession();
 
             //旧的写法，新的写法为Session，但是保持了兼容性
-            DBHelper dbHelper = DBHelper.getInstance();
+            Session session = SessionFactory.GetSession();
+            session.ConnectDB("MySQLString");
 
 
             //string strSql = "SELECT * FROM company where company_name=@companyName";
@@ -59,7 +60,7 @@ namespace WindowsDemo
             param.setOrderFields("id", true);
             //param.setParameter("companyName", "上海巨人网络信息科技");
 
-            companyList = dbHelper.FindBySql<Company>(strSql, param);
+            companyList = session.Find<Company>(strSql, param);
             dgCompany.DataSource = companyList;
         }
 
