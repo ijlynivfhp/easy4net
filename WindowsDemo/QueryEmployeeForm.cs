@@ -39,6 +39,8 @@ namespace WindowsDemo
             Session session = SessionFactory.GetSession();
             session.ConnectDB("MySQLString");
 
+            MessageBox.Show("正在使用【MySQLString】数据库");
+
             string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id";
             ParamMap param = ParamMap.newMap();
 

@@ -28,24 +28,54 @@ namespace WindowsDemo
         {
             dgCompany.AutoGenerateColumns = false;
 
-            /*Session session = SessionFactory.GetSession("MySQLString");
-            Company company = new Company();
-            company.Id = 47;
-            company.Industry = "Industry";
-            company.CompanyName = "CompanyName";
-            company.Address = "Address";
-            session.Update<Company>(company);*/
-
-            FindByPage(1, m_Limit);
+            try
+            {
+                FindByPage(1, m_Limit);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void FindByPage(int page, int limit)
         {
-            //Session session = SessionFactory.GetSession();
-
             //旧的写法，新的写法为Session，但是保持了兼容性
             Session session = SessionFactory.GetSession();
-            session.ConnectDB("MySQLString");
+            session.ConnectDB("SQLiteString");
+
+            MessageBox.Show("正在使用【SQLite】数据库");            
+
+            if (!session.sqliteHelper.IsExistsTable("company"))
+            {
+                string strSQL = "CREATE TABLE `company` (" +
+                    "`id` integer PRIMARY KEY autoincrement," +
+                    "`company_name` varchar(255) DEFAULT NULL," +
+                    "`industry` varchar(255) DEFAULT NULL," +
+                    "`address` varchar(255) DEFAULT NULL," +
+                    "`order` varchar(255) DEFAULT NULL," +
+                    "`desc` varchar(255) DEFAULT NULL," +
+                    "`created` datetime DEFAULT NULL" +
+                    ")";
+                session.sqliteHelper.CreateTable(strSQL);
+
+                //=======================================================================================================
+                MessageBox.Show("SQLite数据库文件【testdb.sqlite】自动创建，请在Easy4net/WindowsDemo/bin/Debug目录中查看");
+                //=======================================================================================================
+            }
+
+            if (!session.sqliteHelper.IsExistsTable("employee"))
+            {
+                string strSQL = "CREATE TABLE `employee` (" +
+                    "`id` integer PRIMARY KEY autoincrement," +
+                    "`name` varchar(255) DEFAULT NULL," +
+                    "`age` int(255) DEFAULT NULL," +
+                    "`address` varchar(255) DEFAULT NULL," +
+                    "`created` datetime DEFAULT NULL," +
+                    "`company_id` varchar(255) DEFAULT NULL" +
+                    ")";
+                session.sqliteHelper.CreateTable(strSQL);
+            }
 
 
             //string strSql = "SELECT * FROM company where company_name=@companyName";

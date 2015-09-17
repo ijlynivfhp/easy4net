@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50616
 File Encoding         : 65001
 
-Date: 2015-09-16 22:44:18
+Date: 2015-09-17 12:28:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,7 +28,7 @@ CREATE TABLE `company` (
   `desc` varchar(255) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of company
@@ -54,6 +54,7 @@ INSERT INTO `company` VALUES ('24', '5555-1', '5555-1', '5555-1', 'Order-1', 'De
 INSERT INTO `company` VALUES ('25', '5555-2', '5555-2', '5555-2', 'Order-2', 'Description-2', '2015-09-16 22:41:09');
 INSERT INTO `company` VALUES ('26', '5555-3', '5555-3', '5555-3', 'Order-3', 'Description-3', '2015-09-16 22:41:09');
 INSERT INTO `company` VALUES ('27', '5555-4', '5555-4', '5555-4', 'Order-4', 'Description-4', '2015-09-16 22:41:09');
+INSERT INTO `company` VALUES ('28', 'SQLite1', 'SQLite1', 'SQLite1', null, null, null);
 
 -- ----------------------------
 -- Table structure for `employee`
@@ -67,7 +68,7 @@ CREATE TABLE `employee` (
   `created` datetime DEFAULT NULL,
   `company_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of employee
@@ -83,3 +84,4 @@ INSERT INTO `employee` VALUES ('8', '李洋', '25', '上海市松江158号', '20
 INSERT INTO `employee` VALUES ('9', '张磊', '33', '上海市嘉定区', '2014-10-03 23:02:48', '7');
 INSERT INTO `employee` VALUES ('10', '蒋洋', '42', '上海市普陀区太子路188号', '2014-10-03 23:03:22', '9');
 INSERT INTO `employee` VALUES ('11', '李红', '29', '上海市黄浦区330号', '2014-10-03 23:04:08', '3');
+INSERT INTO `employee` VALUES ('12', 'MYSQL', '22', 'AAAAA', '2015-09-17 12:26:28', '14');

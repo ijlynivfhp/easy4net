@@ -16,6 +16,10 @@ namespace Easy4net.Context
                 session = Session.NewInstance(connName);
                 SessionThreadLocal.Set(session);
             }
+            else
+            {
+                session.ConnectDB(connName);
+            }
 
             return session;
         }

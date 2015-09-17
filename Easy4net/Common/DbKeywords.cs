@@ -41,7 +41,7 @@ namespace Easy4net.Common
             InitMSSQL();
 
             string colName = columnName.ToLower();
-            if (dbType == DatabaseType.MYSQL && m_MySQL.ContainsKey(colName))
+            if ((dbType == DatabaseType.SQLITE || dbType == DatabaseType.MYSQL) && m_MySQL.ContainsKey(colName))
             {
                 return m_MySQL[colName];
             }

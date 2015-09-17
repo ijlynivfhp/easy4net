@@ -159,7 +159,7 @@ namespace Easy4net.Common
             if (this.ContainsKey("pageIndex") && this.ContainsKey("pageSize"))
             {
                 this.isPage = true;
-                if (session.DbFactory.DbType == DatabaseType.MYSQL)
+                if (session.DbFactory.DbType == DatabaseType.MYSQL || session.DbFactory.DbType == DatabaseType.SQLITE)
                 {
                     this["offset"] = this.PageOffset;
                     this["limit"] = this.PageLimit;

@@ -11,7 +11,8 @@ using System.Text;
 namespace Easy4net.Context
 {
     public class Session
-    {        
+    {
+        public SQLiteHelper sqliteHelper = new SQLiteHelper();
         private string connectionString = string.Empty;
         private string provider = string.Empty;
 
@@ -47,6 +48,8 @@ namespace Easy4net.Context
 
         public void ConnectDB(string connName)
         {
+            if (connName == null) return;
+
             ConnectionStringSettings connSettings = ConfigurationManager.ConnectionStrings[connName];
 
             provider = connSettings.ProviderName;
@@ -64,7 +67,7 @@ namespace Easy4net.Context
             {
                 dataBaseType = DatabaseType.ORACLE;
             }
-            else if(provider.Contains("Sqlite"))
+            else if (provider.Contains("SQLite"))
             {
                 dataBaseType = DatabaseType.SQLITE;
             }
@@ -881,7 +884,31 @@ namespace Easy4net.Context
         private bool GetWillConnectionState()
         {
             return m_Transaction == null;
+        }       
+    }
+
+    public class SQLiteHelper
+    {    
+        public bool IsExistsTable(string tableName)
+        {
+            Session session = SessionThreadLocal.Get();
+            string strSQL = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='" + tableName + "'";
+            int count = session.Count(strSQL);
+
+            return count > 0;
         }
 
+        public void CreateTable(string strSQL)
+        {
+            try
+            {
+                Session session = SessionThreadLocal.Get();
+                session.ExcuteSQL(strSQL);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("创建表失败", e);
+            }            
+        }
     }
 }

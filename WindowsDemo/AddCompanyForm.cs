@@ -21,7 +21,7 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Session session = SessionFactory.GetSession("MySQLString");
+            Session session = SessionFactory.GetSession("SQLiteString");
             session.BeginTransaction();
 
             try

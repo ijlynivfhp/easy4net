@@ -8,6 +8,7 @@ using System.Data.OleDb;
 using System.Data.Odbc;
 using MySql.Data.MySqlClient;
 using Easy4net.Common;
+using System.Data.SQLite;
 
 namespace Easy4net.DBUtility
 {
@@ -108,9 +109,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     conn = new OleDbConnection(connectionString);
                     break;
-                /*case DatabaseType.SQLITE:
+                case DatabaseType.SQLITE:
                     conn = new SQLiteConnection(connectionString);
-                    break;*/
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
             }
@@ -140,9 +141,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     cmd = new OleDbCommand();
                     break;
-               /* case DatabaseType.SQLITE:
+               case DatabaseType.SQLITE:
                     cmd = new SQLiteCommand();
-                    break; */
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
             }
@@ -172,9 +173,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     adapter = new OleDbDataAdapter();
                     break;
-                /*case DatabaseType.SQLITE:
+                case DatabaseType.SQLITE:
                     adapter = new SQLiteDataAdapter();
-                    break;*/
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
             }
@@ -204,9 +205,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     adapter = new OleDbDataAdapter((OleDbCommand)cmd);
                     break;
-                /*case DatabaseType.SQLITE:
+                case DatabaseType.SQLITE:
                     adapter = new SQLiteDataAdapter((SQLiteCommand)cmd);
-                    break;*/
+                    break;
                 default: throw new Exception("数据库类型目前不支持！");
             }
 
@@ -235,9 +236,9 @@ namespace Easy4net.DBUtility
                 case DatabaseType.ACCESS:
                     param = new OleDbParameter();
                     break;
-                /*case DatabaseType.SQLITE:
+                case DatabaseType.SQLITE:
                     param = new SQLiteParameter();
-                    break;*/
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
             }
@@ -393,10 +394,10 @@ namespace Easy4net.DBUtility
                     param = new OleDbParameter[size];
                     while (i < size) { param[i] = new OleDbParameter(); i++; }
                     break;
-                /*case DatabaseType.SQLITE:
+                case DatabaseType.SQLITE:
                     param = new SQLiteParameter[size];
                     while (i < size) { param[i] = new SQLiteParameter(); i++; }
-                    break;*/
+                    break;
                 default:
                     throw new Exception("数据库类型目前不支持！");
 
