@@ -43,9 +43,6 @@ namespace WindowsDemo
             employee.Created = DateTime.Now;
             employee.CompanyId = company.Id;
 
-            //DBHelper dbHelper = DBHelper.getInstance();
-            //dbHelper.BeginTransaction();
-
             //新的写法，兼容DbHelper写法
             Session session = SessionFactory.GetSession("MySQLString");
 
@@ -73,7 +70,6 @@ namespace WindowsDemo
 
             cbCompany.SelectedIndex = 0;
         }
-
         
     }
 }

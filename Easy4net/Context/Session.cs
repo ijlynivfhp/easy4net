@@ -211,10 +211,15 @@ namespace Easy4net.Context
                     }
 
                     //把自动生成的主键ID赋值给返回的对象
-                    if (dataBaseType == DatabaseType.SQLSERVER || dataBaseType == DatabaseType.MYSQL || dataBaseType == DatabaseType.ACCESS)
+                    if (!tableInfo.NoAutomaticKey)
                     {
-                        PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
-                        ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
+
+                        //把自动生成的主键ID赋值给返回的对象
+                        if (dataBaseType == DatabaseType.SQLSERVER || dataBaseType == DatabaseType.MYSQL || dataBaseType == DatabaseType.ACCESS || dataBaseType == DatabaseType.SQLITE)
+                        {
+                            PropertyInfo propertyInfo = EntityHelper.GetPrimaryKeyPropertyInfo(entity, properties);
+                            ReflectionHelper.SetPropertyValue(entity, propertyInfo, val);
+                        }
                     }
                 }
             }

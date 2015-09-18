@@ -396,15 +396,19 @@ namespace Easy4net.Common
             {
                 autoSQL = " select scope_identity() as AutoId ";
             }
-
-            if (dbType == DatabaseType.ACCESS)
+            else if (dbType == DatabaseType.ACCESS)
             {
                 autoSQL = " select @@IDENTITY as AutoId ";
             }
 
-            if (dbType == DatabaseType.MYSQL)
+            else if (dbType == DatabaseType.MYSQL)
             {
                 autoSQL = " ;select @@identity ";
+            }
+
+            else if (dbType == DatabaseType.SQLITE)
+            {
+                autoSQL = " ;select last_insert_rowid() as AutoId ";
             }
 
             return autoSQL;
@@ -454,7 +458,7 @@ namespace Easy4net.Common
 
             if (!tableInfo.NoAutomaticKey)
             {
-                if (dbFactory.DbType == DatabaseType.SQLSERVER || dbFactory.DbType == DatabaseType.MYSQL)
+                if (dbFactory.DbType == DatabaseType.SQLSERVER || dbFactory.DbType == DatabaseType.MYSQL || dbFactory.DbType == DatabaseType.SQLITE)
                 {
                     string autoSql = EntityHelper.GetAutoSql(dbFactory.DbType);
                     strSql = strSql + autoSql;
