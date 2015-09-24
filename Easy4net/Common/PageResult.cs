@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Easy4net.Common
 {
+	/// <summary>
+	/// 分页查询结果
+	/// </summary>
+	/// <typeparam name="T">数据库表实体类</typeparam>
     public class PageResult<T>
     {
         /// <summary>

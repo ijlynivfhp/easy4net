@@ -2,8 +2,17 @@
 
 namespace Easy4net.Common
 {
+	/// <summary>
+	/// 类型单元帮助类
+	/// </summary>
     public class TypeUtils
     {
+		/// <summary>
+		/// 根据数据类型将指定数据进行相应转换
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
         public static object ConvertForType(object value,Type type)
         {
             if (Convert.IsDBNull(value) || (value == null))
@@ -85,6 +94,11 @@ namespace Easy4net.Common
             return value;
         }
 
+		/// <summary>
+		/// 获取类型名
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
         public static string GetTypeName(Type type)
         {
             if (type == null) return "System.Int32";
@@ -122,6 +136,11 @@ namespace Easy4net.Common
             return typeName;
         }
 
+		/// <summary>
+		/// 检查输入值是否为空
+		/// </summary>
+		/// <param name="val"></param>
+		/// <returns></returns>
         static bool isNullOrEmpty(object val)
         {
             if (val == null) return true;

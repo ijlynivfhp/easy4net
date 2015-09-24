@@ -3,7 +3,7 @@
 namespace Easy4net.CustomAttributes
 {
 	/// <summary>
-	/// 数据库表字段属性
+	/// 数据库表字段特性
 	/// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, 
         AllowMultiple = false, Inherited = false)]
@@ -89,7 +89,7 @@ namespace Easy4net.CustomAttributes
         }
 
 		/// <summary>
-		/// 创建一个空的字段属性
+		/// 创建一个空的字段特性
 		/// </summary>
 		public ColumnAttribute()
 		{
@@ -97,7 +97,7 @@ namespace Easy4net.CustomAttributes
 		}
 
 		/// <summary>
-		/// 创建一个指定字段名的字段属性
+		/// 创建一个指定字段名的字段特性
 		/// </summary>
 		/// <param name="aName">字段名</param>
 		public ColumnAttribute(string aName)
@@ -107,7 +107,7 @@ namespace Easy4net.CustomAttributes
 		}
 
 		/// <summary>
-		/// 创建一个制定字段名的字段属性
+		/// 创建一个制定字段名的字段特性
 		/// </summary>
 		/// <param name="aName">字段名</param>
 		/// <param name="aIgnore">在执行数据操作时是否忽略此字段</param>
@@ -118,7 +118,7 @@ namespace Easy4net.CustomAttributes
 		}
 
 		/// <summary>
-		/// 创建一个制定字段名的字段属性
+		/// 创建一个制定字段名的字段特性
 		/// </summary>
 		/// <param name="aName">字段名</param>
 		/// <param name="aInsert">此字段是否参与插入操作</param>

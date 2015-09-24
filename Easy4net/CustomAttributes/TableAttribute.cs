@@ -3,7 +3,7 @@
 namespace Easy4net.CustomAttributes
 {
 	/// <summary>
-	/// 数据库表属性
+	/// 数据库表特性
 	/// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class TableAttribute : Attribute
@@ -14,7 +14,7 @@ namespace Easy4net.CustomAttributes
         private string _Name = string.Empty;
         
 		/// <summary>
-		/// 创建一个空的数据库表属性,默认具备自增长键
+		/// 创建一个空的数据库表特性,默认具备自增长键
 		/// </summary>
         public TableAttribute() 
 		{
@@ -22,7 +22,7 @@ namespace Easy4net.CustomAttributes
         }
 
 		/// <summary>
-		/// 创建一个制定表明的数据库表属性,默认具备自增长键
+		/// 创建一个制定表明的数据库表特性,默认具备自增长键
 		/// </summary>
 		/// <param name="aName">数据库表名</param>
 		public TableAttribute(string aName)

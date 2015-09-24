@@ -5,21 +5,42 @@ using Easy4net.Context;
 
 namespace Easy4net.Common
 {
-    public class SQLBuilderHelper
+	/// <summary>
+	/// SQL语句创建帮助类
+	/// </summary>
+    public static class SQLBuilderHelper
     {
+		/// <summary>
+		/// MSSQL分页语句模版
+		/// </summary>
         private static string mssqlPageTemplate = "select * from (select ROW_NUMBER() OVER(order by {0}) AS RowNumber, {1}) as tmp_tbl where RowNumber BETWEEN @pageStart and @pageEnd ";
+		/// <summary>
+		/// MySQL排序分页语句模版
+		/// </summary>
         private static string mysqlOrderPageTemplate = "{0} order by {1} limit ?offset,?limit";
+		/// <summary>
+		/// MySQL分页语句模板
+		/// </summary>
         private static string mysqlPageTemplate = "{0} limit ?offset,?limit";
+		/// <summary>
+		/// SQLite排序分页语句模板
+		/// </summary>
         private static string sqliteOrderPageTemplate = "{0} order by {1} limit @offset,@limit";
+		/// <summary>
+		/// SQLite分页语句模板
+		/// </summary>
         private static string sqlitePageTemplate = "{0} limit @offset,@limit";
+		/// <summary>
+		/// ACCESS分页语句模板
+		/// </summary>
         private static string accessPageTemplate = "select * from (select top @page_limit * from (select top @page_offset {0} order by id desc) order by id) order by {1}";
 
-
-        public SQLBuilderHelper()
-        {
-
-        }
-
+		/// <summary>
+		/// 从SQL语句中获取查询的列名集合
+		/// Select 与 From中间的部分
+		/// </summary>
+		/// <param name="strSQL"></param>
+		/// <returns></returns>
         public static string fetchColumns(string strSQL)
         {
             string lowerSQL = strSQL.ToLower();
@@ -27,12 +48,22 @@ namespace Easy4net.Common
             return columns;
         }
 
+		/// <summary>
+		/// 从SQL语句中获取分页语句
+		/// </summary>
+		/// <param name="strSQL"></param>
+		/// <returns></returns>
         public static string fetchPageBody(string strSQL)
         {
             string body = strSQL.Substring(6, strSQL.Length - 6);
             return body;
         }
 
+		/// <summary>
+		/// 从SQL语句中获取查询语句
+		/// </summary>
+		/// <param name="strSQL"></param>
+		/// <returns></returns>
         public static string fetchWhere(string strSQL)
         {
             int index = strSQL.LastIndexOf("where");
@@ -42,6 +73,11 @@ namespace Easy4net.Common
             return where;
         }
 
+		/// <summary>
+		/// 根据SQL语句判断是否为分页语句
+		/// </summary>
+		/// <param name="strSQL"></param>
+		/// <returns></returns>
         public static bool isPage(string strSQL)
         { 
             string strSql = strSQL.ToLower();
@@ -75,6 +111,13 @@ namespace Easy4net.Common
             return true;
         }
 
+		/// <summary>
+		/// 根据SQL语句及排序条件创建分页语句
+		/// </summary>
+		/// <param name="strSql">SQL语句</param>
+		/// <param name="order">排序字段</param>
+		/// <param name="desc">是否为递减排序</param>
+		/// <returns></returns>
         public static string builderPageSQL(string strSql, string order, bool desc)
         {
             Session session = SessionThreadLocal.Get();
@@ -133,6 +176,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据SQL语句创建一个获取记录数的SQL语句
+		/// </summary>
+		/// <param name="strSQL"></param>
+		/// <returns></returns>
         public static string builderCountSQL(string strSQL)
         {
             int index = strSQL.IndexOf("from");
@@ -141,11 +189,25 @@ namespace Easy4net.Common
 
             return strText;
         }
+
+		/// <summary>
+		/// 创建ACCESS数据库的分页SQL语句
+		/// </summary>
+		/// <param name="strSql"></param>
+		/// <param name="param">参数集合</param>
+		/// <returns></returns>
         public static string builderAccessPageSQL(string strSql, ParamMap param)
         {
             return builderAccessPageSQL(strSql, param, -1);
         }
 
+		/// <summary>
+		/// 创建ACCESS的分页SQL语句
+		/// </summary>
+		/// <param name="strSql"></param>
+		/// <param name="param">参数集合</param>
+		/// <param name="limit">每页记录数</param>
+		/// <returns></returns>
         public static string builderAccessPageSQL(string strSql, ParamMap param, int limit)
         {
             Session session = SessionThreadLocal.Get();
@@ -177,6 +239,14 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 创建ACCESS的SQL语句
+		/// </summary>
+		/// <param name="classType">数据库表实体对象类型</param>
+		/// <param name="tableInfo">表信息</param>
+		/// <param name="strSql">SQL语句</param>
+		/// <param name="parameters">参数集合</param>
+		/// <returns></returns>
         public static string builderAccessSQL(Type classType, TableInfo tableInfo, string strSql, IDbDataParameter[] parameters)
         {
             Session session = SessionThreadLocal.Get();
@@ -216,6 +286,12 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 创建ACCESS SQL语句
+		/// </summary>
+		/// <param name="strSql"></param>
+		/// <param name="parameters">参数集合</param>
+		/// <returns></returns>
         public static string builderAccessSQL(string strSql, IDbDataParameter[] parameters)
         {
             Session session = SessionThreadLocal.Get();

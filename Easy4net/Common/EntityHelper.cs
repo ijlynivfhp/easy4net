@@ -43,7 +43,12 @@ namespace Easy4net.Common
         //    return tableAttr.Name;
         //}
 
-
+		/// <summary>
+		/// 根据实体类类型和数据操作类型获取数据库表特性
+		/// </summary>
+		/// <param name="classType">数据库表实例类型</param>
+		/// <param name="type">数据操作类型</param>
+		/// <returns>数据库表特性</returns>
         public static TableAttribute GetTableAttribute(Type classType, DbOperateType type)
         {
             TableAttribute tableAttr = null;
@@ -72,6 +77,12 @@ namespace Easy4net.Common
             return tableAttr;
         }
 
+		/// <summary>
+		/// 根据索引特性跟数据操作类型获取索引名
+		/// </summary>
+		/// <param name="attribute">IdAttribute索引特性</param>
+		/// <param name="type">数据操作类型</param>
+		/// <returns>索引名</returns>
         public static string GetPrimaryKey(object attribute, DbOperateType type)
         {
             string strPrimary = string.Empty;
@@ -94,6 +105,11 @@ namespace Easy4net.Common
             return strPrimary;
         }
 
+		/// <summary>
+		/// 根据字段特性或索引特性获取对应字段名
+		/// </summary>
+		/// <param name="attribute">字段特性或索引特性</param>
+		/// <returns>字段名</returns>
         public static string GetColumnName(object attribute)
         {
             string columnName = string.Empty;
@@ -111,6 +127,13 @@ namespace Easy4net.Common
             return columnName;
         }
 
+		/// <summary>
+		/// 根据数据库表对象及数据操作类型获取表信息
+		/// </summary>
+		/// <param name="entity">数据库表对象</param>
+		/// <param name="dbOpType">操作类型</param>
+		/// <param name="properties">数据库表对象属性集合</param>
+		/// <returns>数据库表信息</returns>
         public static TableInfo GetTableInfo(object entity, DbOperateType dbOpType, PropertyInfo[] properties)
         {
             bool breakForeach = false;
@@ -187,6 +210,12 @@ namespace Easy4net.Common
             return tableInfo;
         }
 
+		/// <summary>
+		/// 根据数据库表对象获取该对象中索引成员的属性
+		/// </summary>
+		/// <param name="entity">数据库表对象</param>
+		/// <param name="properties">该对象的属性集合</param>
+		/// <returns>索引成员属性</returns>
         public static PropertyInfo GetPrimaryKeyPropertyInfo(object entity, PropertyInfo[] properties)
         {
             bool breakForeach = false;
@@ -216,6 +245,14 @@ namespace Easy4net.Common
             return properyInfo;
         }
 
+		/// <summary>
+		/// 根据数据库表信息从DataReader中读取对应实体类的数据集合
+		/// </summary>
+		/// <typeparam name="T">数据库表实体类</typeparam>
+		/// <param name="sdr">DataReader</param>
+		/// <param name="tableInfo">数据库表信息</param>
+		/// <param name="properties">实体类属性集合</param>
+		/// <returns></returns>
         public static List<T> toList<T>(IDataReader sdr, TableInfo tableInfo, PropertyInfo[] properties) where T : new()
         {
             List<T> list = new List<T>();
@@ -236,6 +273,12 @@ namespace Easy4net.Common
             return list;
         }
 
+		/// <summary>
+		/// 从DataReader中读取指定数据库表类型的数据集合
+		/// </summary>
+		/// <typeparam name="T">数据库表实体类</typeparam>
+		/// <param name="sdr">DataReader</param>
+		/// <returns></returns>
         public static List<T> toList<T>(IDataReader sdr) where T : new()
         {
             List<T> list = new List<T>();
@@ -255,8 +298,12 @@ namespace Easy4net.Common
             return list;
         }
 
-
-
+		/// <summary>
+		/// 根据数据库表信息及条件生成器获取Select语句
+		/// </summary>
+		/// <param name="tableInfo">数据库表信息</param>
+		/// <param name="condition">条件生成器</param>
+		/// <returns></returns>
         public static string GetFindSql(TableInfo tableInfo, DbCondition condition)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -288,6 +335,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库表信息获取Selet All语句
+		/// </summary>
+		/// <param name="tableInfo">数据库表信息</param>
+		/// <returns></returns>
         public static string GetFindAllSql(TableInfo tableInfo)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -310,6 +362,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库表信息获取根据索引值进行查询的SQL语句
+		/// </summary>
+		/// <param name="tableInfo">数据库表信息</param>
+		/// <returns></returns>
         public static string GetFindByIdSql(TableInfo tableInfo)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -336,6 +393,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库表信息获取查询记录条数的SQL语句
+		/// </summary>
+		/// <param name="tableInfo">数据库表信息</param>
+		/// <returns></returns>
         public static string GetFindCountSql(TableInfo tableInfo)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -360,6 +422,12 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库表信息及条件生成器获取查询记录条数的SQL语句
+		/// </summary>
+		/// <param name="tableInfo">数据库表信息</param>
+		/// <param name="condition">条件生成器</param>
+		/// <returns></returns>
         public static string GetFindCountSql(TableInfo tableInfo, DbCondition condition)
         {
             string strSql = "SELECT COUNT(0) FROM {0}";
@@ -369,6 +437,12 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库表信息获取根据索引值进行查询的SQL语句
+		/// 同方法GetFindByIdSql
+		/// </summary>
+		/// <param name="tableInfo"></param>
+		/// <returns></returns>
         public static string GetFindByPropertySql(TableInfo tableInfo)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -391,6 +465,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库类型获取对应的获取在插入操作后自增长型索引字段的SQL语句
+		/// </summary>
+		/// <param name="dbType">数据库类型</param>
+		/// <returns></returns>
         public static string GetAutoSql(DatabaseType dbType)
         {
             string autoSQL = "";
@@ -416,6 +495,11 @@ namespace Easy4net.Common
             return autoSQL;
         }
 
+		/// <summary>
+		/// 根据数据库表信息获取Insert插入操作语句
+		/// </summary>
+		/// <param name="tableInfo"></param>
+		/// <returns></returns>
         public static string GetInsertSql(TableInfo tableInfo)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -470,6 +554,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库表信息获取Update更新操作语句
+		/// </summary>
+		/// <param name="tableInfo"></param>
+		/// <returns></returns>
         public static string GetUpdateSql(TableInfo tableInfo)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -497,6 +586,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 根据数据库表信息获取根据索引进行Delete删除操作语句
+		/// </summary>
+		/// <param name="tableInfo"></param>
+		/// <returns></returns>
         public static string GetDeleteByIdSql(TableInfo tableInfo)
         {
             DbFactory dbFactory = SessionThreadLocal.Get().DbFactory;
@@ -508,6 +602,11 @@ namespace Easy4net.Common
             return strSql;
         }
 
+		/// <summary>
+		/// 将字段信息集合设置到参数数组中
+		/// </summary>
+		/// <param name="columns">字段信息集合</param>
+		/// <param name="parms">[输出] 参数值集合</param>
         public static void SetParameters(ColumnInfo columns, params IDbDataParameter[] parms)
         {
             int i = 0;
@@ -526,6 +625,12 @@ namespace Easy4net.Common
             }
         }
 
+		/// <summary>
+		/// 根据操作类型判断输入的字段特性中指定的字段是否进行忽略
+		/// </summary>
+		/// <param name="attribute">字段特性ColumnAttribute,如果不为此特性则不进行忽略检测</param>
+		/// <param name="dbOperateType">操作类型</param>
+		/// <returns>true忽略此字段</returns>
         public static bool IsCaseColumn(object attribute, DbOperateType dbOperateType)
         {
             if (attribute is ColumnAttribute)
@@ -548,6 +653,12 @@ namespace Easy4net.Common
             return false;
         }
 
+		/// <summary>
+		/// 根据操作类型判断输入的成员属性中指定的成员是否进行忽略
+		/// </summary>
+		/// <param name="property">成员属性</param>
+		/// <param name="dbOperateType">数据操作</param>
+		/// <returns>true忽略此属性中的成员</returns>
         public static bool IsCaseColumn(PropertyInfo property, DbOperateType dbOperateType)
         {
             bool isBreak = false;

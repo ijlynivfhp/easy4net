@@ -3,13 +3,26 @@ using System.Reflection;
 
 namespace Easy4net.Common
 {
-    public class ReflectionHelper
+	/// <summary>
+	/// 实体类反射帮助类
+	/// </summary>
+    public static class ReflectionHelper
     {
+		/// <summary>
+		/// 根据输入类型获取对应的成员属性集合
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
         public static PropertyInfo[] GetProperties(Type type)
         {
             return type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         }
 
+		/// <summary>
+		/// 根据输入类型获取对应的字段属性集合
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
         public static FieldInfo[] GetFields(Type type)
         {
             return type.GetFields(BindingFlags.Public | BindingFlags.Instance);

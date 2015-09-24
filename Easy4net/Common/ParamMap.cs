@@ -6,36 +6,73 @@ using Easy4net.Context;
 
 namespace Easy4net.Common
 {
+	/// <summary>
+	/// 参数映射集合类
+	/// </summary>
     public class ParamMap : Map
     {
+		/// <summary>
+		/// 是否分页
+		/// </summary>
         private bool isPage;
+		/// <summary>
+		/// 页面偏移量
+		/// </summary>
         private int pageOffset;
+		/// <summary>
+		/// 每页限制记录数
+		/// </summary>
         private int pageLimit;
+		/// <summary>
+		/// 排序字段
+		/// </summary>
         private string orderFields;
+		/// <summary>
+		/// 是否递减排序
+		/// </summary>
         private bool isDesc = true;
 
+		/// <summary>
+		/// 数据库参数集合
+		/// </summary>
         private List<IDbDataParameter> m_ParamList = new List<IDbDataParameter>();
 
+		/// <summary>
+		/// 创建一个参数映射集合
+		/// </summary>
         private ParamMap() { }
 
+		/// <summary>
+		/// 排序的字段
+		/// </summary>
         public string OrderFields
         {
             get { return orderFields; }
             set { orderFields = value; }
         }
 
+		/// <summary>
+		/// 是否递减排序
+		/// </summary>
         public bool IsDesc
         {
             get { return isDesc; }
             set { isDesc = value; }
         }
 
+		/// <summary>
+		/// 创建一个参数映射集合
+		/// </summary>
+		/// <returns></returns>
         public static ParamMap newMap()
         {
             ParamMap paramMap = new ParamMap();
             return paramMap;
         }
 
+		/// <summary>
+		/// 是否进行分页
+		/// </summary>
         public bool IsPage
         {
             get
@@ -44,6 +81,9 @@ namespace Easy4net.Common
             }
         }
 
+		/// <summary>
+		/// 每页的偏移量
+		/// </summary>
         public int PageOffset
         {
             get
@@ -62,6 +102,9 @@ namespace Easy4net.Common
             }
         }
 
+		/// <summary>
+		/// 每页的记录条数限制
+		/// </summary>
         public int PageLimit
         {
             get
@@ -75,54 +118,89 @@ namespace Easy4net.Common
             }
         }
 
+		/// <summary>
+		/// 根据键值获取整型数据
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
         public int getInt(string key)
         {
             var value = this[key];
             return Convert.ToInt32(value);
         }
 
+		/// <summary>
+		/// 根据键值获取字符串数据
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
         public String getString(string key)
         {
             var value = this[key];
             return Convert.ToString(value);
         }
 
+		/// <summary>
+		/// 根据键值获取Double型数据
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
         public Double toDouble(string key)
         {
             var value = this[key];
             return Convert.ToDouble(value);
         }
 
+		/// <summary>
+		/// 根据键值获取Long型数据
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
         public Int64 toLong(string key)
         {
             var value = this[key];
             return Convert.ToInt64(value);
         }
 
+		/// <summary>
+		/// 根据键值获取Decimal型数据
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
         public Decimal toDecimal(string key)
         {
             var value = this[key];
             return Convert.ToDecimal(value);
         }
 
+		/// <summary>
+		/// 根据键值获取DateTime型数据
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
         public DateTime toDateTime(string key)
         {
             var value = this[key];
             return Convert.ToDateTime(value);
         }
 
+		/// <summary>
+		/// 设置排序字段及排序方式
+		/// </summary>
+		/// <param name="orderFields">排序字段</param>
+		/// <param name="isDesc">是否为递减排序</param>
         public void setOrderFields(string orderFields, bool isDesc)
         {
             this.orderFields = orderFields;
             this.isDesc = isDesc;
         }
 
-
         /// <summary>
         /// 此方法已过时，请使用 setPageParamters方法分页
         /// </summary>
         /// <param name="pageIndex"></param>
-        private void setPageIndex(int pageIndex)
+		[Obsolete("此方法已过时，请使用 setPageParamters方法分页")]
+		private void setPageIndex(int pageIndex)
         {
             this["pageIndex"] = pageIndex;
             setPages();
@@ -131,7 +209,8 @@ namespace Easy4net.Common
         /// <summary>
         /// 此方法已过时，请使用 setPageParamters方法分页
         /// </summary>
-        /// <param name="pageSize"></param>
+		/// <param name="pageSize"></param>
+		[Obsolete("此方法已过时，请使用 setPageParamters方法分页")]
         private void setPageSize(int pageSize)
         {
             this["pageSize"] = pageSize;
@@ -150,6 +229,9 @@ namespace Easy4net.Common
             setPages();
         }
 
+		/// <summary>
+		/// 设置分页参数
+		/// </summary>
         private void setPages()
         {
             Session session = SessionThreadLocal.Get();
@@ -200,6 +282,11 @@ namespace Easy4net.Common
             }
         }
 
+		/// <summary>
+		/// 添加键值对映射
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
         public override void Add(object key, object value)
         {
             base.Put(key, value);
@@ -210,16 +297,30 @@ namespace Easy4net.Common
             m_ParamList.Add(param);
         }
 
+		/// <summary>
+		/// 添加键值对映射
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
         public new void Put(object key, object value)
         {
             this.Add(key, value);
         }
 
+		/// <summary>
+		/// 添加键值对映射
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
         public new void setParameter(string key, object value)
         {
             this.Add(key, value);
         }
 
+		/// <summary>
+		/// 输出参数集合
+		/// </summary>
+		/// <returns></returns>
         public IDbDataParameter[] toDbParameters()
         {
             int i = 0;
