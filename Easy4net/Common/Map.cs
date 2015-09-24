@@ -8,12 +8,22 @@ namespace Easy4net.Common
 	/// </summary>
     public class Map : Hashtable
     {
+		/// <summary>
+		/// 设置/添加键值对
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
         public void Put(object key,object value)
         {
             if (this.ContainsKey(key)) this.Remove(key);
             this.Add(key, value);
         }
 
+		/// <summary>
+		/// 设置/添加参数
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
         public void setParameter(string key, object value)
         {
             if (this.ContainsKey(key)) this.Remove(key);

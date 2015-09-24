@@ -7,7 +7,7 @@ namespace Easy4net.Common
 {
     /// <summary>Delegate for calling a method that is not known at runtime.</summary>
     /// <param name="target">the object to be called or null if the call is to a static method.</param>
-    /// <param name="paramters">the parameters to the method.</param>
+    /// <param name="parameters">the parameters to the method.</param>
     /// <returns>the return value for the method or null if it doesn't return anything.</returns>
     public delegate object FastInvokeHandler(object target, object[] parameters);
 
@@ -33,6 +33,11 @@ namespace Easy4net.Common
         /// </summary>
         private static Dictionary<MethodInfo, FastInvokeHandler> dictInvoker = new Dictionary<MethodInfo, FastInvokeHandler>();
 
+		/// <summary>
+		/// 快速执行指定方法
+		/// </summary>
+		/// <param name="methodInfo"></param>
+		/// <returns></returns>
         public static FastInvokeHandler GetMethodInvoker(MethodInfo methodInfo)
         {
             lock (dictInvoker)
@@ -175,6 +180,11 @@ namespace Easy4net.Common
         /// </summary>
         private static Dictionary<PropertyInfo, FastPropertyGetHandler> dictGetter = new Dictionary<PropertyInfo, FastPropertyGetHandler>();
 
+		/// <summary>
+		/// 快速获取成员属性
+		/// </summary>
+		/// <param name="propInfo"></param>
+		/// <returns></returns>
         public static FastPropertyGetHandler GetPropertyGetter(PropertyInfo propInfo)
         {
             lock (dictGetter)
@@ -212,6 +222,11 @@ namespace Easy4net.Common
         /// </summary>
         private static Dictionary<PropertyInfo, FastPropertySetHandler> dictSetter = new Dictionary<PropertyInfo, FastPropertySetHandler>();
 
+		/// <summary>
+		/// 快速设置成员属性
+		/// </summary>
+		/// <param name="propInfo"></param>
+		/// <returns></returns>
         public static FastPropertySetHandler GetPropertySetter(PropertyInfo propInfo)
         {
             lock (dictSetter)
@@ -248,7 +263,7 @@ namespace Easy4net.Common
         }
 
         /// <summary>Emits the cast to a reference, unboxing if needed.</summary>
-        /// <param name="il">The MSIL generator.</param>
+		/// <param name="ilGenerator">The MSIL generator.</param>
         /// <param name="type">The type to cast.</param>
         private static void EmitCastToReference(ILGenerator ilGenerator, System.Type type)
         {
@@ -274,7 +289,7 @@ namespace Easy4net.Common
         }
 
         /// <summary>Emits code to save an integer to the evaluation stack.</summary>
-        /// <param name="ilGeneartor">The MSIL generator.</param>
+        /// <param name="ilGenerator">The MSIL generator.</param>
         /// <param name="value">The value to push.</param>
         private static void EmitFastInt(ILGenerator ilGenerator, int value)
         {

@@ -3,6 +3,9 @@ using System.Configuration;
 
 namespace Easy4net.Common
 {
+	/// <summary>
+	/// 通用实用工具
+	/// </summary>
     public class CommonUtils
     {
         /// <summary>

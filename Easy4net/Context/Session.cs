@@ -9,17 +9,41 @@ using System.Reflection;
 
 namespace Easy4net.Context
 {
+	/// <summary>
+	/// 持久层实体类
+	/// </summary>
     public class Session
     {
+		/// <summary>
+		/// SQLite数据库帮助对象
+		/// </summary>
         public SQLiteHelper sqliteHelper = new SQLiteHelper();
+		/// <summary>
+		/// 数据库连接字符串
+		/// </summary>
         private string connectionString = string.Empty;
+		/// <summary>
+		/// 支持数据库字符串
+		/// </summary>
         private string provider = string.Empty;
 
+		/// <summary>
+		/// 数据库事物对象
+		/// </summary>
         private IDbTransaction m_Transaction = null;
+		/// <summary>
+		/// 数据库类型
+		/// </summary>
         private DatabaseType dataBaseType = DatabaseType.SQLSERVER;
 
+		/// <summary>
+		/// 数据库工厂对象,生成相应的数据库操作对象
+		/// </summary>
         private DbFactory dbFactory;
 
+		/// <summary>
+		/// /数据库工厂对象,生成相应的数据库操作对象
+		/// </summary>
         public DbFactory DbFactory
         {
             get { return dbFactory; }
@@ -28,6 +52,11 @@ namespace Easy4net.Context
 
         private Session() { }
 
+		/// <summary>
+		/// 根据数据库类型名创建一个持久层对象
+		/// </summary>
+		/// <param name="connName"></param>
+		/// <returns></returns>
         public static Session NewInstance(string connName)
         {
             Session session = new Session();
@@ -39,12 +68,21 @@ namespace Easy4net.Context
 
             return session;
         }
+
+		/// <summary>
+		/// 获取当前的持久层对象
+		/// </summary>
+		/// <returns></returns>
         public static Session GetCurrentSession()
         {
             Session session = SessionThreadLocal.Get();
             return session;
         }
 
+		/// <summary>
+		/// 根据连接类型名进行连接配置
+		/// </summary>
+		/// <param name="connName"></param>
         public void ConnectDB(string connName)
         {
             if (connName == null) return;
@@ -74,16 +112,26 @@ namespace Easy4net.Context
             dbFactory = DbFactory.NewInstance(connectionString, dataBaseType);
         }
 
+		/// <summary>
+		/// 开启事物处理功能
+		/// </summary>
         public void BeginTransaction()
         {
             m_Transaction = dbFactory.CreateDbTransaction();
         }
 
+		/// <summary>
+		/// 根据事物锁定行为开启事物
+		/// </summary>
+		/// <param name="level"></param>
         public void BeginTransaction(System.Data.IsolationLevel level)
         {
             m_Transaction = dbFactory.CreateDbTransaction(level);
         }
 
+		/// <summary>
+		/// 提交事物
+		/// </summary>
         public void Commit()
         {
             if (m_Transaction != null && m_Transaction.Connection != null)
@@ -96,6 +144,9 @@ namespace Easy4net.Context
             }
         }
 
+		/// <summary>
+		/// 事物回滚
+		/// </summary>
         public void Rollback()
         {
             if (m_Transaction != null && m_Transaction.Connection != null)
@@ -108,12 +159,22 @@ namespace Easy4net.Context
             }
         }
 
+		/// <summary>
+		/// 获取当前的事物
+		/// </summary>
+		/// <returns></returns>
         private IDbTransaction GetTransaction()
         {
             return m_Transaction;
         }
 
         #region 将实体数据保存到数据库
+		/// <summary>
+		/// Insert插入操作
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="entity">数据库表实体对象</param>
+		/// <returns></returns>
         public int Insert<T>(T entity)
         {
             if (entity == null) return 0;
@@ -168,6 +229,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 批量保存
+		/// <summary>
+		/// 批量进行Insert插入操作
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="entityList">数据库表实体对象集合</param>
+		/// <returns></returns>
         public int Insert<T>(List<T> entityList)
         {
             if (entityList == null || entityList.Count == 0) return 0;
@@ -239,6 +306,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 将实体数据修改到数据库
+		/// <summary>
+		/// Update更新操作
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="entity">数据库表实体对象</param>
+		/// <returns></returns>
         public int Update<T>(T entity)
         {
             if (entity == null) return 0;
@@ -283,6 +356,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 批量更新
+		/// <summary>
+		/// 批量进行Update更新操作
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="entityList">数据库表实体对象集合</param>
+		/// <returns></returns>
         public int Update<T>(List<T> entityList)
         {
             if (entityList == null || entityList.Count == 0) return 0;
@@ -336,6 +415,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 执行SQL语句
+		/// <summary>
+		/// 执行一条带有参数集合的SQL语句
+		/// </summary>
+		/// <param name="strSQL">SQL语句</param>
+		/// <param name="param">参数集合</param>
+		/// <returns></returns>
         public int ExcuteSQL(string strSQL, ParamMap param)
         {
             object val = 0;
@@ -376,6 +461,11 @@ namespace Easy4net.Context
         #endregion
 
         #region 执行SQL语句
+		/// <summary>
+		/// 执行一条SQL语句
+		/// </summary>
+		/// <param name="strSQL"></param>
+		/// <returns></returns>
         public int ExcuteSQL(string strSQL)
         {
             object val = 0;
@@ -406,6 +496,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 删除实体对应数据库中的数据
+		/// <summary>
+		/// 进行Delete删除操作
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="entity">数据库表实体对象</param>
+		/// <returns></returns>
         public int Delete<T>(T entity)
         {
             if (entity == null) return 0;
@@ -456,6 +552,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 批量删除
+		/// <summary>
+		/// 批量进行Delete删除操作
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="entityList">数据库表实体对象集合</param>
+		/// <returns></returns>
         public int Delete<T>(List<T> entityList)
         {
             if (entityList == null || entityList.Count == 0) return 0;
@@ -515,6 +617,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 根据主键id删除实体对应数据库中的数据
+		/// <summary>
+		/// 根据主键值删除实体类对应数据库中的数据
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="id">主键值</param>
+		/// <returns></returns>
         public int Delete<T>(object id) where T : new()
         {
             object val = 0;
@@ -565,6 +673,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 批量根据主键id删除数据
+		/// <summary>
+		/// 根据主键ID集合进行删除操作
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="ids"></param>
+		/// <returns></returns>
         public int Delete<T>(object[] ids) where T : new()
         {
             if (ids == null || ids.Length == 0) return 0;
@@ -614,6 +728,11 @@ namespace Easy4net.Context
         #endregion
 
         #region 通过自定义SQL语句查询记录数
+		/// <summary>
+		/// 根据SQL语句获取记录数
+		/// </summary>
+		/// <param name="strSQL"></param>
+		/// <returns></returns>
         public int Count(string strSQL)
         {
             int count = 0;
@@ -641,6 +760,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 通过自定义SQL语句查询记录数
+		/// <summary>
+		/// 通过自定义SQL语句查询记录数
+		/// </summary>
+		/// <param name="strSql"></param>
+		/// <param name="param">参数集合</param>
+		/// <returns></returns>
         public int Count(string strSql, ParamMap param)
         {
             int count = 0;
@@ -680,6 +805,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 通过自定义SQL语句查询数据
+		/// <summary>
+		/// 通过自定义SQL语句查询数据
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="strSql"></param>
+		/// <returns></returns>
         public List<T> Find<T>(string strSql) where T : new()
         {
             List<T> list = new List<T>();
@@ -714,6 +845,13 @@ namespace Easy4net.Context
         #endregion
 
         #region 通过自定义SQL语句查询数据
+		/// <summary>
+		/// 通过自定义SQL语句查询数据
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="strSQL"></param>
+		/// <param name="param"></param>
+		/// <returns></returns>
         public List<T> Find<T>(string strSQL, ParamMap param) where T : new()
         {
             List<T> list = new List<T>();
@@ -760,6 +898,13 @@ namespace Easy4net.Context
         #endregion
 
         #region 分页查询返回分页结果
+		/// <summary>
+		/// 分页查询返回分页结果
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="strSQL"></param>
+		/// <param name="param"></param>
+		/// <returns></returns>
         public PageResult<T> FindPage<T>(string strSQL, ParamMap param) where T : new()
         {
             PageResult<T> pageResult = new PageResult<T>();
@@ -830,6 +975,12 @@ namespace Easy4net.Context
         #endregion
 
         #region 通过主键ID查询数据
+		/// <summary>
+		/// 通过主键ID查询数据
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="id"></param>
+		/// <returns></returns>
         public T Get<T>(object id) where T : new()
         {
             List<T> list = new List<T>();
@@ -869,6 +1020,10 @@ namespace Easy4net.Context
         }
         #endregion
 
+		/// <summary>
+		/// 获取数据库连接
+		/// </summary>
+		/// <returns></returns>
         private IDbConnection GetConnection()
         {
             //获取数据库连接，如果开启了事务，从事务中获取
@@ -885,14 +1040,26 @@ namespace Easy4net.Context
             return connection;
         }
 
+		/// <summary>
+		/// 获取当前事物是否为空
+		/// </summary>
+		/// <returns></returns>
         private bool GetWillConnectionState()
         {
             return m_Transaction == null;
         }       
     }
 
+	/// <summary>
+	/// SQLite数据库帮助类
+	/// </summary>
     public class SQLiteHelper
     {    
+		/// <summary>
+		/// 获取是否存在指定的表
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
         public bool IsExistsTable(string tableName)
         {
             Session session = SessionThreadLocal.Get();
@@ -902,6 +1069,10 @@ namespace Easy4net.Context
             return count > 0;
         }
 
+		/// <summary>
+		/// 根据SQL语句创建一个表
+		/// </summary>
+		/// <param name="strSQL"></param>
         public void CreateTable(string strSQL)
         {
             try

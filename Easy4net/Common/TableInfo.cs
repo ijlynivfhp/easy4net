@@ -15,12 +15,12 @@ namespace Easy4net.Common
 		/// </summary>
         private string tableName;
 		/// <summary>
-		/// 索引生成方式
+		/// 主键生成方式
 		/// </summary>
         private int strategy;
 
 		/// <summary>
-		/// 索引信息
+		/// 主键信息
 		/// </summary>
         private IdInfo id = new IdInfo();
 		/// <summary>
@@ -55,7 +55,7 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 索引生成方式,参考GenerationType定义
+		/// 主键生成方式,参考GenerationType定义
 		/// </summary>
         public int Strategy
         {
@@ -64,7 +64,7 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 索引字段信息
+		/// 主键字段信息
 		/// </summary>
         public IdInfo Id
         {

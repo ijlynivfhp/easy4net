@@ -37,9 +37,21 @@ namespace Easy4net.Common
         private static string ORDER_BY_ASC = " ORDER BY {0} ASC ";
         private static string ORDER_BY_DESC = " ORDER BY {0} DESC ";
 
+		/// <summary>
+		/// 参数字符前缀
+		/// </summary>
         private static string paramChar = string.Empty;
+		/// <summary>
+		/// SQL语句创建对象
+		/// </summary>
         private StringBuilder sbSQL = new StringBuilder();
+		/// <summary>
+		/// 查询SQL语句
+		/// </summary>
         public string queryString = String.Empty;
+		/// <summary>
+		/// 字段信息
+		/// </summary>
         public ColumnInfo Columns = new ColumnInfo();
 
 		/// <summary>

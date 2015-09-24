@@ -78,11 +78,11 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 根据索引特性跟数据操作类型获取索引名
+		/// 根据主键特性跟数据操作类型获取主键名
 		/// </summary>
-		/// <param name="attribute">IdAttribute索引特性</param>
+		/// <param name="attribute">IdAttribute主键特性</param>
 		/// <param name="type">数据操作类型</param>
-		/// <returns>索引名</returns>
+		/// <returns>主键名</returns>
         public static string GetPrimaryKey(object attribute, DbOperateType type)
         {
             string strPrimary = string.Empty;
@@ -106,9 +106,9 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 根据字段特性或索引特性获取对应字段名
+		/// 根据字段特性或主键特性获取对应字段名
 		/// </summary>
-		/// <param name="attribute">字段特性或索引特性</param>
+		/// <param name="attribute">字段特性或主键特性</param>
 		/// <returns>字段名</returns>
         public static string GetColumnName(object attribute)
         {
@@ -211,11 +211,11 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 根据数据库表对象获取该对象中索引成员的属性
+		/// 根据数据库表对象获取该对象中主键成员的属性
 		/// </summary>
 		/// <param name="entity">数据库表对象</param>
 		/// <param name="properties">该对象的属性集合</param>
-		/// <returns>索引成员属性</returns>
+		/// <returns>主键成员属性</returns>
         public static PropertyInfo GetPrimaryKeyPropertyInfo(object entity, PropertyInfo[] properties)
         {
             bool breakForeach = false;
@@ -363,7 +363,7 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 根据数据库表信息获取根据索引值进行查询的SQL语句
+		/// 根据数据库表信息获取根据主键值进行查询的SQL语句
 		/// </summary>
 		/// <param name="tableInfo">数据库表信息</param>
 		/// <returns></returns>
@@ -438,7 +438,7 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 根据数据库表信息获取根据索引值进行查询的SQL语句
+		/// 根据数据库表信息获取根据主键值进行查询的SQL语句
 		/// 同方法GetFindByIdSql
 		/// </summary>
 		/// <param name="tableInfo"></param>
@@ -466,7 +466,7 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 根据数据库类型获取对应的获取在插入操作后自增长型索引字段的SQL语句
+		/// 根据数据库类型获取对应的获取在插入操作后自增长型主键字段的SQL语句
 		/// </summary>
 		/// <param name="dbType">数据库类型</param>
 		/// <returns></returns>
@@ -587,7 +587,7 @@ namespace Easy4net.Common
         }
 
 		/// <summary>
-		/// 根据数据库表信息获取根据索引进行Delete删除操作语句
+		/// 根据数据库表信息获取根据主键进行Delete删除操作语句
 		/// </summary>
 		/// <param name="tableInfo"></param>
 		/// <returns></returns>

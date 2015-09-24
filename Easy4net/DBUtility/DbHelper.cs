@@ -6,14 +6,27 @@ using Easy4net.Context;
 
 namespace Easy4net.DBUtility
 {
+	/// <summary>
+	/// 数据库帮助类
+	/// </summary>
     public class DBHelper
     {
         Session session;
+
+		/// <summary>
+		/// 根据数据库连接类型名创建一个数据库帮助类
+		/// </summary>
+		/// <param name="connName"></param>
         public DBHelper(string connName)
         {
             session = Session.NewInstance(connName);
         }
 
+		/// <summary>
+		/// 根据数据库连接类型名创建一个数据库帮助类
+		/// </summary>
+		/// <param name="connName"></param>
+		/// <returns></returns>
         public static DBHelper getInstance(string connName)
         {
             return new DBHelper(connName);
@@ -215,6 +228,10 @@ namespace Easy4net.DBUtility
             session.BeginTransaction();
         }
 
+		/// <summary>
+		/// 根据锁定行为开启事物
+		/// </summary>
+		/// <param name="level"></param>
         public void BeginTransaction(System.Data.IsolationLevel level)
         {
             session.BeginTransaction(level);

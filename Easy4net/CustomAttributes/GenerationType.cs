@@ -3,7 +3,7 @@
 namespace Easy4net.CustomAttributes
 {
 	/// <summary>
-	/// 数据库表索引生成类型定义
+	/// 数据库表主键生成类型定义
 	/// </summary>
     public class GenerationType 
     {

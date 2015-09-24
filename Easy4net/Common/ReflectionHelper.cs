@@ -132,7 +132,7 @@ namespace Easy4net.Common
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
-        /// <param name="propertyName"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
         public static object GetPropertyValue<T>(T entity, PropertyInfo property)
         {
@@ -147,8 +147,7 @@ namespace Easy4net.Common
         /// <summary>
         /// 获取属性类型
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entity"></param>
+		/// <param name="classType"></param>
         /// <param name="propertyName"></param>
         /// <returns></returns>
         public static Type GetPropertyType(Type classType, string propertyName)

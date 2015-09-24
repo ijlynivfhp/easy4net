@@ -8,6 +8,9 @@ using System.Data.SQLite;
 
 namespace Easy4net.DBUtility
 {
+	/// <summary>
+	/// 数据生成工厂类
+	/// </summary>
     public class DbFactory
     {
 
@@ -16,6 +19,12 @@ namespace Easy4net.DBUtility
 
         }
 
+		/// <summary>
+		/// 根据数据库连接字符串以及数据库类型创建一个数据库工厂对象
+		/// </summary>
+		/// <param name="connectionString">数据库连接字符串</param>
+		/// <param name="dbType">数据库类型</param>
+		/// <returns></returns>
         public static DbFactory NewInstance(string connectionString, DatabaseType dbType)
         {
             DbFactory factory = new DbFactory();
@@ -30,24 +39,32 @@ namespace Easy4net.DBUtility
         private DatabaseType dbType;
         private string dbParmChar;
 
+		/// <summary>
+		/// 数据库类型
+		/// </summary>
         public DatabaseType DbType
         {
             get { return dbType; }
             set { value = dbType; }
         }
 
+		/// <summary>
+		/// 连接字符串
+		/// </summary>
         public string ConnectionString
         {
             get { return connectionString; }
             set { value = connectionString; }
         }
 
+		/// <summary>
+		/// 参数的前缀字符
+		/// </summary>
         public string DbParmChar
         {
             get { return dbParmChar; }
             set { dbParmChar = value; }
         }
-
 
         /// <summary>
         /// 根据配置文件中所配置的数据库类型
@@ -86,7 +103,6 @@ namespace Easy4net.DBUtility
         /// 根据配置文件中所配置的数据库类型和传入的
         /// 数据库链接字符串来创建相应数据库连接对象
         /// </summary>
-        /// <param name="connectionString"></param>
         /// <returns></returns>
         public IDbConnection CreateDbConnection()
         {
@@ -421,7 +437,7 @@ namespace Easy4net.DBUtility
 
 
         /// <summary>
-        /// 
+        /// 创建数据库的事物对象
         /// </summary>
         /// <param name="level"></param>
         /// <returns></returns>

@@ -5,6 +5,9 @@ using Easy4net.Common;
 
 namespace Easy4net.DBUtility
 {
+	/// <summary>
+	/// 数据库操作帮助类
+	/// </summary>
     public class AdoHelper
     {   
         //获取数据库类型
@@ -24,10 +27,10 @@ namespace Easy4net.DBUtility
         /// <summary>
         ///通过提供的参数，执行无结果集的数据库操作命令
         /// 并返回执行数据库操作所影响的行数。
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </summary>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -45,10 +48,10 @@ namespace Easy4net.DBUtility
         /// <summary>
         ///通过提供的参数，执行无结果集的数据库操作命令
         /// 并返回执行数据库操作所影响的行数。
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </summary>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, CommandType cmdType, string cmdText)
         {
@@ -70,10 +73,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  int result = ExecuteNonQuery(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="connection">数据库连接对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -93,10 +97,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  int result = ExecuteNonQuery(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="connection">数据库连接对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText)
         {
@@ -115,10 +120,12 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  int result = ExecuteNonQuery(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="connection">数据库连接对象</param>
+		/// <param name="transaction"></param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText)
         {
@@ -136,10 +143,13 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  int result = ExecuteNonQuery(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="connection">数据库连接对象</param>
+		/// <param name="transaction"></param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
+		/// <param name="commandParameters"></param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
         {
@@ -159,10 +169,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  int result = ExecuteNonQuery(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
         /// <param name="trans">sql事务对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -194,10 +205,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  int result = ExecuteNonQuery(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
         /// <param name="trans">sql事务对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回通过执行命令所影响的行数</returns>
         public static int ExecuteNonQuery(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText)
         {
@@ -215,10 +227,10 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  SqlDataReader r = ExecuteReader(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回SqlDataReader对象</returns>
         public static IDataReader ExecuteReader(DbFactory dbFactory, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -251,10 +263,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  SqlDataReader r = ExecuteReader(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+		/// <param name="trans"></param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回SqlDataReader对象</returns>
         public static IDataReader ExecuteReader(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -287,10 +300,12 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  SqlDataReader r = ExecuteReader(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+		/// <param name="closeConnection">读取完关闭Reader是否同时也关闭数据库连接</param>
+		/// <param name="connection">数据库链接</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回SqlDataReader对象</returns>
         public static IDataReader ExecuteReader(DbFactory dbFactory, bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -319,10 +334,10 @@ namespace Easy4net.DBUtility
         /// <summary>
         ///使用提供的参数，执行有结果集返回的数据库操作命令
         /// 并返回SqlDataReader对象
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </summary>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回SqlDataReader对象</returns>
         public static IDataReader ExecuteReader(DbFactory dbFactory, CommandType cmdType, string cmdText)
         {
@@ -350,10 +365,11 @@ namespace Easy4net.DBUtility
         /// <summary>
         ///使用提供的参数，执行有结果集返回的数据库操作命令
         /// 并返回SqlDataReader对象
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </summary>
+		/// <param name="dbFactory">数据库配置对象</param>
+		/// <param name="trans"></param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回SqlDataReader对象</returns>
         public static IDataReader ExecuteReader(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText)
         {
@@ -381,10 +397,12 @@ namespace Easy4net.DBUtility
         /// <summary>
         ///使用提供的参数，执行有结果集返回的数据库操作命令
         /// 并返回SqlDataReader对象
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行<</param>
+		/// </summary>
+		/// <param name="dbFactory">数据库配置对象</param>
+		/// <param name="closeConnection">读取完关闭Reader是否同时也关闭数据库连接</param>
+		/// <param name="connection">数据库链接</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回SqlDataReader对象</returns>
         public static IDataReader ExecuteReader(DbFactory dbFactory, bool closeConnection, IDbConnection connection, CommandType cmdType, string cmdText)
         {
@@ -412,8 +430,8 @@ namespace Easy4net.DBUtility
 
         /// <summary>
         /// 查询数据填充到数据集DataSet中
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
+		/// </summary>
+		/// <param name="dbFactory">数据库配置对象</param>
         /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="cmdText">命令文本</param>
         /// <param name="commandParameters">参数数组</param>
@@ -446,7 +464,7 @@ namespace Easy4net.DBUtility
         /// <summary>
         /// 查询数据填充到数据集DataSet中
         /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="dbFactory">数据库配置对象</param>
         /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
         /// <param name="cmdText">命令文本</param>
         /// <returns>数据集DataSet对象</returns>
@@ -482,10 +500,10 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  Object obj = ExecuteScalar(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
         public static object ExecuteScalar(DbFactory dbFactory, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -507,10 +525,10 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  Object obj = ExecuteScalar(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
         public static object ExecuteScalar(DbFactory dbFactory, CommandType cmdType, string cmdText)
         {
@@ -531,10 +549,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  Object obj = ExecuteScalar(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="connection">数据库连接对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
         public static object ExecuteScalar(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -554,10 +573,12 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  Object obj = ExecuteScalar(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="connection">数据库连接对象</param>
+		/// <param name="transaction"></param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
         public static object ExecuteScalar(DbFactory dbFactory, IDbConnection connection, IDbTransaction transaction, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -577,11 +598,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  Object obj = ExecuteScalar(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
-        /// <param name="commandParameters">执行命令所需的参数数组</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="connection">数据库连接对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
         public static object ExecuteScalar(DbFactory dbFactory, IDbConnection connection, CommandType cmdType, string cmdText)
         {
@@ -600,11 +621,12 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  Object obj = ExecuteScalar(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
         /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
-        /// <param name="commandParameters">执行命令所需的参数数组</param>
+		/// <param name="trans"></param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
         public static object ExecuteScalar(DbFactory dbFactory, IDbConnection conn, IDbTransaction trans, CommandType cmdType, string cmdText)
         {
@@ -623,10 +645,11 @@ namespace Easy4net.DBUtility
         /// <remarks>
         /// e.g.:  
         ///  Object obj = ExecuteScalar(connString, CommandType.StoredProcedure, "PublishOrders", new SqlParameter("@prodid", 24));
-        /// </remarks>
-        /// <param name="conn">数据库连接对象</param>
-        /// <param name="commandType">执行命令的类型（存储过程或T-SQL，等等）</param>
-        /// <param name="commandText">存储过程名称或者T-SQL命令行</param>
+		/// </remarks>
+		/// <param name="dbFactory">数据库配置对象</param>
+        /// <param name="trans">数据库事物对象</param>
+        /// <param name="cmdType">执行命令的类型（存储过程或T-SQL，等等）</param>
+        /// <param name="cmdText">存储过程名称或者T-SQL命令行</param>
         /// <param name="commandParameters">执行命令所需的参数数组</param>
         /// <returns>返回一个对象，使用Convert.To{Type}将该对象转换成想要的数据类型。</returns>
         public static object ExecuteScalar(DbFactory dbFactory, IDbTransaction trans, CommandType cmdType, string cmdText, params IDbDataParameter[] commandParameters)
@@ -643,7 +666,7 @@ namespace Easy4net.DBUtility
         /// add parameter array to the cache
         /// </summary>
         /// <param name="cacheKey">Key to the parameter cache</param>
-        /// <param name="cmdParms">an array of SqlParamters to be cached</param>
+		/// <param name="commandParameters">an array of SqlParamters to be cached</param>
         public static void CacheParameters(string cacheKey, params IDbDataParameter[] commandParameters)
         {
             parmCache[cacheKey] = commandParameters;
@@ -671,7 +694,8 @@ namespace Easy4net.DBUtility
 
         /// <summary>
         /// 为即将执行准备一个命令
-        /// </summary>
+		/// </summary>
+		/// <param name="dbFactory">数据库配置对象</param>
         /// <param name="cmd">SqlCommand对象</param>
         /// <param name="conn">SqlConnection对象</param>
         /// <param name="trans">IDbTransaction对象</param>
