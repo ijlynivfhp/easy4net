@@ -33,6 +33,11 @@ namespace Easy4net.Common
             return ConfigurationManager.AppSettings[Key];
         }
 
+		/// <summary>
+		/// 检测输入值是否为空
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
         public static Boolean IsNullOrEmpty(Object value)
         {
             if (value == null)

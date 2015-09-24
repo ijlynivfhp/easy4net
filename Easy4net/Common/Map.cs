@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace Easy4net.Common
 {
+	/// <summary>
+	/// 键值对映射类
+	/// </summary>
     public class Map : Hashtable
     {
         public void Put(object key,object value)
