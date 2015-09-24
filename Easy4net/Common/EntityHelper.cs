@@ -9,7 +9,10 @@ using Easy4net.Context;
 
 namespace Easy4net.Common
 {
-    public class EntityHelper
+	/// <summary>
+	/// 实体帮助类
+	/// </summary>
+    public static class EntityHelper
     {
         //public static string GetTableName(Type classType, DbOperateType type)
         //{

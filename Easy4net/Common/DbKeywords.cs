@@ -4,11 +4,23 @@ using System.Collections.Generic;
 
 namespace Easy4net.Common
 {
-    public class DbKeywords
+	/// <summary>
+	/// 数据库关键字检查帮助类
+	/// </summary>
+    public static class DbKeywords
     {
+		/// <summary>
+		/// MySQL中关键字集合
+		/// </summary>
         private static Dictionary<string, string> m_MySQL = new Dictionary<string, string>();
+		/// <summary>
+		/// MSSQL中关键字集合
+		/// </summary>
         private static Dictionary<string, string> m_MSSQL = new Dictionary<string, string>();
 
+		/// <summary>
+		/// 初始化MySQL中关键字集合
+		/// </summary>
         private static void InitMySQL()
         {
             if (m_MySQL.Count == 0)
@@ -19,6 +31,9 @@ namespace Easy4net.Common
             }
         }
 
+		/// <summary>
+		/// 初始化MSSQL中关键字集合
+		/// </summary>
         private static void InitMSSQL()
         {
             if (m_MSSQL.Count == 0)
@@ -33,6 +48,12 @@ namespace Easy4net.Common
             }
         }
 
+		/// <summary>
+		/// 格式化列名,对列名与数据库关键字相同的进行格式化处理
+		/// </summary>
+		/// <param name="columnName"></param>
+		/// <param name="dbType"></param>
+		/// <returns></returns>
         public static string FormatColumnName(string columnName, DatabaseType dbType)
         {
             InitMySQL();

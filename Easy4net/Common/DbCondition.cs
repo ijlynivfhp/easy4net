@@ -149,8 +149,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加大于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition GreaterThan(string fieldName, object fieldValue)
         {
@@ -164,8 +164,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加大于等于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition GreaterThanEqual(string fieldName, object fieldValue)
         {
@@ -179,8 +179,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And大于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition AndGreaterThan(string fieldName, object fieldValue)
         {
@@ -194,8 +194,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And大于等于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition AndGreaterThanEqual(string fieldName, object fieldValue)
         {
@@ -209,8 +209,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or大于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition OrGreaterThan(string fieldName, object fieldValue)
         {
@@ -224,8 +224,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or大于等于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition OrGreaterThanEqual(string fieldName, object fieldValue)
         {
@@ -239,8 +239,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加小于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition LessThan(string fieldName, object fieldValue)
         {
@@ -254,8 +254,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加小于等于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition LessThanEqual(string fieldName, object fieldValue)
         {
@@ -269,8 +269,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And小于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition AndLessThan(string fieldName, object fieldValue)
         {
@@ -284,8 +284,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And小于等于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition AndLessThanEqual(string fieldName, object fieldValue)
         {
@@ -299,8 +299,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or小于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition OrLessThan(string fieldName, object fieldValue)
         {
@@ -314,8 +314,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or小于等于语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition OrLessThanEqual(string fieldName, object fieldValue)
         {
@@ -329,8 +329,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And等于语句,相当于AndEqual方法
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition And(string fieldName, object fieldValue)
         {
@@ -340,8 +340,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or等于语句,相当于OrEqual方法
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition Or(string fieldName, object fieldValue)
         {
@@ -351,7 +351,7 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Order By Asc递增排序语句
 		/// </summary>
-		/// <param name="fieldName"></param>
+		/// <param name="fieldName">排序的字段名</param>
 		/// <returns></returns>
         public DbCondition OrderByASC(string fieldName)
         {
@@ -363,7 +363,7 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Order By Desc递减排序语句
 		/// </summary>
-		/// <param name="fieldName"></param>
+		/// <param name="fieldName">排序的字段名</param>
 		/// <returns></returns>
         public DbCondition OrderByDESC(string fieldName)
         {
@@ -375,8 +375,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Like %XX%语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition Like(string fieldName, object fieldValue)
         {
@@ -387,8 +387,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And Like %XX%语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition AndLike(string fieldName, object fieldValue)
         {
@@ -399,8 +399,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or Like %XX%语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition OrLike(string fieldName, object fieldValue)
         {
@@ -411,8 +411,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Like %XX语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition LeftLike(string fieldName, object fieldValue)
         {
@@ -423,8 +423,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And Like %XX语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition AndLeftLike(string fieldName, object fieldValue)
         {
@@ -435,8 +435,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or Like %XX语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition OrLeftLike(string fieldName, object fieldValue)
         {
@@ -447,8 +447,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Like XX%语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition RightLike(string fieldName, object fieldValue)
         {
@@ -459,8 +459,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加And Like XX%语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition AndRightLike(string fieldName, object fieldValue)
         {
@@ -471,8 +471,8 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 增加Or Like XX%语句
 		/// </summary>
-		/// <param name="fieldName"></param>
-		/// <param name="fieldValue"></param>
+		/// <param name="fieldName">字段名</param>
+		/// <param name="fieldValue">字段值</param>
 		/// <returns></returns>
         public DbCondition OrRightLike(string fieldName, object fieldValue)
         {
@@ -492,7 +492,7 @@ namespace Easy4net.Common
 		/// <summary>
 		/// 对关键字进行格式化输出
 		/// </summary>
-		/// <param name="key"></param>
+		/// <param name="key">要格式化的关键字</param>
 		/// <returns></returns>
         private string formatKey(string key)
         {
