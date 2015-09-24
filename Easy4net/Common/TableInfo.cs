@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections;
 using System.Data;
-using Easy4net.DBUtility;
 using Easy4net.Context;
 
 namespace Easy4net.Common

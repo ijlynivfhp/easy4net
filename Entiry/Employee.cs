@@ -1,8 +1,6 @@
 using Easy4net.CustomAttributes;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Easy4net.Entity  
 {  

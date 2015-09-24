@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Easy4net.CustomAttributes;
 using Easy4net.DBUtility;
-using System.Collections;
 using System.Reflection;
 using System.Data;
 using Easy4net.Context;

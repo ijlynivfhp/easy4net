@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Easy4net.Common;
 using System.Data;
 using Easy4net.DBUtility;
 using Easy4net.Context;
@@ -202,7 +200,7 @@ namespace Easy4net.Common
             }
         }
 
-        public void Add(object key, object value)
+        public override void Add(object key, object value)
         {
             base.Put(key, value);
 
@@ -212,12 +210,12 @@ namespace Easy4net.Common
             m_ParamList.Add(param);
         }
 
-        public void Put(object key, object value)
+        public new void Put(object key, object value)
         {
             this.Add(key, value);
         }
 
-        public void setParameter(string key, object value)
+        public new void setParameter(string key, object value)
         {
             this.Add(key, value);
         }

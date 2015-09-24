@@ -6,7 +6,6 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Easy4net.Context
 {

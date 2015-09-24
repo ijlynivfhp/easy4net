@@ -1,13 +1,7 @@
-﻿using Easy4net.DBUtility;
-using Easy4net.Entity;
+﻿using Easy4net.Entity;
 using Easy4net.Context;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace WindowsDemo
@@ -48,7 +42,7 @@ namespace WindowsDemo
                     MessageBox.Show("事务提交成功，请查看数据库是否存在该数据！");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 session.Rollback();
                 MessageBox.Show("事务回滚成功，请查看数据库是否存在该数据！");

@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
 using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Data.OracleClient;
 using Easy4net.Common;
 
 namespace Easy4net.DBUtility

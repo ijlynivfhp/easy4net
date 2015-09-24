@@ -1,13 +1,9 @@
 using System;
-using System.Configuration;
 using System.Data;
-using System.Collections;
 using System.Data.SqlClient;
 using System.Data.OracleClient;
 using System.Data.OleDb;
-using System.Data.Odbc;
 using MySql.Data.MySqlClient;
-using Easy4net.Common;
 using System.Data.SQLite;
 
 namespace Easy4net.DBUtility

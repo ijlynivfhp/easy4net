@@ -1,13 +1,8 @@
-﻿using Easy4net.DBUtility;
-using Easy4net.Entity;
+﻿using Easy4net.Entity;
 using Easy4net.Context;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace WindowsDemo
@@ -49,7 +44,7 @@ namespace WindowsDemo
                 session.Commit();
                 MessageBox.Show("批量新增成功！");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 session.Rollback();
                 MessageBox.Show("批量新增失败！");
