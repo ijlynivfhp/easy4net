@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using Easy4net.CustomAttributes;
 
 namespace Easy4net.Context
 {
@@ -203,7 +204,8 @@ namespace Easy4net.Context
                 val = AdoHelper.ExecuteScalar(dbFactory, connection, transaction, CommandType.Text, strSql, parms);
 
                 //把自动生成的主键ID赋值给返回的对象
-                if (!tableInfo.NoAutomaticKey)
+                if (!tableInfo.NoAutomaticKey 
+					&& tableInfo.Strategy == GenerationType.INDENTITY)
                 {
                     if (dataBaseType == DatabaseType.SQLSERVER || dataBaseType == DatabaseType.MYSQL || dataBaseType == DatabaseType.SQLITE)
                     {
@@ -277,9 +279,9 @@ namespace Easy4net.Context
                     }
 
                     //把自动生成的主键ID赋值给返回的对象
-                    if (!tableInfo.NoAutomaticKey)
+					if (!tableInfo.NoAutomaticKey
+					&& tableInfo.Strategy == GenerationType.INDENTITY)
                     {
-
                         //把自动生成的主键ID赋值给返回的对象
                         if (dataBaseType == DatabaseType.SQLSERVER || dataBaseType == DatabaseType.MYSQL || dataBaseType == DatabaseType.ACCESS || dataBaseType == DatabaseType.SQLITE)
                         {
