@@ -16,7 +16,7 @@ namespace Easy4net.Common
         public void Put(object key,object value)
         {
             if (this.ContainsKey(key)) this.Remove(key);
-            this.Add(key, value);
+            base.Add(key, value);
         }
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace Easy4net.Common
         public void setParameter(string key, object value)
         {
             if (this.ContainsKey(key)) this.Remove(key);
-            this.Add(key, value);
+            base.Add(key, value);
         }
     }
 }
