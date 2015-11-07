@@ -164,6 +164,11 @@ namespace Easy4net.Common
                 for (int i = 0; i < propertyAttrs.Length; i++)
                 {
                     object propertyAttr = propertyAttrs[i];
+                    if (!(propertyAttr is ColumnAttribute) && !(propertyAttr is IdAttribute))
+                    {
+                        continue;
+                    }
+                        
                     if (EntityHelper.IsCaseColumn(propertyAttr, dbOpType))
                     {
                         breakForeach = true;break;
@@ -200,6 +205,11 @@ namespace Easy4net.Common
                 tableInfo.Columns.Put(columnName, propvalue);
                 tableInfo.PropToColumn.Put(propName, columnName);
                 tableInfo.ColumnToProp.Put(columnName, propName);
+            }
+
+            if (tableInfo.Strategy != GenerationType.INDENTITY && tableInfo.Id.Key != null)
+            {
+                tableInfo.Columns.Put(tableInfo.Id.Key, tableInfo.Id.Value);
             }
 
             /*if (dbOpType == DbOperateType.UPDATE)
