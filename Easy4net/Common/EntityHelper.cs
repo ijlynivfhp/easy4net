@@ -142,8 +142,11 @@ namespace Easy4net.Common
             Type type = entity.GetType();
 
             TableAttribute tableAttr = GetTableAttribute(type, dbOpType);
-            tableInfo.TableName = tableAttr.Name;
-            tableInfo.NoAutomaticKey = tableAttr.NoAutomaticKey;
+            if (tableAttr != null)
+            {
+                tableInfo.TableName = tableAttr.Name;
+                tableInfo.NoAutomaticKey = tableAttr.NoAutomaticKey;
+            }
 
             //tableInfo.TableName = GetTableName(type, dbOpType);
 
@@ -179,11 +182,11 @@ namespace Easy4net.Common
 
                     if (propertyAttr is IdAttribute)
                     {
+                        IdAttribute idAttr = propertyAttr as IdAttribute;
+                        tableInfo.Strategy = idAttr.Strategy;
+
                         if (dbOpType == DbOperateType.INSERT || dbOpType == DbOperateType.DELETE)
                         {
-                            IdAttribute idAttr = propertyAttr as IdAttribute;
-                            tableInfo.Strategy = idAttr.Strategy;
-
                             if (CommonUtils.IsNullOrEmpty(propvalue))
                             {
                                 strPrimaryKey = EntityHelper.GetPrimaryKey(propertyAttr, dbOpType);

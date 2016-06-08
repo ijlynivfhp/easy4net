@@ -37,11 +37,11 @@ namespace WindowsDemo
         {
             //旧的写法，新的写法为Session，但是保持了兼容性
             Session session = SessionFactory.GetSession();
-            session.ConnectDB("SQLiteString");
+            session.ConnectDB("MySQLString");
 
-            MessageBox.Show("正在使用【SQLite】数据库");            
+            MessageBox.Show("正在使用【MYSQL】数据库");            
 
-            if (!session.sqliteHelper.IsExistsTable("company"))
+            /*if (!session.sqliteHelper.IsExistsTable("company"))
             {
                 string strSQL = "CREATE TABLE `company` (" +
                     "`id` integer PRIMARY KEY autoincrement," +
@@ -70,7 +70,7 @@ namespace WindowsDemo
                     "`company_id` varchar(255) DEFAULT NULL" +
                     ")";
                 session.sqliteHelper.CreateTable(strSQL);
-            }
+            }*/
 
 
             //string strSql = "SELECT * FROM company where company_name=@companyName";

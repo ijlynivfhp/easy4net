@@ -16,7 +16,7 @@ namespace WindowsDemo
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            Session session = SessionFactory.GetSession("SQLiteString");
+            Session session = SessionFactory.GetSession("MySQLString");
             
             //session.ConnectDB("SqlServerString");
 
