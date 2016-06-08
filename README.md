@@ -1,4 +1,4 @@
-easy4net是一个轻量级orm框架，灵活在于可以自己编写复杂的SQL语句查询，简单在于几分钟内便能上手使用，并支持mysql, mssql, oracle, access数据库. easy4net技术QQ 群：162695864
+easy4net是一个轻量级orm框架，灵活在于可以自己编写复杂的SQL语句查询，简单在于几分钟内便能上手使用，并支持mysql, mssql, oracle, access, sqlite数据库. easy4net技术QQ 群：162695864
 
 **分页查询：**
 * 1. 命名参数， ParamMap传参方式：
