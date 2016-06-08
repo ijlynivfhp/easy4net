@@ -18,8 +18,10 @@ param.setPageParamters(page, limit);
 param.setOrderFields("e.id", true);
 param.setParameter("name", "LiYang");
 
-DBHelper dbHelper = DBHelper.getInstance();
-List<Employee> emList = dbHelper.Find<Employee>(strSql, param);
+*MySQLString是app.config或web.config中配置的连接数据库字符串，
+*应部分用户需要可以切换多个数据库要求
+Session session = SessionFactory.GetSession("MySQLString");
+List<Employee> emList = session.Find<Employee>(strSql, param);
 
 ```
 
@@ -32,7 +34,7 @@ List<Employee> emList = dbHelper.Find<Employee>(strSql, param);
 ```c#
 public PageResult<Store> findByPage(int page, int limit)
 {
-    DBHelper db = DBHelper.getInstance();
+    Session session = SessionFactory.GetSession("MySQLString");
 
     String sql = "select * from store";
 
@@ -40,7 +42,7 @@ public PageResult<Store> findByPage(int page, int limit)
     param.setPageParamters(page, limit);
     param.setOrderFields("id", true);
 
-    PageResult<Store> pageResult = db.FindPage<Store>(sql, param);
+    PageResult<Store> pageResult = session.FindPage<Store>(sql, param);
 
     return pageResult;
 }
@@ -70,7 +72,7 @@ string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c
 ParamMap param = ParamMap.newMap();
 param.setParameter("name", "LiYang");
 
-Employee em = dbHelper.FindOne<Employee>(strSql, param);
+Employee em = session.Get<Employee>(strSql, param);
 
 ```
 
@@ -80,7 +82,7 @@ Employee em = dbHelper.FindOne<Employee>(strSql, param);
 
 string strSql = "SELECT e.*, c.company_name FROM employee e INNER JOIN company c ON e.company_id = c.id";
 
-List<Employee> emList = dbHelper.Find<Employee>(strSql);
+List<Employee> emList = session.Find<Employee>(strSql);
 
 ```
 
@@ -99,8 +101,8 @@ company.CompanyName = txtName.Text.Trim();
 company.Industry = txtIndustry.Text.Trim();
 company.Address = txtAddress.Text.Trim();
 
-DBHelper dbHelper = DBHelper.getInstance();
-dbHelper.Save<Company>(company);
+Session session = SessionFactory.GetSession("MySQLString");
+session.Insert<Company>(company);
 
 if (company.Id > 0) {
     MessageBox.Show("创建公司成功！");
@@ -116,8 +118,8 @@ employee.Address = txtAddress.Text.Trim();
 employee.Created = DateTime.Now;
 employee.CompanyId = company.Id;
 
-DBHelper dbHelper = DBHelper.getInstance();
-dbHelper.Save<Employee>(employee);
+Session session = SessionFactory.GetSession("MySQLString");
+session.Insert<Employee>(employee);
 if (employee.Id > 0)
 {
     MessageBox.Show("新增员工成功！");
@@ -135,7 +137,8 @@ if (employee.Id > 0)
 ```c#
 
 List<Company> companyList = ...;
-dbHelper.Save(companyList);
+Session session = SessionFactory.GetSession("MySQLString");
+session.Insert(companyList);
 ```
 
 
@@ -147,7 +150,9 @@ dbHelper.Save(companyList);
 Company entity = new Company();
 entity.Id = 1;
 entity.Name = "百度";
-dbHelper.Update(entity);
+
+Session session = SessionFactory.GetSession("MySQLString");
+session.Update(entity);
 ```
 
 
@@ -159,7 +164,9 @@ dbHelper.Update(entity);
 ```c#
 DBHelper db = DBHelper.getInstance();
 List<Company> companyList = ...;
-dbHelper.Update(companyList);
+
+Session session = SessionFactory.GetSession("MySQLString");
+session.Update(companyList);
 ```
 
 
@@ -172,10 +179,12 @@ dbHelper.Update(companyList);
 ```c#
 Company company = m_companyList[i];
 //remove a object
-dbHelper.Delete(company);
+
+Session session = SessionFactory.GetSession("MySQLString");
+session.Delete(company);
 
 //remove by id
-dbHelper.Delete(company.Id);
+session.Delete(company.Id);
 ```
 
 **批量删除：**
@@ -189,11 +198,13 @@ dbHelper.Delete(company.Id);
 
 //remove by object
 List<Company> companyList = ...;
-dbHelper.Delete(companyList);
+
+Session session = SessionFactory.GetSession("MySQLString");
+session.Delete(companyList);
 
 //remove by id
 object[] ids = new object[]{1,2,3,4,5};
-dbHelper.Delete(ids);
+session.Delete(ids);
 ```
 
 
@@ -273,33 +284,30 @@ namespace Easy4net.Entity
 ```xml
 <?xml version="1.0"?>
 <configuration>
-  <appSettings>
-    <!--<add key="DbType" value="sqlserver"/>
-    <add key="connectionString" value="Data Source=.;Initial Catalog=test;User ID=test;Password=test123;Trusted_Connection=no;Min Pool Size=10;Max Pool Size=100;"/>-->
+  
+  <connectionStrings>
 
-    <!--<add key="DbType" value="mysql"/>
-    <add key="connectionString" value="Data Source=.;port=8001;User ID=test;Password=123456;DataBase=test;Min Pool Size=10;Max Pool Size=100;"/>-->
+    <add name="MySQLString"
+        connectionString="Data Source=localhost;Initial Catalog=test_db;Persist Security Info=True;User ID=root;Password=123456;Min Pool Size=1;Max Pool Size=3;"
+        providerName="MySql.Data.MySqlClient" />
 
-    <!--<add key="DbType" value="access"/>
-    <add key="connectionString" value="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\tj.mdb"/>-->
+    
+    <add name="SqlServerString" 
+         connectionString="Data Source=(local);Initial Catalog=Study;User ID=sa;Password=sa;" 
+         providerName="System.Data.SqlClient" />
 
-    <!--<add key="DbType" value="sqlserver"/>
-    <add key="DbHost" value="8QHMQCAJBCOOHW2\SQLEXPRESS" />
-    <add key="DbName" value="test"/>
-    <add key="DbUser" value="sa"/>
-    <add key="DbPassword" value="111111"/>
-    <add key="DbMinPoolSize" value="10"/>
-    <add key="DbMaxPoolSize" value="100"/>-->
+   
+    <add name="OracleString"
+         connectionString="Data Source=192.168.0.2;Initial Catalog=test;Persist Security Info=True;User ID=user1;Password=pass1"
+         providerName="System.Data.OracleClient" />
 
-    <add key="DbType" value="mysql"/>
-    <add key="DbHost" value="localhost" />
-    <add key="DbName" value="test_db"/>
-    <add key="DbUser" value="user_test"/>
-    <add key="DbPassword" value="111111"/>
-    <add key="DbPort" value="3306"/>
-    <add key="DbMinPoolSize" value="10"/>
-    <add key="DbMaxPoolSize" value="100"/>
+    <add name="SQLiteString" connectionString="Data Source=|DataDirectory|\testdb.sqlite;Pooling=true;"
+       providerName="System.Data.SQLite" />
 
-  </appSettings>
-<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/></startup></configuration>
+  </connectionStrings>
+
+  <startup>
+  <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/>
+</startup>
+</configuration>
 ```
