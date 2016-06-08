@@ -18,8 +18,8 @@ param.setPageParamters(page, limit);
 param.setOrderFields("e.id", true);
 param.setParameter("name", "LiYang");
 
-*MySQLString是app.config或web.config中配置的连接数据库字符串，
-*应部分用户需要可以切换多个数据库要求
+//MySQLString是app.config或web.config中配置的连接数据库字符串，
+//应部分用户需要可以切换多个数据库要求
 Session session = SessionFactory.GetSession("MySQLString");
 List<Employee> emList = session.Find<Employee>(strSql, param);
 
