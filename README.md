@@ -162,7 +162,7 @@ session.Update(entity);
 ***
 
 ```c#
-DBHelper db = DBHelper.getInstance();
+Session session = SessionFactory.GetSession("MySQLString");
 List<Company> companyList = ...;
 
 Session session = SessionFactory.GetSession("MySQLString");
